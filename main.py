@@ -9,7 +9,7 @@ def init_orbits_and_objects():
 
     # create horizontal orbits and their objects
     for x in range(num_of_orbits_horizontal):
-        orbit = Orbit(id=orbit_id, horiz_ver_id=x, is_horizontal=True, starting_point=0, ending_point=size-1,
+        orbit = Orbit(id=orbit_id, id_in_orbit_group=x, is_horizontal=True, starting_point=0, ending_point=size-1,
                       number_of_objects=num_of_objects_in_orbit, moving_object_speed=moving_object_speed)
         for y in range(num_of_objects_in_orbit):
             if y == 0:
@@ -25,7 +25,7 @@ def init_orbits_and_objects():
             mo = MO(id=moving_object_id, id_in_orbit=y, orbit_id=x, is_in_horizontal_orbit=True, x0=y*(size/num_of_orbits_horizontal),
                 y0=x*(size/num_of_orbits_horizontal), laser_left_id=laser_left_id, laser_right_id=laser_rigth_id)
             orbit.moving_objects.append(mo)
-            moving_objects.append(mo)
+            all_moving_objects.append(mo)
             moving_object_id += 1
         horizontal_orbits.append(orbit)
         horizontal_orbits_dict[x] = orbit
@@ -33,7 +33,7 @@ def init_orbits_and_objects():
 
     # create vertical orbits and their objects
     for x in range(num_of_orbits_vertical):
-        orbit = Orbit(id=orbit_id, horiz_ver_id=x, is_horizontal=False, starting_point=0, ending_point=size-1,
+        orbit = Orbit(id=orbit_id, id_in_orbit_group=x, is_horizontal=False, starting_point=0, ending_point=size-1,
                       number_of_objects=num_of_objects_in_orbit, moving_object_speed=moving_object_speed)
         for y in range(num_of_objects_in_orbit):
             if y == 0:
@@ -50,7 +50,7 @@ def init_orbits_and_objects():
                 id=moving_object_id, id_in_orbit=y, orbit_id=x, is_in_horizontal_orbit=False, x0=x*(size/num_of_orbits_vertical),
                 y0=y*(size/num_of_orbits_vertical), laser_left_id=laser_left_id, laser_right_id=laser_rigth_id)
             orbit.moving_objects.append(mo)
-            moving_objects.append(mo)
+            all_moving_objects.append(mo)
             moving_object_id += 1
         vertical_orbits.append(orbit)
         vertical_orbits_dict[x] = orbit
@@ -80,7 +80,7 @@ def print_orbits_and_objects(orbits):
 def print_laser_connections(orbits):
     for i in orbits:
         for j in i.moving_objects:
-            print("Orbit: ", i.id, "  Object: ", j.id, " (", j.x, ", ", j.y, ")  Laser left: (", j.laser_left_id, ")  Laser right: (", j.laser_right_id, ")")
+            print("Orbit: ", i.id, "  Object: ", j.id, " (", j.x, ", ", j.y, ")  Laser left: (", j.laser_left_id, ")  Laser right: (", j.laser_right_id, ")  Laser up: (", j.laser_up_id, ")  Laser down: (", j.laser_down_id, ")")
 
 
 if __name__ == "__main__":
@@ -92,16 +92,11 @@ if __name__ == "__main__":
 
     horizontal_orbits = []
     vertical_orbits = []
-    moving_objects = []
+    all_moving_objects = []
     horizontal_orbits_dict = {}
     vertical_orbits_dict = {}
 
     init_orbits_and_objects()
-
-    for x in horizontal_orbits:
-        for y in x.moving_objects:
-            y.update_laser_up(horizontal_orbits_dict, num_of_orbits_horizontal, num_of_orbits_vertical)
-            y.update_laser_down(horizontal_orbits_dict, num_of_orbits_horizontal, num_of_orbits_vertical)
 
     orbits = (horizontal_orbits + vertical_orbits)
 

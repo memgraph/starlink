@@ -1,8 +1,8 @@
 
 class Orbit:
-    def __init__(self, id, horiz_ver_id, is_horizontal, starting_point, ending_point, number_of_objects, moving_object_speed):
+    def __init__(self, id, id_in_orbit_group, is_horizontal, starting_point, ending_point, number_of_objects, moving_object_speed):
         self.id = id
-        self.horiz_ver_id = horiz_ver_id
+        self.id_in_orbit_group = id_in_orbit_group
         self.is_horizontal = is_horizontal
         self.starting_point = starting_point
         self.ending_point = ending_point

@@ -1,3 +1,5 @@
+import math as m
+
 
 class MovingObject:
     def __init__(self, id, id_in_orbit, orbit_id, is_in_horizontal_orbit, x0, y0, laser_left_id, laser_right_id):
@@ -50,44 +52,48 @@ class MovingObject:
             else:
                 laser_up_orbit = self.orbit_id - 1
             for moving_object in orbits_dict[laser_up_orbit].moving_objects:
-                tmp_diff = self.y-moving_object.y
+                tmp_diff = m.sqrt((self.y-moving_object.y)**2 + (self.x-moving_object.x)**2)
                 if (tmp_diff < diff):
                     self.laser_up_id = moving_object.id
                     self.laser_up_id_in_orbit = moving_object.id_in_orbit
                     self.laser_up_orbit_id = moving_object.orbit_id
+                    diff = tmp_diff
         else:
             if self.orbit_id == 0:
                 laser_up_orbit = num_of_orbits_vertical - 1
             else:
                 laser_up_orbit = self.orbit_id - 1
             for moving_object in orbits_dict[laser_up_orbit].moving_objects:
-                tmp_diff = self.x-moving_object.x
+                tmp_diff = m.sqrt((self.y-moving_object.y)**2 + (self.x-moving_object.x)**2)
                 if (tmp_diff < diff):
                     self.laser_up_id = moving_object.id
                     self.laser_up_id_in_orbit = moving_object.id_in_orbit
                     self.laser_up_orbit_id = moving_object.orbit_id
+                    diff = tmp_diff
 
     def update_laser_down(self, orbits_dict, num_of_orbits_horizontal, num_of_orbits_vertical):
-        diff = 10000
+        diff = 100000
         if self.is_in_horizontal_orbit:
             if self.orbit_id == num_of_orbits_horizontal - 1:
-                laser_up_orbit = 0
+                laser_down_orbit = 0
             else:
-                laser_up_orbit = self.orbit_id + 1
-            for moving_object in orbits_dict[laser_up_orbit].moving_objects:
-                tmp_diff = self.y-moving_object.y
+                laser_down_orbit = self.orbit_id + 1
+            for moving_object in orbits_dict[laser_down_orbit].moving_objects:
+                tmp_diff = m.sqrt((self.y-moving_object.y)**2 + (self.x-moving_object.x)**2)
                 if (tmp_diff < diff):
-                    self.laser_up_id = moving_object.id
-                    self.laser_up_id_in_orbit = moving_object.id_in_orbit
-                    self.laser_up_orbit_id = moving_object.orbit_id
+                    self.laser_down_id = moving_object.id
+                    self.laser_down_id_in_orbit = moving_object.id_in_orbit
+                    self.laser_down_orbit_id = moving_object.orbit_id
+                    diff = tmp_diff
         else:
             if self.orbit_id == num_of_orbits_vertical - 1:
-                laser_up_orbit = 0
+                laser_down_orbit = 0
             else:
-                laser_up_orbit = self.orbit_id + 1
-            for moving_object in orbits_dict[laser_up_orbit].moving_objects:
-                tmp_diff = self.x-moving_object.x
+                laser_down_orbit = self.orbit_id + 1
+            for moving_object in orbits_dict[laser_down_orbit].moving_objects:
+                tmp_diff = m.sqrt((self.y-moving_object.y)**2 + (self.x-moving_object.x)**2)
                 if (tmp_diff < diff):
-                    self.laser_up_id = moving_object.id
-                    self.laser_up_id_in_orbit = moving_object.id_in_orbit
-                    self.laser_up_orbit_id = moving_object.orbit_id
+                    self.laser_down_id = moving_object.id
+                    self.laser_down_id_in_orbit = moving_object.id_in_orbit
+                    self.laser_down_orbit_id = moving_object.orbit_id
+                    diff = tmp_diff
