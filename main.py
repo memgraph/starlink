@@ -1,5 +1,6 @@
 from orbit import Orbit as Orbit
 from moving_object import MovingObject as MO
+import utils
 
 
 # initilizes orbits and their objects
@@ -23,7 +24,7 @@ def init_orbits_and_objects():
                 laser_rigth_id = y+1
 
             mo = MO(id=moving_object_id, id_in_orbit=y, orbit_id=x, is_in_horizontal_orbit=True, x0=y*(size/num_of_orbits_horizontal),
-                y0=x*(size/num_of_orbits_horizontal), laser_left_id=laser_left_id, laser_right_id=laser_rigth_id)
+                    y0=x*(size/num_of_orbits_horizontal), z0=satellite_altitude, laser_left_id=laser_left_id, laser_right_id=laser_rigth_id)
             orbit.moving_objects.append(mo)
             all_moving_objects.append(mo)
             moving_object_id += 1
@@ -48,7 +49,7 @@ def init_orbits_and_objects():
 
             mo = MO(
                 id=moving_object_id, id_in_orbit=y, orbit_id=x, is_in_horizontal_orbit=False, x0=x*(size/num_of_orbits_vertical),
-                y0=y*(size/num_of_orbits_vertical), laser_left_id=laser_left_id, laser_right_id=laser_rigth_id)
+                y0=y*(size/num_of_orbits_vertical), z0=satellite_altitude, laser_left_id=laser_left_id, laser_right_id=laser_rigth_id)
             orbit.moving_objects.append(mo)
             all_moving_objects.append(mo)
             moving_object_id += 1
@@ -64,7 +65,8 @@ def update_moving_object_positions(orbits):
 # updates all the object laser connections
 def update_laser_connections(orbits):
     for orbit in orbits:
-        orbit.update_laser_connections(orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
+        orbit.update_laser_connections(
+            orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
 
 # updates database entries NOT IMPLEMENTED
 def update_memgraph(orbits):
@@ -80,7 +82,14 @@ def print_orbits_and_objects(orbits):
 def print_laser_connections(orbits):
     for i in orbits:
         for j in i.moving_objects:
-            print("Orbit: ", i.id, "  Object: ", j.id, " (", j.x, ", ", j.y, ")  Laser left: (", j.laser_left_id, ")  Laser right: (", j.laser_right_id, ")  Laser up: (", j.laser_up_id, ")  Laser down: (", j.laser_down_id, ")")
+            print("Orbit: ", i.id, "  Object: ", j.id, " (", j.x, ", ", j.y, ")  Laser left: (", j.laser_left_id,
+                  ")  Laser right: (", j.laser_right_id, ")  Laser up: (", j.laser_up_id, ")  Laser down: (", j.laser_down_id, ")")
+
+# prints all the imported cities
+def print_cities(cities):
+    for city in cities:
+        print("City: ", city.name, "  Id: ", city.id,
+              "  Position: (", city.x, ", ", city.y, ")")
 
 
 if __name__ == "__main__":
@@ -89,6 +98,8 @@ if __name__ == "__main__":
     num_of_objects_in_orbit = 4
     size = 16
     moving_object_speed = 1
+    satellite_altitude = 1500
+    cities_csv_path = "cities.csv"
 
     horizontal_orbits = []
     vertical_orbits = []
@@ -98,16 +109,20 @@ if __name__ == "__main__":
 
     init_orbits_and_objects()
 
+    cities = utils.import_cities(cities_csv_path)
+    print_cities(cities)
+
     orbits = (horizontal_orbits + vertical_orbits)
 
     update_laser_connections(orbits)
-    
+
     # test print
     for x in range(0):
         update_moving_object_positions(orbits)
     print_orbits_and_objects(horizontal_orbits)
     print_laser_connections(horizontal_orbits)
 
+    # main while loop that will be running
     """
     while(True):
         update_moving_object_positions(orbits)

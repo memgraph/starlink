@@ -2,7 +2,7 @@ import math as m
 
 
 class MovingObject:
-    def __init__(self, id, id_in_orbit, orbit_id, is_in_horizontal_orbit, x0, y0, laser_left_id, laser_right_id):
+    def __init__(self, id, id_in_orbit, orbit_id, is_in_horizontal_orbit, x0, y0, z0, laser_left_id, laser_right_id):
         self.id = id
         self.id_in_orbit = id_in_orbit
         self.orbit_id = orbit_id
@@ -11,10 +11,12 @@ class MovingObject:
         # initial position of the object
         self.x0 = x0
         self.y0 = y0
+        self.z0 = z0
         
         # current position of the object
         self.x = x0
         self.y = y0
+        self.z = z0
 
         # the left and right lasers are connected to objects in the same orbit
         self.laser_left_id = laser_left_id
