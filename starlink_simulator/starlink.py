@@ -116,12 +116,11 @@ def starlink(tmp: str) -> str:
 
     db = Memgraph()
     db_operations.clear(db)
-    #db_operations.init(db)
     
     init_orbits_and_objects(num_of_orbits_horizontal, num_of_orbits_vertical, num_of_objects_in_orbit, size, moving_object_speed, satellite_altitude)
     
     cities = utils.import_cities(cities_csv_path)
-    utils.print_cities(cities)
+    #utils.print_cities(cities)
 
     orbits = (horizontal_orbits + vertical_orbits)
     
@@ -130,7 +129,7 @@ def starlink(tmp: str) -> str:
     db_operations.create_moving_objects(db, all_moving_objects)
     db_operations.create_cities(db, cities)
     db_operations.create_laser_connections(db, all_moving_objects)
-    utils.print_laser_connections(orbits)
+    #utils.print_laser_connections(orbits)
     return
     
     while(True):
@@ -140,6 +139,7 @@ def starlink(tmp: str) -> str:
         time.sleep(20)
     
     
+    # This code is for visualization purposes and can not be used with Docker
     """
     plt.ion()
     fig = plt.figure(figsize=(8, 8))
@@ -148,7 +148,6 @@ def starlink(tmp: str) -> str:
     while(True):
         update_moving_object_positions(orbits)
         update_laser_connections(orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
-        db_operations.update_object_positions(db, all_moving_objects_dict)
         
         plt.clf()
         plt.draw()
