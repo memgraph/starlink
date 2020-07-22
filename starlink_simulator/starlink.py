@@ -5,6 +5,7 @@ import starlink_simulator.db_operations as db_operations
 import numpy as np
 import matplotlib.pyplot as plt
 from starlink_simulator.database import Memgraph
+import time
 
 
 horizontal_orbits = []
@@ -41,7 +42,7 @@ def init_orbits_and_objects(num_of_orbits_horizontal, num_of_orbits_vertical, nu
                 laser_right_id = moving_object_id + 1
                 laser_right_id_in_orbit = y+1
 
-            mo = MO(id=moving_object_id, id_in_orbit=y, orbit_id=x, is_in_horizontal_orbit=True, x0=y*(size/num_of_objects_in_orbit),
+            mo = MO(id=moving_object_id, id_in_orbit=y, orbit_id=orbit_id, is_in_horizontal_orbit=True, x0=y*(size/num_of_objects_in_orbit),
                     y0=x*(size/num_of_orbits_horizontal), z0=satellite_altitude, laser_left_id=laser_left_id, laser_left_id_in_orbit=laser_left_id_in_orbit, laser_right_id=laser_right_id, laser_right_id_in_orbit=laser_right_id_in_orbit)
             orbit.moving_objects.append(mo)
             # orbit.moving_objects_dict[moving_object_id] = mo
@@ -59,14 +60,14 @@ def init_orbits_and_objects(num_of_orbits_horizontal, num_of_orbits_vertical, nu
         for y in range(num_of_objects_in_orbit):
             if y == 0:
                 laser_left_id = num_of_objects_in_orbit + \
-                    (num_of_objects_in_orbit * x) - 1
+                    (num_of_objects_in_orbit * orbit_id) - 1
                 laser_left_id_in_orbit = num_of_objects_in_orbit - 1
                 laser_right_id = moving_object_id + 1
                 laser_right_id_in_orbit = y+1
             elif y == num_of_objects_in_orbit - 1:
                 laser_left_id = moving_object_id - 1
                 laser_left_id_in_orbit = y-1
-                laser_right_id = num_of_objects_in_orbit * x
+                laser_right_id = num_of_objects_in_orbit * orbit_id
                 laser_right_id_in_orbit = 0
             else:
                 laser_left_id = moving_object_id - 1
@@ -75,7 +76,7 @@ def init_orbits_and_objects(num_of_orbits_horizontal, num_of_orbits_vertical, nu
                 laser_right_id_in_orbit = y+1
 
             mo = MO(
-                id=moving_object_id, id_in_orbit=y, orbit_id=x, is_in_horizontal_orbit=False, x0=x*(size/num_of_orbits_vertical),
+                id=moving_object_id, id_in_orbit=y, orbit_id=orbit_id, is_in_horizontal_orbit=False, x0=x*(size/num_of_orbits_vertical),
                 y0=y*(size/num_of_objects_in_orbit), z0=satellite_altitude, laser_left_id=laser_left_id, laser_left_id_in_orbit=laser_left_id_in_orbit, laser_right_id=laser_right_id, laser_right_id_in_orbit=laser_right_id_in_orbit)
             orbit.moving_objects.append(mo)
             # orbit.moving_objects_dict[moving_object_id] = mo
@@ -104,9 +105,9 @@ def update_memgraph(orbits):
 
 
 def starlink(tmp: str) -> str:
-    num_of_orbits_horizontal = 4
-    num_of_orbits_vertical = 4
-    num_of_objects_in_orbit = 8
+    num_of_orbits_horizontal = 2
+    num_of_orbits_vertical = 2
+    num_of_objects_in_orbit = 4
     size = 16
     moving_object_speed = 1
     satellite_altitude = 1500
@@ -115,23 +116,30 @@ def starlink(tmp: str) -> str:
 
     db = Memgraph()
     db_operations.clear(db)
-    db_operations.init(db)
-
+    #db_operations.init(db)
+    
     init_orbits_and_objects(num_of_orbits_horizontal, num_of_orbits_vertical, num_of_objects_in_orbit, size, moving_object_speed, satellite_altitude)
-
+    
     cities = utils.import_cities(cities_csv_path)
     utils.print_cities(cities)
 
     orbits = (horizontal_orbits + vertical_orbits)
-
-    update_laser_connections(orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
     
-    """
-    # test print
-    for x in range(8):
+    update_laser_connections(orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
+
+    db_operations.create_moving_objects(db, all_moving_objects)
+    db_operations.create_cities(db, cities)
+    db_operations.create_laser_connections(db, all_moving_objects)
+    utils.print_laser_connections(orbits)
+    return
+    
+    while(True):
         update_moving_object_positions(orbits)
-    utils.print_orbits_and_objects(horizontal_orbits)
-    utils.print_laser_connections(horizontal_orbits)
+        update_laser_connections(orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
+        db_operations.update_object_positions(db, all_moving_objects_dict)
+        time.sleep(20)
+    
+    
     """
     plt.ion()
     fig = plt.figure(figsize=(8, 8))
@@ -140,7 +148,8 @@ def starlink(tmp: str) -> str:
     while(True):
         update_moving_object_positions(orbits)
         update_laser_connections(orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
-        update_memgraph(orbits)
+        db_operations.update_object_positions(db, all_moving_objects_dict)
+        
         plt.clf()
         plt.draw()
         x = []
@@ -155,6 +164,6 @@ def starlink(tmp: str) -> str:
         plt.pause(1)
     
     plt.waitforbuttonpress()
-    
+    """
     
     

@@ -71,8 +71,8 @@ class MovingObject:
                     self.laser_up_distance = tmp_diff
                     diff = tmp_diff
         else:
-            if self.orbit_id == 0:
-                laser_up_orbit = num_of_orbits_vertical - 1
+            if self.orbit_id == num_of_orbits_horizontal:
+                laser_up_orbit = num_of_orbits_horizontal + num_of_orbits_vertical - 1
             else:
                 laser_up_orbit = self.orbit_id - 1
             for moving_object in orbits_dict[laser_up_orbit].moving_objects:
@@ -100,8 +100,8 @@ class MovingObject:
                     self.laser_down_distance = tmp_diff
                     diff = tmp_diff
         else:
-            if self.orbit_id == num_of_orbits_vertical - 1:
-                laser_down_orbit = 0
+            if self.orbit_id == num_of_orbits_horizontal + num_of_orbits_vertical - 1:
+                laser_down_orbit = num_of_orbits_horizontal
             else:
                 laser_down_orbit = self.orbit_id + 1
             for moving_object in orbits_dict[laser_down_orbit].moving_objects:
