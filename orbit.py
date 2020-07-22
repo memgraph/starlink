@@ -2,12 +2,14 @@ import utils
 
 
 class Orbit:
-    def __init__(self, id, id_in_orbit_group, is_horizontal, starting_point, ending_point, number_of_objects, moving_object_speed):
+    def __init__(self, id, id_in_orbit_group, is_horizontal, x_start, y_start, x_end, y_end, number_of_objects, moving_object_speed):
         self.id = id
         self.id_in_orbit_group = id_in_orbit_group
         self.is_horizontal = is_horizontal
-        self.starting_point = starting_point
-        self.ending_point = ending_point
+        self.x_start = x_start
+        self.y_start = y_start
+        self.x_end = x_end
+        self.y_end = y_end
         self.number_of_objects = number_of_objects
         self.moving_object_speed = moving_object_speed
         self.moving_objects = []
@@ -19,12 +21,12 @@ class Orbit:
         for moving_object in self.moving_objects:
             if self.is_horizontal:
                 moving_object.x += self.moving_object_speed
-                if moving_object.x == self.ending_point + 1:
-                    moving_object.x = self.starting_point
+                if moving_object.x == self.x_end + 1:
+                    moving_object.x = self.x_start
             else:
                 moving_object.y += self.moving_object_speed
-                if moving_object.y == self.ending_point + 1:
-                    moving_object.y = self.starting_point
+                if moving_object.y == self.y_end + 1:
+                    moving_object.y = self.y_start
 
     def update_laser_connections(self, orbits, num_of_orbits_horizontal, num_of_orbits_vertical):
         for moving_object in self.moving_objects:
