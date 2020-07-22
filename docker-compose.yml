@@ -1,0 +1,17 @@
+version: '3'
+services:
+  starlink_simulator:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./starlink_simulator:/app/starlink_simulator
+    environment:
+      MG_HOST: memgraph
+      MG_PORT: 7687
+    depends_on:
+      - memgraph
+  memgraph:
+    image: "memgraph:1.0.0-community"
+    ports:
+      - "7687:7687"

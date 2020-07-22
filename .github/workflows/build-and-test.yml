@@ -1,0 +1,32 @@
+name: Build and Test
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build project
+      run: |
+        docker build -t starlink_simulator .
+    - name: Cache Memgraph Docker image
+      id: cache-memgraph-docker
+      uses: actions/cache@v1
+      with:
+        path: ~/memgraph
+        key: cache-memgraph-v1.0.0-docker-image
+    - name: Download Memgraph Docker image
+      if: steps.cache-memgraph-docker.outputs.cache-hit != 'true'
+      env:
+        MG_VERSION: '1.0.0'
+      run: |
+        mkdir ~/memgraph
+        curl -L https://memgraph.com/download/memgraph/v$MG_VERSION/docker/memgraph-$MG_VERSION-community-docker.tar.gz > ~/memgraph/memgraph-docker.tar.gz
+    - name: Load Memgraph Docker image
+      run: |
+        docker load -i ~/memgraph/memgraph-docker.tar.gz
+    - name: Test project
+      run: |
+        docker-compose run starlink_simulator python -m pytest
