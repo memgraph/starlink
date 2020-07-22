@@ -1,3 +1,5 @@
+import utils
+
 
 class Orbit:
     def __init__(self, id, id_in_orbit_group, is_horizontal, starting_point, ending_point, number_of_objects, moving_object_speed):
@@ -28,3 +30,8 @@ class Orbit:
         for moving_object in self.moving_objects:
             moving_object.update_laser_up(orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
             moving_object.update_laser_down(orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
+
+    def update_laser_distances(self, all_moving_objects_dict):
+        for moving_object in self.moving_objects:
+            moving_object.laser_left_distance = utils.distance(moving_object, all_moving_objects_dict[moving_object.laser_left_id])
+            moving_object.laser_right_distance = utils.distance(moving_object, all_moving_objects_dict[moving_object.laser_right_id])
