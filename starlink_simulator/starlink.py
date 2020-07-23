@@ -130,12 +130,12 @@ def starlink(tmp: str) -> str:
     db_operations.create_cities(db, cities)
     db_operations.create_laser_connections(db, all_moving_objects)
     #utils.print_laser_connections(orbits)
-    return
     
     while(True):
         update_moving_object_positions(orbits)
         update_laser_connections(orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
-        db_operations.update_object_positions(db, all_moving_objects_dict)
+        db_operations.update_object_positions(db, all_moving_objects)
+        db_operations.update_laser_connections(db, all_moving_objects)
         time.sleep(20)
     
     
