@@ -15,7 +15,7 @@ horizontal_orbits_dict = {}
 vertical_orbits_dict = {}
 all_moving_objects_dict = {}
 
-# initilizes orbits and their objects
+# initializes orbits and their objects
 def init_orbits_and_objects(num_of_orbits_horizontal, num_of_orbits_vertical, num_of_objects_in_orbit, size, moving_object_speed, satellite_altitude):
     orbit_id = 0
     moving_object_id = 0
@@ -113,22 +113,26 @@ def starlink(tmp: str) -> str:
     satellite_altitude = 1500
     cities_csv_path = "starlink_simulator/cities.csv"
     
-
     db = Memgraph()
     db_operations.clear(db)
     
     init_orbits_and_objects(num_of_orbits_horizontal, num_of_orbits_vertical, num_of_objects_in_orbit, size, moving_object_speed, satellite_altitude)
     
     cities = utils.import_cities(cities_csv_path)
-    #utils.print_cities(cities)
-	
+
+    for city in cities:
+        for ob in all_moving_objects:
+            city.moving_objects_distances_dict[ob.id] = utils.distance3D(city, ob)
+            print(str(ob.id) + str(city.moving_objects_distances_dict[ob.id]))
+    
 
     orbits = (horizontal_orbits + vertical_orbits)
-    
     update_laser_connections(orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
 
     db_operations.create_moving_objects(db, all_moving_objects)
     db_operations.create_cities(db, cities)
+    
+    #db_operations.create_city_moving_objects_visibility(db, cities, all_moving_objects)
     db_operations.create_laser_connections(db, all_moving_objects)
     #utils.print_laser_connections(orbits)
     
@@ -137,8 +141,7 @@ def starlink(tmp: str) -> str:
         update_laser_connections(orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
         db_operations.update_object_positions(db, all_moving_objects)
         db_operations.update_laser_connections(db, all_moving_objects)
-		
-		#TODO Connect cities and moving_objects
+        #db_operations.update_city_moving_objects_visibility(db, cities, all_moving_objects)
         time.sleep(20)
     
     

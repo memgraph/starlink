@@ -19,6 +19,30 @@ def create_cities(db, cities):
         db.execute_query(command)
 
 
+def update_object_positions(db, all_moving_objects):
+    for moving_object in all_moving_objects:
+        command = "MATCH (a:Satellite { id:'" + str(moving_object.id) + "'}) SET a.x=" + str(
+            moving_object.x) + ", a.y=" + str(moving_object.y) + ", a.z=" + str(moving_object.z)
+        db.execute_query(command)
+
+
+def create_city_moving_objects_visibility(db, cities, all_moving_objects):
+    for city in cities:
+        command = "MATCH (a:City),(b:Satellite) WHERE b.id = '" + str(min(city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)) + \
+            "' CREATE (a)-[r:VISIBLE_FROM { transmission_time: " + \
+            str(min(city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)) + " }]->(b)"
+        db.execute_query(command)
+
+def update_city_moving_objects_visibility(db, cities, all_moving_objects):
+    for city in cities:
+        command = "MATCH (a:City {id:'" + str(city.id) + "'})-[r]-(b:Satellite})" + \
+            "DELETE r" + \
+            "MATCH (a:City),(b:Satellite) WHERE b.id = '" + str(min(city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)) + \
+            "' CREATE (a)-[r:VISIBLE_FROM { transmission_time: " + \
+            str(min(city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)) + " }]->(b)"
+        db.execute_query(command)
+      
+
 def create_laser_connections(db, all_moving_objects):
     for moving_object_a in all_moving_objects:
         command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object_a.laser_left_id) + "' AND a.id = '" + str(moving_object_a.id) + \
@@ -39,13 +63,6 @@ def create_laser_connections(db, all_moving_objects):
         command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object_a.laser_down_id) + "' AND a.id = '" + str(moving_object_a.id) + \
             "' CREATE (a)-[r:CONNECTED_TO { transmission_time: " + \
             str(moving_object_a.laser_down_distance) + " }]->(b)"
-        db.execute_query(command)
-
-
-def update_object_positions(db, all_moving_objects):
-    for moving_object in all_moving_objects:
-        command = "MATCH (a:Satellite { id:'" + str(moving_object.id) + "'}) SET a.x=" + str(
-            moving_object.x) + ", a.y=" + str(moving_object.y) + ", a.z=" + str(moving_object.z)
         db.execute_query(command)
 
 

@@ -8,9 +8,19 @@ def import_cities(path):
     with open(path,'r') as f:
         reader = csv.reader(f,delimiter=',')
         for row in reader:
-            city = City(id=row[0], x=row[1], y=row[2], z=row[3], name=row[4])
+            city = City(id=row[0], x=int(row[1]), y=int(row[2]), z=int(row[3]), name=row[4])
             cities.append(city)
     return cities
+
+
+def initialize_city_moving_object_distances(cities, moving_objects):
+    for city in cities:
+        for moving_object in moving_objects:  
+            dist = distance3D(city, moving_object)
+            
+            city.moving_objects_distances_dict[moving_object.id] = dist
+            print(moving_object.id + ", " + dist )
+
 
 # Prints the coordinates of all the objects in the orbits
 def print_orbits_and_objects(orbits):
