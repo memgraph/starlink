@@ -33,4 +33,14 @@ def print_cities(cities):
 
 # Computes the distance between two points in 2D
 def distance(point_a, point_b):
-    return m.sqrt((point_a.y-point_b.y)**2 + (point_a.x-point_b.x)**2)
+    return m.sqrt((point_b.y-point_a.y)**2 + (point_b.x-point_a.x)**2)
+
+# Computes the distance between two points in 3D
+def distance3D(point_a, point_b):
+    return m.sqrt((point_b.x - point_a.x)**2 + (point_b.y - point_a.y)**2 + (point_b.z - point_a.z)**2)
+
+#Calculates angle in between two objects
+def calculate_angle(object_a, object_b):
+    angle = m.acos( (object_a.x*object_b.x + object_a.y*object_b.y + object_a.z*object_b.z) 
+    / ( m.sqrt((object_a.x**2+ object_a.y**2 + object_a.z**2) * (object_b.x**2 + object_b.y**2 + object_b.z**2)) )
+    return angle

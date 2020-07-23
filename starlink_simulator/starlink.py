@@ -121,6 +121,7 @@ def starlink(tmp: str) -> str:
     
     cities = utils.import_cities(cities_csv_path)
     #utils.print_cities(cities)
+	
 
     orbits = (horizontal_orbits + vertical_orbits)
     
@@ -136,6 +137,8 @@ def starlink(tmp: str) -> str:
         update_laser_connections(orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
         db_operations.update_object_positions(db, all_moving_objects)
         db_operations.update_laser_connections(db, all_moving_objects)
+		
+		#TODO Connect cities and moving_objects
         time.sleep(20)
     
     
