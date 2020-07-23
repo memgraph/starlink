@@ -34,4 +34,4 @@ COPY . /app
 EXPOSE 3000
 
 ENTRYPOINT [ "poetry", "run" ]
-CMD ["python", "main"]
+CMD ["python", "main.py", "start", "command"]

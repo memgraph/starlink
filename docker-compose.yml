@@ -12,6 +12,6 @@ services:
     depends_on:
       - memgraph
   memgraph:
-    image: "memgraph:1.0.0-community"
+    image: "memgraph"
     ports:
       - "7687:7687"
