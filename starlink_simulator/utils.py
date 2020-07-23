@@ -41,6 +41,11 @@ def distance3D(point_a, point_b):
 
 #Calculates angle in between two objects
 def calculate_angle(object_a, object_b):
+    '''
     angle = m.acos( (object_a.x*object_b.x + object_a.y*object_b.y + object_a.z*object_b.z) 
-    / ( m.sqrt((object_a.x**2+ object_a.y**2 + object_a.z**2) * (object_b.x**2 + object_b.y**2 + object_b.z**2)) )
+    / ( m.sqrt((object_a.x**2 + object_a.y**2 + object_a.z**2) * (object_b.x**2 + object_b.y**2 + object_b.z**2)) ))
+    return angle
+    '''
+
+    angle = m.acos( 1500 / distance3D(object_a, object_b) )
     return angle

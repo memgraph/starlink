@@ -15,13 +15,16 @@ class City(StationaryObject):
         self.moving_objects_distances_dict = {}
 
     #Calculate distances between cities and all moving objects 
-    def calc_dist_cities_and_moving_objects_All(self, city, moving_object):
-        dist = utils.distance3D(self, moving_object)
-        self.moving_objects_distances_dict[moving_object.id] = dist
+    def calc_dist_cities_and_moving_objects_All(self, all_moving_objects):
+        for moving_object in all_moving_objects:    
+            dist = utils.distance3D(self, moving_object)
+            self.moving_objects_distances_dict[moving_object.id] = dist
 
     #Calculates distances between cities and moving objects in 45° field of view
-    def calc_dist_cities_and_moving_objects_45(self, city, moving_object):
-        angle = utils.calculate_angle(self, moving_object)
-        if angle >=67 and angle <= 113:
-            dist = utils.distance3D(city, moving_object)
-            self.moving_objects_distances_dict[moving_object.id] = dist
+    def calc_dist_cities_and_moving_objects_45(self, all_moving_objects):
+        for moving_object in all_moving_objects
+            angle = utils.calculate_angle(self, moving_object)
+            #[67, 135]
+            if angle >= 45 and angle <= 135:
+                dist = utils.distance3D(city, moving_object)
+                self.moving_objects_distances_dict[moving_object.id] = dist
