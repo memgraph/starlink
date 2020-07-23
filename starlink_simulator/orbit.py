@@ -21,11 +21,11 @@ class Orbit:
         for moving_object in self.moving_objects:
             if self.is_horizontal:
                 moving_object.x += self.moving_object_speed
-                if moving_object.x == self.x_end + 1:
+                if moving_object.x >= self.x_end + 1:
                     moving_object.x = self.x_start
             else:
                 moving_object.y += self.moving_object_speed
-                if moving_object.y == self.y_end + 1:
+                if moving_object.y >= self.y_end + 1:
                     moving_object.y = self.y_start
 
     def update_laser_connections(self, orbits, num_of_orbits_horizontal, num_of_orbits_vertical):
