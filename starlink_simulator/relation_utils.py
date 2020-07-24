@@ -12,13 +12,9 @@ vertical_orbits_dict = {}
 all_moving_objects = []
 all_moving_objects_dict = {}
 
+
 # Initializes orbits and their objects
-def init_orbits_and_objects(num_of_orbits_horizontal,
-                            num_of_orbits_vertical,
-                            num_of_objects_in_orbit,
-                            size,
-                            moving_object_speed,
-                            satellite_altitude):
+def init_orbits_and_objects(num_of_orbits_horizontal, num_of_orbits_vertical, num_of_objects_in_orbit, size, moving_object_speed, satellite_altitude):
     orbit_id = 0
     moving_object_id = 0
 
@@ -104,10 +100,7 @@ def update_city_moving_object_distances(cities, all_moving_objects):
 
 
 # Updates all object laser connections
-def update_laser_connections(orbits,
-                             num_of_orbits_horizontal,
-                             num_of_orbits_vertical,
-                             all_moving_objects_dict):
+def update_laser_connections(orbits, num_of_orbits_horizontal, num_of_orbits_vertical, all_moving_objects_dict):
     for orbit in orbits:
         orbit.update_laser_connections(
             orbits, num_of_orbits_horizontal, num_of_orbits_vertical)

@@ -3,18 +3,7 @@ import starlink_simulator.utils as utils
 
 
 class MovingObject:
-    def __init__(self,
-                 id: int,
-                 id_in_orbit: int,
-                 orbit_id: int,
-                 is_in_horizontal_orbit: bool,
-                 x0: float,
-                 y0: float,
-                 z0: float,
-                 laser_left_id: int,
-                 laser_left_id_in_orbit: int,
-                 laser_right_id: int,
-                 laser_right_id_in_orbit: int):
+    def __init__(self, id, id_in_orbit, orbit_id, is_in_horizontal_orbit,  x0, y0, z0, laser_left_id, laser_left_id_in_orbit, laser_right_id, laser_right_id_in_orbit):
         self.id = id
         self.id_in_orbit = id_in_orbit
         self.orbit_id = orbit_id
@@ -49,10 +38,7 @@ class MovingObject:
         self.laser_up_distance = -1
         self.laser_down_distance = -1
 
-    def set_laser_up(self,
-                     laser_up_id=-1,
-                     laser_up_id_in_orbit=-1,
-                     laser_up_orbit_id=-1):
+    def set_laser_up(self, laser_up_id=-1, laser_up_id_in_orbit=-1, laser_up_orbit_id=-1):
         if laser_up_id != -1:
             self.laser_up_id = laser_up_id
         if laser_up_id_in_orbit != -1:
@@ -60,10 +46,7 @@ class MovingObject:
         if laser_up_orbit_id != -1:
             self.laser_up_orbit_id = laser_up_orbit_id
 
-    def set_laser_down(self,
-                       laser_down_id=-1,
-                       laser_down_id_in_orbit=-1,
-                       laser_down_orbit_id=-1):
+    def set_laser_down(self, laser_down_id=-1, laser_down_id_in_orbit=-1, laser_down_orbit_id=-1):
         if laser_down_id != -1:
             self.laser_down_id = laser_down_id
         if laser_down_orbit_id != -1:
@@ -71,10 +54,7 @@ class MovingObject:
         if laser_down_orbit_id != -1:
             self.laser_down_orbit_id = laser_down_orbit_id
 
-    def update_laser_up(self,
-                        orbits_dict,
-                        num_of_orbits_horizontal,
-                        num_of_orbits_vertical):
+    def update_laser_up(self, orbits_dict, num_of_orbits_horizontal, num_of_orbits_vertical):
         diff = 100000
         if self.is_in_horizontal_orbit:
             if self.orbit_id == 0:
@@ -103,10 +83,7 @@ class MovingObject:
                     self.laser_up_distance = tmp_diff
                     diff = tmp_diff
 
-    def update_laser_down(self,
-                          orbits_dict,
-                          num_of_orbits_horizontal,
-                          num_of_orbits_vertical):
+    def update_laser_down(self, orbits_dict, num_of_orbits_horizontal, num_of_orbits_vertical):
         diff = 100000
         if self.is_in_horizontal_orbit:
             if self.orbit_id == num_of_orbits_horizontal - 1:

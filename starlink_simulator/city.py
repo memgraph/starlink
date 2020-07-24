@@ -3,12 +3,7 @@ import starlink_simulator.utils as utils
 
 
 class City(StationaryObject):
-    def __init__(self,
-                 id: int,
-                 x: float,
-                 y: float,
-                 z: float,
-                 name: str):
+    def __init__(self, id, x, y, z, name):
         StationaryObject.__init__(self, id, x, y, z)
         self.name = name
         self.id = id
