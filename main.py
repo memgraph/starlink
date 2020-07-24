@@ -3,14 +3,19 @@ from moving_object import MovingObject as MO
 import utils
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+import time
 
 
 horizontal_orbits = []
 vertical_orbits = []
+orbits = []
 all_moving_objects = []
 horizontal_orbits_dict = {}
 vertical_orbits_dict = {}
 all_moving_objects_dict = {}
+x = []
+y = []
 
 # initilizes orbits and their objects
 def init_orbits_and_objects(num_of_orbits_horizontal, num_of_orbits_vertical, num_of_objects_in_orbit, size, moving_object_speed, satellite_altitude):
@@ -84,10 +89,12 @@ def init_orbits_and_objects(num_of_orbits_horizontal, num_of_orbits_vertical, nu
         vertical_orbits_dict[x] = orbit
         orbit_id += 1
 
+
 # updates the position of each object in all the orbits
 def update_moving_object_positions(orbits):
     for orbit in orbits:
         orbit.update_moving_object_positions()
+
 
 # updates all the object laser connections
 def update_laser_connections(orbits, num_of_orbits_horizontal, num_of_orbits_vertical):
@@ -96,38 +103,90 @@ def update_laser_connections(orbits, num_of_orbits_horizontal, num_of_orbits_ver
             orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
         orbit.update_laser_distances(all_moving_objects_dict)
 
-# updates database entries NOT IMPLEMENTED
-def update_memgraph(orbits):
-    x = 0
+
+def setup_plot():
+    for orbit in orbits:
+        if orbit.is_horizontal:
+            orbit_lines.append(
+                plt.plot([orbit.x_start, orbit.x_end+1], [orbit.y_start, orbit.y_end]))
+        else:
+            orbit_lines.append(plt.plot([orbit.x_start, orbit.x_end], [
+                               orbit.y_start, orbit.y_end+1]))
+        for moving_object in orbit.moving_objects:
+            x.append(moving_object.x)
+            y.append(moving_object.y)
+    # scat.set_data(ax.scatter(x, y, vmin=0, vmax=1, c='#ff7f0e', edgecolor="k"))
+    scat.set_offsets(np.c_[x, y])
+    ax.axis([0, size, 0, size])
+    ax.imshow(img, aspect="auto", extent=(0, size, 0, size))
+
+
+def update(frame):
+    update_moving_object_positions(orbits)
+    update_laser_connections(
+        orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
+    x = []
+    y = []
+    for orbit in orbits:
+        for moving_object in orbit.moving_objects:
+            x.append(moving_object.x)
+            y.append(moving_object.y)
+            if(moving_object.id == 8):
+                plot_lines_left.set_data([moving_object.x, all_moving_objects_dict[moving_object.laser_left_id].x], [
+                                         moving_object.y, all_moving_objects_dict[moving_object.laser_left_id].y])
+                plot_lines_right.set_data([moving_object.x, all_moving_objects_dict[moving_object.laser_right_id].x], [
+                                          moving_object.y, all_moving_objects_dict[moving_object.laser_right_id].y])
+                plot_lines_up.set_data([moving_object.x, all_moving_objects_dict[moving_object.laser_up_id].x], [
+                                       moving_object.y, all_moving_objects_dict[moving_object.laser_up_id].y])
+                plot_lines_down.set_data([moving_object.x, all_moving_objects_dict[moving_object.laser_down_id].x], [
+                                         moving_object.y, all_moving_objects_dict[moving_object.laser_down_id].y])
+
+    # scat.set_data(ax.scatter(x, y, vmin=0, vmax=1, c='#ff7f0e', edgecolor="k"))
+    scat.set_offsets(np.c_[x, y])
 
 
 if __name__ == "__main__":
-    num_of_orbits_horizontal = 4
-    num_of_orbits_vertical = 4
+    num_of_orbits_horizontal = 5
+    num_of_orbits_vertical = 5
     num_of_objects_in_orbit = 4
-    size = 16
+    size = 15
     moving_object_speed = 1
     satellite_altitude = 1500
     cities_csv_path = "cities.csv"
-    
 
     #db = Memgraph()
-    #db_operations.clear(db)
-    
-    init_orbits_and_objects(num_of_orbits_horizontal, num_of_orbits_vertical, num_of_objects_in_orbit, size, moving_object_speed, satellite_altitude)
-    
+    # db_operations.clear(db)
+
+    init_orbits_and_objects(num_of_orbits_horizontal, num_of_orbits_vertical,
+                            num_of_objects_in_orbit, size, moving_object_speed, satellite_altitude)
+
     cities = utils.import_cities(cities_csv_path)
-    #utils.print_cities(cities)
+    # utils.print_cities(cities)
 
     orbits = (horizontal_orbits + vertical_orbits)
-    
-    update_laser_connections(orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
+
+    update_laser_connections(
+        orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
 
     utils.assign_speed(size, horizontal_orbits)
     #db_operations.create_moving_objects(db, all_moving_objects)
     #db_operations.create_cities(db, cities)
     #db_operations.create_laser_connections(db, all_moving_objects)
-    #utils.print_laser_connections(orbits)
+    # utils.print_laser_connections(orbits)
+
+    fig, ax = plt.subplots()
+    img = plt.imread(".\map.jpg")
+    orbit_lines = []
+    plot_lines_left, = ax.plot([], [])
+    plot_lines_right, = ax.plot([], [])
+    plot_lines_up, = ax.plot([], [])
+    plot_lines_down, = ax.plot([], [])
+    scat = ax.scatter([], [])
+
+    ani = animation.FuncAnimation(
+        fig, update, interval=2000, init_func=setup_plot)
+    plt.show()
+
     """
     while(True):
         update_moving_object_positions(orbits)
@@ -135,30 +194,4 @@ if __name__ == "__main__":
         #db_operations.update_object_positions(db, all_moving_objects)
         #db_operations.update_laser_connections(db, all_moving_objects)
         time.sleep(20)
-    
-    
-    # This code is for visualization purposes and can not be used with Docker
     """
-    plt.ion()
-    fig = plt.figure(figsize=(8, 8))
-    plt.axis([0, size, 0, size])
-    
-    while(True):
-        update_moving_object_positions(orbits)
-        update_laser_connections(orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
-        
-        plt.clf()
-        plt.draw()
-        x = []
-        y = []
-        for orbit in orbits:
-            plt.plot([orbit.x_start, orbit.x_end], [orbit.y_start, orbit.y_end])
-            for moving_object in orbit.moving_objects:
-                x.append(moving_object.x)
-                y.append(moving_object.y)
-        plt.scatter(x, y)
-        fig.canvas.draw_idle()
-        plt.pause(1)
-    
-    plt.waitforbuttonpress()
-    

@@ -40,5 +40,5 @@ def assign_speed(size, horizontal_orbits):
     border_south = size/4
     border_north = size*3/4
     for orbit in horizontal_orbits:
-        if orbit.y_start <= border_south or orbit.y_start > border_north:
+        if orbit.y_start < border_south or orbit.y_start > border_north:
             orbit.moving_object_speed += 1
