@@ -1,6 +1,8 @@
+from starlink_simulator.city import City
+from starlink_simulator.constants import SAT_ALT
 import csv
 import math as m
-from starlink_simulator.city import City as City
+
 
 # Imports city coordinates from a specified .csv file
 def import_cities(path):
@@ -13,18 +15,12 @@ def import_cities(path):
     return cities
 
 
-def update_city_moving_object_distances(cities, all_moving_objects):
-    for city in cities:
-        for ob in all_moving_objects:
-            city.moving_objects_distances_dict[ob.id] = distance3D(city, ob)
-            #print(str(ob.id) + str(city.moving_objects_distances_dict[ob.id]))
-
-
 # Prints the coordinates of all the objects in the orbits
 def print_orbits_and_objects(orbits):
     for i in orbits:
         for j in i.moving_objects:
             print("Orbit: ", i.id, "  Object: (", j.x, ", ", j.y, ")")
+
 
 # Prints the indexes of all the laser connections of objects in the orbits
 def print_laser_connections(orbits):
@@ -33,27 +29,25 @@ def print_laser_connections(orbits):
             print("Orbit: ", i.id, "  Object: ", j.id, " (", j.x, ", ", j.y, ")  Laser left: (", j.laser_left_id,
                   ")  Laser right: (", j.laser_right_id, ")  Laser up: (", j.laser_up_id, ")  Laser down: (", j.laser_down_id, ")")
 
+
 # Prints all the cities
 def print_cities(cities):
     for city in cities:
         print("City: ", city.name, "  Id: ", city.id,
               "  Position: (", city.x, ", ", city.y, ")")
 
-# Computes the distance between two points in 2D
+
+# Calculates the distance between two points in 2D
 def distance(point_a, point_b):
     return m.sqrt((point_b.y-point_a.y)**2 + (point_b.x-point_a.x)**2)
 
-# Computes the distance between two points in 3D
+
+# Calculates the distance between two points in 3D
 def distance3D(point_a, point_b):
     return m.sqrt((point_b.x - point_a.x)**2 + (point_b.y - point_a.y)**2 + (point_b.z - point_a.z)**2)
 
+
 #Calculates angle in between two objects
 def calculate_angle(object_a, object_b):
-    '''
-    angle = m.acos( (object_a.x*object_b.x + object_a.y*object_b.y + object_a.z*object_b.z) 
-    / ( m.sqrt((object_a.x**2 + object_a.y**2 + object_a.z**2) * (object_b.x**2 + object_b.y**2 + object_b.z**2)) ))
-    return angle
-    '''
-
-    angle = m.acos( 1500 / distance3D(object_a, object_b) )
+    angle = m.acos( SAT_ALT / distance3D(object_a, object_b) )
     return angle
