@@ -8,6 +8,18 @@ services:
       - ./starlink_simulator:/app/starlink_simulator
     environment:
       MG_HOST: memgraph
+      MG_PORT: 
+    command: python main.py start nm
+    depends_on:
+      - memgraph
+  web:
+    build: .
+    volumes:
+      - ./starlink_simulator:/app/starlink_simulator
+    ports:
+      - "8000:8000"
+    environment:
+      MG_HOST: memgraph
       MG_PORT: 7687
     depends_on:
       - memgraph

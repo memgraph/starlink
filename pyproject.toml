@@ -12,6 +12,8 @@ neo4j = "^1.7.4"
 
 numpy = "^1.19.1"
 matplotlib = "^3.3.0"
+django = "^3.0.8"
+psycopg2 = "^2.8.5"
 [tool.poetry.dev-dependencies]
 pytest = "^5.4"
 pytest-pylint = "^0.17.0"

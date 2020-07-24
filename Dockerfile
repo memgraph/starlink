@@ -31,7 +31,8 @@ RUN poetry config virtualenvs.create false && \
 
 COPY . /app
 
-EXPOSE 3000
+EXPOSE 8000
 
 ENTRYPOINT [ "poetry", "run" ]
-CMD ["python", "main.py", "start", "command"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+#CMD ["python", "main.py", "start", "command"]
