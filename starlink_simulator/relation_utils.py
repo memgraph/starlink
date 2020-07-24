@@ -1,6 +1,7 @@
 from starlink_simulator.utils import distance3D as d3D
 from starlink_simulator.orbit import Orbit
 from starlink_simulator.moving_object import MovingObject as MO
+from starlink_simulator.constants import VIEW_ANGLE
 
 
 horizontal_orbits = []
@@ -95,8 +96,8 @@ def update_moving_object_positions(orbits):
 # Updates all distances between all cities and all moving objects
 def update_city_moving_object_distances(cities, all_moving_objects):
     for city in cities:
-        city.calc_dist_cities_and_moving_objects_45(all_moving_objects)
-        print(city.moving_objects_distances_dict)
+        city.calc_dist_cities_and_moving_objects_angle(all_moving_objects, VIEW_ANGLE)
+        #print(city.moving_objects_distances_dict)
 
 
 # Updates all object laser connections
