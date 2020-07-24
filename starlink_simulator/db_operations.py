@@ -1,3 +1,5 @@
+
+
 def clear(db):
     command = "MATCH (node) DETACH DELETE node"
     db.execute_query(command)
@@ -35,20 +37,23 @@ def create_city_moving_objects_visibility(db, cities, all_moving_objects):
         command = "MATCH (a:City { id:'" + str(city.id) + \
             "'}),(b:Satellite) WHERE b.id = '" + str(min(city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)) + \
             "' CREATE (b)-[r:VISIBLE_FROM { transmission_time: " + \
-            str(city.moving_objects_distances_dict[min(city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)]) + " }]->(a)"
+            str(city.moving_objects_distances_dict[min(
+                city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)]) + " }]->(a)"
         db.execute_query(command)
 
 
 def update_city_moving_objects_visibility(db, cities, all_moving_objects):
     for city in cities:
-        command = "MATCH (b:Satellite)-[r]->(a:City {id:'" + str(city.id) + "'}) DELETE r"
+        command = "MATCH (b:Satellite)-[r]->(a:City {id:'" + \
+            str(city.id) + "'}) DELETE r"
         db.execute_query(command)
         command = "MATCH (a:City { id:'" + str(city.id) + \
             "'}),(b:Satellite) WHERE b.id = '" + str(min(city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)) + \
             "' CREATE (b)-[r:VISIBLE_FROM { transmission_time: " + \
-            str(city.moving_objects_distances_dict[min(city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)]) + " }]->(a)"
+            str(city.moving_objects_distances_dict[min(
+                city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)]) + " }]->(a)"
         db.execute_query(command)
-      
+
 
 def create_laser_connections(db, all_moving_objects):
     for moving_object_a in all_moving_objects:
@@ -98,8 +103,7 @@ def update_laser_connections(db, all_moving_objects):
 
 def establish_connection(db, city1, city2):
     command = "MATCH (s1:Satellite)-[r1]->(c1:City {id:'" + str(city1.id) + "'})" + \
-            "MATCH (s2:Satellite)-[r2]->(c2:City {id:'" + str(city2.id) + "'})" + \
-            "MATCH p=(:Satellite { id: s1.id})-[:CONNECTED_TO * bfs]->(:Satellite { id: s2.id})" + \
-            "RETURN p;"
+        "MATCH (s2:Satellite)-[r2]->(c2:City {id:'" + str(city2.id) + "'})" + \
+        "MATCH p=(:Satellite { id: s1.id})-[:CONNECTED_TO * bfs]->(:Satellite { id: s2.id})" + \
+        "RETURN p;"
     db.execute_query(command)
- 

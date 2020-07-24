@@ -7,10 +7,11 @@ import math as m
 # Imports city coordinates from a specified .csv file
 def import_cities(path):
     cities = []
-    with open(path,'r') as f:
-        reader = csv.reader(f,delimiter=',')
+    with open(path, 'r') as f:
+        reader = csv.reader(f, delimiter=',')
         for row in reader:
-            city = City(id=row[0], x=int(row[1]), y=int(row[2]), z=int(row[3]), name=row[4])
+            city = City(id=row[0], x=int(row[1]), y=int(
+                row[2]), z=int(row[3]), name=row[4])
             cities.append(city)
     return cities
 
@@ -47,7 +48,7 @@ def distance3D(point_a, point_b):
     return m.sqrt((point_b.x - point_a.x)**2 + (point_b.y - point_a.y)**2 + (point_b.z - point_a.z)**2)
 
 
-#Calculates angle in between two objects
+# Calculates angle in between two objects
 def calculate_angle(object_a, object_b):
-    angle = m.acos( SAT_ALT / distance3D(object_a, object_b) )
+    angle = m.acos(SAT_ALT / distance3D(object_a, object_b))
     return angle

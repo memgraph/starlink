@@ -2,6 +2,7 @@ from starlink_simulator.utils import distance3D as d3D
 from starlink_simulator.orbit import Orbit
 from starlink_simulator.moving_object import MovingObject as MO
 
+
 horizontal_orbits = []
 horizontal_orbits_dict = {}
 
@@ -12,7 +13,12 @@ all_moving_objects = []
 all_moving_objects_dict = {}
 
 # Initializes orbits and their objects
-def init_orbits_and_objects(num_of_orbits_horizontal, num_of_orbits_vertical, num_of_objects_in_orbit, size, moving_object_speed, satellite_altitude):
+def init_orbits_and_objects(num_of_orbits_horizontal,
+                            num_of_orbits_vertical,
+                            num_of_objects_in_orbit,
+                            size,
+                            moving_object_speed,
+                            satellite_altitude):
     orbit_id = 0
     moving_object_id = 0
 
@@ -98,13 +104,11 @@ def update_city_moving_object_distances(cities, all_moving_objects):
 
 
 # Updates all object laser connections
-def update_laser_connections(orbits, num_of_orbits_horizontal, num_of_orbits_vertical,all_moving_objects_dict):
+def update_laser_connections(orbits,
+                             num_of_orbits_horizontal,
+                             num_of_orbits_vertical,
+                             all_moving_objects_dict):
     for orbit in orbits:
         orbit.update_laser_connections(
             orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
         orbit.update_laser_distances(all_moving_objects_dict)
-
-
-# Updates database entries NOT IMPLEMENTED
-def update_memgraph(orbits):
-    pass

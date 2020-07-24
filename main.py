@@ -7,7 +7,7 @@ Usage:
 
 Arguments:
     -h --help   Shows this screen.
-    NAME    Set name to print out
+    NAME    Any random string
 """
 
 import re

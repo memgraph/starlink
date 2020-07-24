@@ -1,6 +1,11 @@
 
+
 class StationaryObject:
-    def __init__(self, id, x, y, z):
+    def __init__(self,
+                 id: int,
+                 x: float,
+                 y: float,
+                 z: float):
         self.id = id
         self.x = x
         self.y = y
