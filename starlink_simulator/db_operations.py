@@ -104,6 +104,6 @@ def update_laser_connections(db, all_moving_objects):
 def establish_connection(db, city1, city2):
     command = "MATCH (s1:Satellite)-[r1]->(c1:City {id:'" + str(city1.id) + "'})" + \
         "MATCH (s2:Satellite)-[r2]->(c2:City {id:'" + str(city2.id) + "'})" + \
-        "MATCH p=(:Satellite { id: s1.id})-[:CONNECTED_TO * bfs]->(:Satellite { id: s2.id})" + \
+        "MATCH p=(:City { id: c1.id})-[r *wShortest (e, n | e.transmission_time) total_transmission_time]-(:City { id: c2.id})" + \
         "RETURN p;"
     db.execute_query(command)
