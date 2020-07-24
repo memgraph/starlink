@@ -95,8 +95,8 @@ def update_moving_object_positions(orbits):
 # Updates all distances between all cities and all moving objects
 def update_city_moving_object_distances(cities, all_moving_objects):
     for city in cities:
-        for ob in all_moving_objects:
-            city.moving_objects_distances_dict[ob.id] = d3D(city, ob)
+        city.calc_dist_cities_and_moving_objects_45(all_moving_objects)
+        print(city.moving_objects_distances_dict)
 
 
 # Updates all object laser connections

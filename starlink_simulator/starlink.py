@@ -40,4 +40,4 @@ def starlink(tmp: str) -> str:
         db_operations.update_laser_connections(db, ru.all_moving_objects)
         #db_operations.establish_connection(db, cities[0], cities[1])
 
-        time.sleep(5)
+        time.sleep(10)

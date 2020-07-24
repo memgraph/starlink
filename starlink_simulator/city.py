@@ -17,6 +17,7 @@ class City(StationaryObject):
 
     # Calculates distances between cities and moving objects in 45° field of view
     def calc_dist_cities_and_moving_objects_45(self, all_moving_objects):
+        self.moving_objects_distances_dict.clear
         for moving_object in all_moving_objects:
             angle = utils.calculate_angle(self, moving_object)
             if angle <= 45:
