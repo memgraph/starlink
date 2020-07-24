@@ -1,5 +1,3 @@
-
-
 def clear(db):
     command = "MATCH (node) DETACH DELETE node"
     db.execute_query(command)
@@ -28,19 +26,20 @@ def update_object_positions(db, all_moving_objects):
 
 def create_city_moving_objects_visibility(db, cities, all_moving_objects):
     for city in cities:
-        command = "MATCH (a:City),(b:Satellite) WHERE b.id = '" + str(min(city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)) + \
-            "' CREATE (a)-[r:VISIBLE_FROM { transmission_time: " + \
-            str(min(city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)) + " }]->(b)"
+        command = "MATCH (a:City { id:'" + str(city.id) + "'}),(b:Satellite) WHERE b.id = '" + str(min(city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)) + \
+            "' CREATE (b)-[r:VISIBLE_FROM { transmission_time: " + \
+            str(city.moving_objects_distances_dict[min(city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)]) + " }]->(a)"
         db.execute_query(command)
 
 def update_city_moving_objects_visibility(db, cities, all_moving_objects):
     for city in cities:
-        command = "MATCH (a:City {id:'" + str(city.id) + "'})-[r]-(b:Satellite})" + \
-            "DELETE r" + \
-            "MATCH (a:City),(b:Satellite) WHERE b.id = '" + str(min(city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)) + \
-            "' CREATE (a)-[r:VISIBLE_FROM { transmission_time: " + \
-            str(min(city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)) + " }]->(b)"
+        command = "MATCH (b:Satellite)-[r]->(a:City {id:'" + str(city.id) + "'}) DELETE r"
         db.execute_query(command)
+        command = "MATCH (a:City { id:'" + str(city.id) + "'}),(b:Satellite) WHERE b.id = '" + str(min(city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)) + \
+            "' CREATE (b)-[r:VISIBLE_FROM { transmission_time: " + \
+            str(city.moving_objects_distances_dict[min(city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)]) + " }]->(a)"
+        db.execute_query(command)
+    #create_city_moving_objects_visibility(db, cities, all_moving_objects)
       
 
 def create_laser_connections(db, all_moving_objects):

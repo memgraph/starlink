@@ -120,10 +120,7 @@ def starlink(tmp: str) -> str:
     
     cities = utils.import_cities(cities_csv_path)
 
-    for city in cities:
-        for ob in all_moving_objects:
-            city.moving_objects_distances_dict[ob.id] = utils.distance3D(city, ob)
-            print(str(ob.id) + str(city.moving_objects_distances_dict[ob.id]))
+    utils.update_city_moving_object_distances(cities, all_moving_objects)
     
 
     orbits = (horizontal_orbits + vertical_orbits)
@@ -132,7 +129,7 @@ def starlink(tmp: str) -> str:
     db_operations.create_moving_objects(db, all_moving_objects)
     db_operations.create_cities(db, cities)
     
-    #db_operations.create_city_moving_objects_visibility(db, cities, all_moving_objects)
+    db_operations.create_city_moving_objects_visibility(db, cities, all_moving_objects)
     db_operations.create_laser_connections(db, all_moving_objects)
     #utils.print_laser_connections(orbits)
     
@@ -140,9 +137,10 @@ def starlink(tmp: str) -> str:
         update_moving_object_positions(orbits)
         update_laser_connections(orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
         db_operations.update_object_positions(db, all_moving_objects)
+        utils.update_city_moving_object_distances(cities, all_moving_objects)
+        db_operations.update_city_moving_objects_visibility(db, cities, all_moving_objects)
         db_operations.update_laser_connections(db, all_moving_objects)
-        #db_operations.update_city_moving_objects_visibility(db, cities, all_moving_objects)
-        time.sleep(20)
+        time.sleep(5)
     
     
     # This code is for visualization purposes and can not be used with Docker

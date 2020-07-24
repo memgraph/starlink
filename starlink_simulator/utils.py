@@ -13,13 +13,11 @@ def import_cities(path):
     return cities
 
 
-def initialize_city_moving_object_distances(cities, moving_objects):
+def update_city_moving_object_distances(cities, all_moving_objects):
     for city in cities:
-        for moving_object in moving_objects:  
-            dist = distance3D(city, moving_object)
-            
-            city.moving_objects_distances_dict[moving_object.id] = dist
-            print(moving_object.id + ", " + dist )
+        for ob in all_moving_objects:
+            city.moving_objects_distances_dict[ob.id] = distance3D(city, ob)
+            #print(str(ob.id) + str(city.moving_objects_distances_dict[ob.id]))
 
 
 # Prints the coordinates of all the objects in the orbits
