@@ -28,12 +28,16 @@ class Orbit:
                 if moving_object.y >= self.y_end + 1:
                     moving_object.y = self.y_start
 
-    def update_laser_connections(self, orbits, num_of_orbits_horizontal, num_of_orbits_vertical):
+    def update_laser_connections(self, orbits,  num_of_orbits_horizontal, num_of_orbits_vertical):
         for moving_object in self.moving_objects:
-            moving_object.update_laser_up(orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
-            moving_object.update_laser_down(orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
+            moving_object.update_laser_up(
+                orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
+            moving_object.update_laser_down(
+                orbits, num_of_orbits_horizontal, num_of_orbits_vertical)
 
     def update_laser_distances(self, all_moving_objects_dict):
         for moving_object in self.moving_objects:
-            moving_object.laser_left_distance = utils.distance(moving_object, all_moving_objects_dict[moving_object.laser_left_id])
-            moving_object.laser_right_distance = utils.distance(moving_object, all_moving_objects_dict[moving_object.laser_right_id])
+            moving_object.laser_left_distance = utils.distance(
+                moving_object, all_moving_objects_dict[moving_object.laser_left_id])
+            moving_object.laser_right_distance = utils.distance(
+                moving_object, all_moving_objects_dict[moving_object.laser_right_id])

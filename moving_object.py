@@ -3,32 +3,32 @@ import utils
 
 
 class MovingObject:
-    def __init__(self, id, id_in_orbit, orbit_id, is_in_horizontal_orbit, x0, y0, z0, laser_left_id, laser_left_id_in_orbit, laser_right_id, laser_right_id_in_orbit):
+    def __init__(self, id, id_in_orbit, orbit_id, is_in_horizontal_orbit,  x0, y0, z0, laser_left_id, laser_left_id_in_orbit, laser_right_id, laser_right_id_in_orbit):
         self.id = id
         self.id_in_orbit = id_in_orbit
         self.orbit_id = orbit_id
         self.is_in_horizontal_orbit = is_in_horizontal_orbit
-        
-        # initial position of the object
+
+        # Initial position of the object
         self.x0 = x0
         self.y0 = y0
         self.z0 = z0
-        
-        # current position of the object
+
+        # Current position of the object
         self.x = x0
         self.y = y0
         self.z = z0
 
-        # the left and right lasers are connected to objects in the same orbit
+        # The left and right lasers are connected to objects in the same orbit
         self.laser_left_id = laser_left_id
         self.laser_left_id_in_orbit = laser_left_id_in_orbit
         self.laser_right_id = laser_right_id
         self.laser_right_id_in_orbit = laser_right_id_in_orbit
 
-        # the up and down lasers are connected to objects in neighbouring orbits
-        self.laser_up_id = -1   # global object id
-        self.laser_up_id_in_orbit = -1  # object id specific for the orbit
-        self.laser_up_orbit_id = -1  # id of the orbit that contains the object
+        # The up and down lasers are connected to objects in neighbouring orbits
+        self.laser_up_id = -1   # Global object id
+        self.laser_up_id_in_orbit = -1  # Gbject id specific for the orbit
+        self.laser_up_orbit_id = -1  # Id of the orbit that contains the object
         self.laser_down_id = -1
         self.laser_down_id_in_orbit = -1
         self.laser_down_orbit_id = -1
@@ -37,7 +37,6 @@ class MovingObject:
         self.laser_right_distance = -1
         self.laser_up_distance = -1
         self.laser_down_distance = -1
-
 
     def set_laser_up(self, laser_up_id=-1, laser_up_id_in_orbit=-1, laser_up_orbit_id=-1):
         if laser_up_id != -1:
@@ -63,7 +62,7 @@ class MovingObject:
             else:
                 laser_up_orbit = self.orbit_id - 1
             for moving_object in orbits_dict[laser_up_orbit].moving_objects:
-                tmp_diff = utils.distance(self, moving_object) # m.sqrt((self.y-moving_object.y)**2 + (self.x-moving_object.x)**2)
+                tmp_diff = utils.distance(self, moving_object)
                 if (tmp_diff < diff):
                     self.laser_up_id = moving_object.id
                     self.laser_up_id_in_orbit = moving_object.id_in_orbit
@@ -76,7 +75,7 @@ class MovingObject:
             else:
                 laser_up_orbit = self.orbit_id - 1
             for moving_object in orbits_dict[laser_up_orbit].moving_objects:
-                tmp_diff = utils.distance(self, moving_object) # m.sqrt((self.y-moving_object.y)**2 + (self.x-moving_object.x)**2)
+                tmp_diff = utils.distance(self, moving_object)
                 if (tmp_diff < diff):
                     self.laser_up_id = moving_object.id
                     self.laser_up_id_in_orbit = moving_object.id_in_orbit
@@ -92,7 +91,7 @@ class MovingObject:
             else:
                 laser_down_orbit = self.orbit_id + 1
             for moving_object in orbits_dict[laser_down_orbit].moving_objects:
-                tmp_diff = utils.distance(self, moving_object) # m.sqrt((self.y-moving_object.y)**2 + (self.x-moving_object.x)**2)
+                tmp_diff = utils.distance(self, moving_object)
                 if (tmp_diff < diff):
                     self.laser_down_id = moving_object.id
                     self.laser_down_id_in_orbit = moving_object.id_in_orbit
@@ -105,7 +104,7 @@ class MovingObject:
             else:
                 laser_down_orbit = self.orbit_id + 1
             for moving_object in orbits_dict[laser_down_orbit].moving_objects:
-                tmp_diff = utils.distance(self, moving_object) # m.sqrt((self.y-moving_object.y)**2 + (self.x-moving_object.x)**2)
+                tmp_diff = utils.distance(self, moving_object)
                 if (tmp_diff < diff):
                     self.laser_down_id = moving_object.id
                     self.laser_down_id_in_orbit = moving_object.id_in_orbit
