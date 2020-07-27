@@ -6,13 +6,9 @@ def clear(db):
 
 def import_all_satellites(db):
         command = "MATCH (n :Satellite) RETURN n;"
-        results = db.execute_and_fetch(command)
-        for result in results:
-            print(result)
+        return db.execute_and_fetch(command)
 
 def import_all_cities(db):
         command = "MATCH (n :City) RETURN n;"
-        results = db.execute_and_fetch(command)
-        for result in results:
-            print(result)
+        return db.execute_and_fetch(command)
         
