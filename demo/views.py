@@ -1,7 +1,14 @@
 from django.http import HttpResponse
+from demo.database import Memgraph
+import demo.data.db_operations as db_operations
 
 
 def index(request):
+
+    db = Memgraph()
+    db_operations.import_all_satellites(db)
+    db_operations.import_all_cities(db)
+
     html = """<html>
     <head>
         <link rel='stylesheet' href='https://unpkg.com/leaflet@1.6.0/dist/leaflet.css' />
@@ -22,4 +29,5 @@ def index(request):
     </body>
 </html>
     """
+
     return HttpResponse(html)
