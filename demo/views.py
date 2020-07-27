@@ -1,6 +1,9 @@
 from django.http import HttpResponse
 from demo.database import Memgraph
 import demo.data.db_operations as db_operations
+from django.template import loader
+import json
+
 
 
 def index(request):
@@ -25,7 +28,8 @@ def index(request):
         city_markers.append(marker)
 
     #print(sat_markers)
-    #print(city_markers)
+    for i in city_markers:
+        print(i)
 
     html = """<html>
     <head>
@@ -43,6 +47,7 @@ def index(request):
                 attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
             }).addTo(map);
             var mark;
+            var city_markers = {{city_markers|tojson}};
             for (mark in city_markers){
                 var marker = L.marker(mark).addTo(map);
             }
@@ -51,5 +56,11 @@ def index(request):
     </body>
 </html>
     """
+    json_cities = json.dumps(city_markers)
 
-    return HttpResponse(html)
+    template = loader.get_template('demo/demo.html')
+    context = {
+        'city_markers': json_cities,
+    }
+    return HttpResponse(template.render(context, request))
+    #return HttpResponse(html)
