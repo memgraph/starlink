@@ -44,12 +44,10 @@
                 ));
                 citiesLayer.addLayer(marker);
             }
-
         }
 
         function drawSatellites(sat_markers) {
-            //satellitesLayer.clearLayers();
-            var isOk = false;
+            satellitesLayer.clearLayers();
             for (var i = 0; i < sat_markers.length; i++) {
                 var obj = sat_markers[i].slice(0, 2);
                 var circle = L.circle(obj, {
@@ -61,17 +59,6 @@
                 satellitesLayer.addLayer(circle);
             }
             satellitesLayer.addTo(map);
-            isOk = true;
-            return isOk;
-        }
-
-        function delay(n) {
-            n = n || 2000;
-            return new Promise(done => {
-                setTimeout(() => {
-                    done();
-                }, n);
-            });
         }
 
         initMap();
@@ -83,33 +70,21 @@
         satellitesLayer.addTo(map);
 
         var json_satellites;
-        $.ajax({
-            type: 'GET',
-            url: "{% url 'json_satellites' %}",
-            data: { "json_satellites": json_satellites },
-            async: false,
-            success: function (data) {
-                drawSatellites(data);
-            }
-        });
-        $.ajax({
-            type: 'GET',
-            url: "{% url 'json_satellites' %}",
-            data: { "json_satellites": json_satellites },
-            async: false,
-            success: function (data) {
-                drawSatellites(data);
-            }
-        });
-        $.ajax({
-            type: 'GET',
-            url: "{% url 'json_satellites' %}",
-            data: { "json_satellites": json_satellites },
-            async: false,
-            success: function (data) {
-                drawSatellites(data);
-            }
-        });
+        function ajaxCall() {
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'json_satellites' %}",
+                data: { "json_satellites": json_satellites },
+                async: false,
+                success: function (data) {
+                    result = drawSatellites(JSON.parse(data.json_satellites));
+                    setTimeout(ajaxCall, 1000);
+
+                }
+            });
+        }
+        ajaxCall();
+
     </script>
 </body>
 
