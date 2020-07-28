@@ -44,11 +44,11 @@
                 ));
                 citiesLayer.addLayer(marker);
             }
-
         }
 
         function drawSatellites(sat_markers) {
-            //satellitesLayer.clearLayers();
+            satellitesLayer.clearLayers();
+            console.log(sat_markers);
             var isOk = false;
             for (var i = 0; i < sat_markers.length; i++) {
                 var obj = sat_markers[i].slice(0, 2);
@@ -61,8 +61,6 @@
                 satellitesLayer.addLayer(circle);
             }
             satellitesLayer.addTo(map);
-            isOk = true;
-            return isOk;
         }
 
         function delay(n) {
@@ -83,33 +81,20 @@
         satellitesLayer.addTo(map);
 
         var json_satellites;
-        $.ajax({
-            type: 'GET',
-            url: "{% url 'json_satellites' %}",
-            data: { "json_satellites": json_satellites },
-            async: false,
-            success: function (data) {
-                drawSatellites(data);
-            }
-        });
-        $.ajax({
-            type: 'GET',
-            url: "{% url 'json_satellites' %}",
-            data: { "json_satellites": json_satellites },
-            async: false,
-            success: function (data) {
-                drawSatellites(data);
-            }
-        });
-        $.ajax({
-            type: 'GET',
-            url: "{% url 'json_satellites' %}",
-            data: { "json_satellites": json_satellites },
-            async: false,
-            success: function (data) {
-                drawSatellites(data);
-            }
-        });
+        function ajaxCall() {
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'json_satellites' %}",
+                data: { "json_satellites": json_satellites },
+                async: false,
+                success: function (data) {
+                    window.requestAnimationFrame(drawSatellites(data));
+                    setTimeout(ajaxCall, 3000)
+                }
+            });
+        }
+        ajaxCall();
+
     </script>
 </body>
 
