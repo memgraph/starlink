@@ -9,7 +9,7 @@ import demo.data.db_connection as db_connection
 def index(request):
     db = Memgraph()
 
-    sat_markers = db_connection.fetch_satellites(db)
+ #   sat_markers = db_connection.fetch_satellites(db)
     city_markers = db_connection.fetch_cities(db)
 
     json_cities = json.dumps(db_connection.city_json_format(city_markers))
