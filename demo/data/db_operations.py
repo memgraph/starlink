@@ -11,4 +11,8 @@ def import_all_satellites(db):
 def import_all_cities(db):
         command = "MATCH (n :City) RETURN n;"
         return db.execute_and_fetch(command)
+
+def import_all_relationships(db):
+        command = "MATCH (s1:Satellite)-[r]-(s2:Satellite) RETURN r, s1, s2;"
+        return db.execute_and_fetch(command)
         
