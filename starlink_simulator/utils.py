@@ -10,8 +10,8 @@ def import_cities(path):
     with open(path, 'r') as f:
         reader = csv.reader(f, delimiter=',')
         for row in reader:
-            city = City(id=row[0], x=int(row[1]), y=int(
-                row[2]), z=int(row[3]), name=row[4])
+            city = City(id=row[0], x=float(row[1]), y=float(
+                row[2]), z=float(row[3]), name=row[4])
             cities.append(city)
     return cities
 

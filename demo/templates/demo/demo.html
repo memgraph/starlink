@@ -13,6 +13,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="map"></div>
     <script>
@@ -24,8 +25,13 @@
         var city_markers = JSON.parse("{{city_markers|escapejs}}");
         console.log(city_markers)
         for (var i = 0; i < city_markers.length; i++) {
-            var obj = city_markers[i];
-            var marker = L.marker(obj).addTo(map);
+            var obj = city_markers[i].slice(0, 2);
+            var marker = L.marker(obj).bindTooltip(city_markers[i][2],
+                {
+                    permanent: false,
+                    direction: "left"
+                }
+            ).addTo(map);
         }
 
     </script>

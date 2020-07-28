@@ -6,7 +6,6 @@ class City(StationaryObject):
     def __init__(self, id, x, y, z, name):
         StationaryObject.__init__(self, id, x, y, z)
         self.name = name
-        self.id = id
         self.moving_objects_distances_dict = {}
 
     # Calculate distances between cities and all moving objects

@@ -22,7 +22,7 @@ def index(request):
 
     for city in cities:
         c = city['n']
-        marker = [c.properties['x'], s.properties['y']]
+        marker = [c.properties['x'], c.properties['y'], c.properties['name']]
         city_markers.append(marker)
 
     json_cities = json.dumps(city_markers)
