@@ -4,5 +4,6 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('post/ajax/json_satellites', views.postSatellites, name = "json_satellites"),
+    path('post/ajax/json_satellites_and_relationships', views.postSatellitesAndRelationships, name = "json_satellites_and_relationships"),
+    #path('post/ajax/json_relationships', views.postRelationships, name = "json_relationships")
 ]
