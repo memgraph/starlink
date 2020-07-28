@@ -33,7 +33,6 @@
         }
 
         function drawCities(city_markers) {
-            console.log(city_markers)
             for (var i = 0; i < city_markers.length; i++) {
                 var obj = city_markers[i].slice(0, 2);
 
@@ -49,7 +48,8 @@
         }
 
         function drawSatellites(sat_markers) {
-            console.log(sat_markers)
+            //satellitesLayer.clearLayers();
+            var isOk = false;
             for (var i = 0; i < sat_markers.length; i++) {
                 var obj = sat_markers[i].slice(0, 2);
                 var circle = L.circle(obj, {
@@ -60,27 +60,56 @@
                 });
                 satellitesLayer.addLayer(circle);
             }
+            satellitesLayer.addTo(map);
+            isOk = true;
+            return isOk;
+        }
+
+        function delay(n) {
+            n = n || 2000;
+            return new Promise(done => {
+                setTimeout(() => {
+                    done();
+                }, n);
+            });
         }
 
         initMap();
 
         drawCities(JSON.parse("{{city_markers|escapejs}}"));
-        citiesLayer.addTo(map)
+        citiesLayer.addTo(map);
 
         drawSatellites(JSON.parse("{{sat_markers|escapejs}}"));
         satellitesLayer.addTo(map);
+
         var json_satellites;
         $.ajax({
             type: 'GET',
             url: "{% url 'json_satellites' %}",
-            data: {"json_satellites": json_satellites},
+            data: { "json_satellites": json_satellites },
+            async: false,
+            success: function (data) {
+                drawSatellites(data);
+            }
         });
-
-
-        satellitesLayer.clearLayers();
-        drawSatellites(JSON.parse("{{sat_markers|escapejs}}"));
-        satellitesLayer.addTo(map);
-
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'json_satellites' %}",
+            data: { "json_satellites": json_satellites },
+            async: false,
+            success: function (data) {
+                drawSatellites(data);
+            }
+        });
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'json_satellites' %}",
+            data: { "json_satellites": json_satellites },
+            async: false,
+            success: function (data) {
+                drawSatellites(data);
+            }
+        });
     </script>
 </body>
 

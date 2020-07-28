@@ -23,9 +23,6 @@ def index(request):
     json_satellites = json.dumps(
         db_connection.satellite_json_format(satellites))
 
-    for i in json_cities:
-        print(i)
-
     template = loader.get_template('demo/demo.html')
     return render(request, "demo/demo.html", {"city_markers": json_cities, "sat_markers": json_satellites})
 
