@@ -54,9 +54,9 @@ def calculate_angle(object_a, object_b):
     return angle
 
 
-def assign_speed(size, horizontal_orbits):
-    border_south = size/4
-    border_north = size*3/4
+def assign_speed(size_y, horizontal_orbits):
+    border_south = size_y/4-90
+    border_north = size_y*3/4-90
     for orbit in horizontal_orbits:
-        if orbit.y_start < border_south or orbit.y_start > border_north:
+        if orbit.y_start <= border_south or orbit.y_start >= border_north:
             orbit.moving_object_speed += 1

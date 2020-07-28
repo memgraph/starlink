@@ -19,8 +19,8 @@ def setup_plot():
             x.append(moving_object.x)
             y.append(moving_object.y)
     scat.set_offsets(np.c_[x, y])
-    ax.axis([0, const.SIZE, 0, const.SIZE])
-    ax.imshow(img, aspect="auto", extent=(0, const.SIZE, 0, const.SIZE))
+    ax.axis([-const.SIZE_X/2, const.SIZE_X/2, -const.SIZE_Y/2, const.SIZE_Y/2])
+    ax.imshow(img, aspect="auto", extent=(-const.SIZE_X/2, const.SIZE_X/2, -const.SIZE_Y/2, const.SIZE_Y/2))
 
 
 def update(frame):
@@ -34,7 +34,7 @@ def update(frame):
         for moving_object in orbit.moving_objects:
             x.append(moving_object.x)
             y.append(moving_object.y)
-            if(moving_object.id == 8):
+            if(moving_object.id == 25):
                 plot_lines_left.set_data([moving_object.x, ru.all_moving_objects_dict[moving_object.laser_left_id].x], [
                                          moving_object.y, ru.all_moving_objects_dict[moving_object.laser_left_id].y])
                 plot_lines_right.set_data([moving_object.x, ru.all_moving_objects_dict[moving_object.laser_right_id].x], [
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     """
 
     ru.init_orbits_and_objects(const.NUM_ORB_H, const.NUM_ORB_V,
-                               const.NUM_OBJ_ORB, const.SIZE, const.SPEED, const.SAT_ALT)
+                               const.NUM_OBJ_ORB_H, const.NUM_OBJ_ORB_V, const.SIZE_X, const.SIZE_Y, const.SPEED, const.SAT_ALT)
 
     cities_csv_path = "cities.csv"
     cities = utils.import_cities(cities_csv_path)
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     ru.update_laser_connections(
         orbits, const.NUM_ORB_H, const.NUM_ORB_V, ru.all_moving_objects)
 
-    utils.assign_speed(const.SIZE, ru.horizontal_orbits)
+    utils.assign_speed(const.SIZE_Y, ru.horizontal_orbits)
 
     """
     db_operations.create_moving_objects(db, ru.all_moving_objects)
