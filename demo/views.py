@@ -26,11 +26,12 @@ def index(request):
         city_markers.append(marker)
 
     json_cities = json.dumps(city_markers)
+    json_satellites = json.dumps(sat_markers)
 
-    for i in json_cities:
-        print(i)
+    #for i in json_cities:
+    #    print(i)
     template = loader.get_template('demo/demo.html')
     context = {
         'city_markers': json_cities,
     }
-    return render(request, "demo/demo.html", {"city_markers": json_cities}) 
+    return render(request, "demo/demo.html", {"city_markers": json_cities, "sat_markers": json_satellites}) 
