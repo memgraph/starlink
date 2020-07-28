@@ -7,6 +7,7 @@
         body {
             margin: 0;
         }
+
         #map {
             position: fixed;
             width: 100%;
@@ -18,35 +19,55 @@
 <body>
     <div id="map"></div>
     <script>
-        var map = L.map('map', {zoom: 3,center: [40, 10]});
-        L.tileLayer("https://api.maptiler.com/maps/basic/{z}/{x}/{y}.png?key=cYtmZZ4gfz1cXNCBs8r4", {
-            attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-        }).addTo(map);
+        var map;
+        var citiesLayer = new L.LayerGroup();
+        var satellitesLayer = new L.LayerGroup();
 
-        var city_markers = JSON.parse("{{city_markers|escapejs}}");
-        console.log(city_markers)
-        for (var i = 0; i < city_markers.length; i++) {
-            var obj = city_markers[i].slice(0, 2);
-            var marker = L.marker(obj).bindTooltip(city_markers[i][2],
-                {
-                    permanent: false,
-                    direction: "left"
-                }
-            ).addTo(map);
+        function initMap() {
+            map = L.map('map', { zoom: 3, center: [40, 10], layers: [citiesLayer] });
+            L.tileLayer("https://api.maptiler.com/maps/basic/{z}/{x}/{y}.png?key=cYtmZZ4gfz1cXNCBs8r4", {
+                attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+            }).addTo(map);
         }
 
-        var sat_markers = JSON.parse("{{sat_markers|escapejs}}");
-        console.log(sat_markers)
-        for (var i = 0; i < sat_markers.length; i++) {
-            var obj = sat_markers[i].slice(0, 2);
-            var circle = L.circle(obj, {
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.5,
-            radius: 1000
-        }).addTo(map);
-    
+        function drawCities(city_markers) {
+            console.log(city_markers)
+            for (var i = 0; i < city_markers.length; i++) {
+                var obj = city_markers[i].slice(0, 2);
+
+                var marker = (L.marker(obj).bindTooltip(city_markers[i][2],
+                    {
+                        permanent: false,
+                        direction: "left"
+                    }
+                ));
+                citiesLayer.addLayer(marker);
+            }
+
         }
+
+        function drawSatellites(sat_markers) {
+            console.log(sat_markers)
+            for (var i = 0; i < sat_markers.length; i++) {
+                var obj = sat_markers[i].slice(0, 2);
+                var circle = L.circle(obj, {
+                    color: 'red',
+                    fillColor: '#f03',
+                    fillOpacity: 0.5,
+                    radius: 1000
+                });
+                satellitesLayer.addLayer(circle);
+            }
+        }
+
+        initMap();
+
+        drawCities(JSON.parse("{{city_markers|escapejs}}"));
+        citiesLayer.addTo(map)
+
+        drawSatellites(JSON.parse("{{sat_markers|escapejs}}"));
+        satellitesLayer.addTo(map);
+        
     </script>
 </body>
 

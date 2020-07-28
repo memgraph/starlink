@@ -5,11 +5,8 @@ import demo.data.satellite as S
 import demo.data.city as C
 
 
-sat_markers = []
-city_markers = []
-
-
 def fetch_cities(db):
+    city_markers = []
     cities = db_operations.import_all_cities(db)
     for cit in cities:
         c = cit['n']
@@ -20,6 +17,8 @@ def fetch_cities(db):
 
 
 def fetch_satellites(db):
+    sat_markers = []
+
     satellites = db_operations.import_all_satellites(db)
     for sat in satellites:
         s = sat['n']
