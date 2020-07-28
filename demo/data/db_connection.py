@@ -8,7 +8,7 @@ import demo.data.city as C
 sat_markers = []
 city_markers = []
 
-db
+
 def fetch_cities(db):
     cities = db_operations.import_all_cities(db)
     for cit in cities:
