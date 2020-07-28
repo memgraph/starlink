@@ -26,32 +26,32 @@ class MovingObject:
         self.laser_right_id_in_orbit = laser_right_id_in_orbit
 
         # The up and down lasers are connected to objects in neighbouring orbits
-        self.laser_up_id = -1   # Global object id
-        self.laser_up_id_in_orbit = -1  # Gbject id specific for the orbit
-        self.laser_up_orbit_id = -1  # Id of the orbit that contains the object
-        self.laser_down_id = -1
-        self.laser_down_id_in_orbit = -1
-        self.laser_down_orbit_id = -1
+        self.laser_up_id = -1000   # Global object id
+        self.laser_up_id_in_orbit = -1000  # Object id specific for the orbit
+        self.laser_up_orbit_id = -1000  # Id of the orbit that contains the object
+        self.laser_down_id = -1000
+        self.laser_down_id_in_orbit = -1000
+        self.laser_down_orbit_id = -1000
 
-        self.laser_left_distance = -1
-        self.laser_right_distance = -1
-        self.laser_up_distance = -1
-        self.laser_down_distance = -1
+        self.laser_left_distance = -1000
+        self.laser_right_distance = -1000
+        self.laser_up_distance = -1000
+        self.laser_down_distance = -1000
 
-    def set_laser_up(self, laser_up_id=-1, laser_up_id_in_orbit=-1, laser_up_orbit_id=-1):
-        if laser_up_id != -1:
+    def set_laser_up(self, laser_up_id=-1000, laser_up_id_in_orbit=-1000, laser_up_orbit_id=-1000):
+        if laser_up_id != -1000:
             self.laser_up_id = laser_up_id
-        if laser_up_id_in_orbit != -1:
+        if laser_up_id_in_orbit != -1000:
             self.laser_up_id_in_orbit = laser_up_id_in_orbit
-        if laser_up_orbit_id != -1:
+        if laser_up_orbit_id != -1000:
             self.laser_up_orbit_id = laser_up_orbit_id
 
-    def set_laser_down(self, laser_down_id=-1, laser_down_id_in_orbit=-1, laser_down_orbit_id=-1):
-        if laser_down_id != -1:
+    def set_laser_down(self, laser_down_id=-1000, laser_down_id_in_orbit=-1000, laser_down_orbit_id=-1000):
+        if laser_down_id != -1000:
             self.laser_down_id = laser_down_id
-        if laser_down_orbit_id != -1:
+        if laser_down_orbit_id != -1000:
             self.laser_down_id_in_orbit = laser_down_id_in_orbit
-        if laser_down_orbit_id != -1:
+        if laser_down_orbit_id != -1000:
             self.laser_down_orbit_id = laser_down_orbit_id
 
     def update_laser_up(self, orbits_dict, num_of_orbits_horizontal, num_of_orbits_vertical):

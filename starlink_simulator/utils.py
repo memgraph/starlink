@@ -52,3 +52,12 @@ def distance3D(point_a, point_b):
 def calculate_angle(object_a, object_b):
     angle = m.acos(SAT_ALT / distance3D(object_a, object_b))
     return angle
+
+
+# Assigns different speed depending on position
+def assign_speed(size_y, horizontal_orbits):
+    border_south = size_y/4-90
+    border_north = size_y*3/4-90
+    for orbit in horizontal_orbits:
+        if orbit.y_start <= border_south or orbit.y_start >= border_north:
+            orbit.moving_object_speed += 1

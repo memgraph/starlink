@@ -1,5 +1,4 @@
 
-
 class Satellite():
     def __init__(self, id, x0, y0, z0):
         self.id = id

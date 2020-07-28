@@ -12,7 +12,7 @@ def starlink(tmp: str) -> str:
     db_operations.clear(db)
 
     ru.init_orbits_and_objects(const.NUM_ORB_H, const.NUM_ORB_V,
-                               const.NUM_OBJ_ORB, const.SIZE, const.SPEED, const.SAT_ALT)
+                               const.NUM_OBJ_ORB_H, const.NUM_OBJ_ORB_V, const.SIZE_X, const.SIZE_Y, const.SPEED, const.SAT_ALT)
 
     cities_csv_path = "starlink_simulator/cities.csv"
     cities = utils.import_cities(cities_csv_path)
@@ -22,6 +22,8 @@ def starlink(tmp: str) -> str:
     ru.update_laser_connections(
         orbits, const.NUM_ORB_H, const.NUM_ORB_V, ru.all_moving_objects)
 
+    utils.assign_speed(const.SIZE_Y, ru.horizontal_orbits)
+    
     db_operations.create_moving_objects(db, ru.all_moving_objects)
     db_operations.create_cities(db, cities)
     db_operations.create_city_moving_objects_visibility(
