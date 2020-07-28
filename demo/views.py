@@ -9,14 +9,14 @@ import demo.data.db_connection as db_connection
 def index(request):
     db = Memgraph()
 
- #   sat_markers = db_connection.fetch_satellites(db)
-    city_markers = db_connection.fetch_cities(db)
+    cities = db_connection.fetch_cities(db)
+    satellites = db_connection.fetch_satellites(db)
 
-    json_cities = json.dumps(db_connection.city_json_format(city_markers))
-    json_satellites = json.dumps(sat_markers)
+    json_cities = json.dumps(db_connection.city_json_format(cities))
+    json_satellites = json.dumps(db_connection.satellite_json_format(satellites))
 
-    #for i in json_cities:
-    #    print(i)
+    for i in json_cities:
+        print(i)
     template = loader.get_template('demo/demo.html')
     context = {
         'city_markers': json_cities,
