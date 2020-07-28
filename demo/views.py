@@ -12,7 +12,7 @@ def index(request):
     sat_markers = db_connection.fetch_satellites(db)
     city_markers = db_connection.fetch_cities(db)
 
-    json_cities = json.dumps(city_markers)
+    json_cities = json.dumps(db_connection.city_json_format(city_markers))
     json_satellites = json.dumps(sat_markers)
 
     #for i in json_cities:
