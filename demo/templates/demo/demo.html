@@ -3,6 +3,8 @@
 <head>
     <link rel='stylesheet' href='https://unpkg.com/leaflet@1.6.0/dist/leaflet.css' />
     <script src='https://unpkg.com/leaflet@1.6.0/dist/leaflet.js'></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <style>
         body {
             margin: 0;
@@ -67,7 +69,18 @@
 
         drawSatellites(JSON.parse("{{sat_markers|escapejs}}"));
         satellitesLayer.addTo(map);
-        
+        var json_satellites;
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'json_satellites' %}",
+            data: {"json_satellites": json_satellites},
+        });
+
+
+        satellitesLayer.clearLayers();
+        drawSatellites(JSON.parse("{{sat_markers|escapejs}}"));
+        satellitesLayer.addTo(map);
+
     </script>
 </body>
 
