@@ -181,14 +181,7 @@
                 $dropdown2.find('option[value="' + selectedItem + '"]').remove();
             }
         });
-
-        $dropdown2.change(function() {
-            $dropdown1.empty().append($dropdown2.find('option').clone());
-            var selectedItem = $(this).val();
-            if (selectedItem) {
-                $dropdown1.find('option[value="' + selectedItem + '"]').remove();
-            }
-        });
+        
     </script>
 
     <script>
