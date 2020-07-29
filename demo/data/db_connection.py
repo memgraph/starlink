@@ -27,6 +27,7 @@ def fetch_satellites(db):
         sat_markers.append(sat_obj)
     return sat_markers
 
+
 def fetch_relationships(db):
     relations = []
     relationships = db_operations.import_all_relationships(db)
@@ -37,14 +38,22 @@ def fetch_relationships(db):
         rel_obj = R.Relationship(s1.properties['x'], s1.properties['y'], s1.properties['z'],
         s2.properties['x'], s2.properties['y'], s2.properties['z'], r.properties['transmission_time'])
         relations.append(rel_obj)
-        
     return relations
 
-def fetch_shortest_path(db, city1, city2):
-    shortest_path_info = db_operations.import_shortest_path(db, city1, city2)
-    sp_list = list(shortest_path_info) 
-    print(sp_list) 
 
+def fetch_shortest_path(db, city1, city2):
+    shortest_path = []
+    shortest_path_info = db_operations.import_shortest_path(db, city1, city2)
+    sp_list = list(shortest_path_info)
+    sp_relationships = sp_list[0]['r']
+    for r in sp_relationships:
+        sp_rel = R.Relationship(r.nodes[0]['x'], r.nodes[0]['y'], r.nodes[0]['z'], r.nodes[1]['x'], 
+        r.nodes[1]['y'], r.nodes[1]['z'], r['transmission_time'])
+        #print(r.nodes[1]['x'])
+        #print(r['transmission_time'])
+        shortest_path.append(sp_rel)
+    return shortest_path
+    
 
 def city_json_format(cities):
     json_cities = []
@@ -65,3 +74,11 @@ def relationship_json_format(relationships):
     for r in relationships:
         json_relationships.append([r.yS, r.xS, r.yE, r.xE, r.transmission_time])
     return json_relationships
+
+
+def shortest_path_json_format(shortest_path):
+    json_shortest_path = []
+    for sp in shortest_path:
+        json_shortest_path.append([sp.yS, sp.xS, sp.yE, sp.xE, sp.transmission_time])
+    #print(json_shortest_path)
+    return json_shortest_path

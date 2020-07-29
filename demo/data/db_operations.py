@@ -17,6 +17,6 @@ def import_all_relationships(db):
         return db.execute_and_fetch(command)
 
 def import_shortest_path(db, city1, city2):
-        command = "MATCH p=(c1:City { id: '" + str(city1.id) + "'})-[r *wShortest (e, n | e.transmission_time) total_transmission_time]-(c2:City { id: '" + str(city2.id) + "'}) RETURN nodes(p);"
+        command = "MATCH p=(c1:City { id: '" + str(city1.id) + "'})-[r *wShortest (e, n | e.transmission_time) total_transmission_time]-(c2:City { id: '" + str(city2.id) + "'}) RETURN nodes(p), r;"
         return db.execute_and_fetch(command)
         

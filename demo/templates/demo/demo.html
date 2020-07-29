@@ -25,6 +25,7 @@
         var citiesLayer = new L.LayerGroup();
         var satellitesLayer = new L.LayerGroup();
         var relationshipsLayer = new L.LayerGroup();
+        var shortestPathLayer = new L.LayerGroup();
 
         function initMap() {
             map = L.map('map', { zoom: 2, center: [30, 0], layers: [citiesLayer] });
@@ -32,7 +33,6 @@
                 attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
             }).addTo(map);
         }
-
 
         function drawCities(city_markers) {
             for (var i = 0; i < city_markers.length; i++) {
@@ -69,6 +69,7 @@
             }
         }
         */
+
         function drawSatellites(sat_markers) {
             satellitesLayer.clearLayers();
             for (var i = 0; i < sat_markers.length; i++) {
@@ -104,6 +105,27 @@
             relationshipsLayer.addTo(map);
         }
 
+        function drawShortestPath(sp_markers) {
+            shortestPathLayer.clearLayers();
+            print("Henlo")
+            for (var i = 0; i < sp_markers.length; i++) {
+                var obj = sp_markers[i];
+                if (!(obj[1] < -50 && obj[3] > 50) && !(obj[3] < -50 && obj[1] > 50)) {
+                    var satStart = [obj[0], obj[1]];
+                    var satEnd = [obj[2], obj[3]];
+                    var latlngs = [
+                        satStart,
+                        satEnd
+                    ];
+                    var polyline = L.polyline(latlngs, {
+                        color: 'orange', opacity: 0.1, weight: 1, smoothFactor: 1
+                    }).addTo(map);
+                    shortestPathLayer.addLayer(polyline);
+                }
+            }
+            shortestPathLayer.addTo(map);
+        }
+
         initMap();
 
         drawCities(JSON.parse("{{city_markers|escapejs}}"));
@@ -113,20 +135,25 @@
         drawRelationships(JSON.parse("{{rel_markers|escapejs}}"));
         relationshipsLayer.addTo(map);
 
+        drawShortestPath(JSON.parse("{{sp_markers|escapejs}}"));
+        shortestPathLayer.addTo(map);
+
         drawSatellites(JSON.parse("{{sat_markers|escapejs}}"));
         satellitesLayer.addTo(map);
 
         var json_satellites;
         var json_relationships;
+        var json_shortest_path;
         function ajaxCall() {
             $.ajax({
                 type: 'GET',
                 url: "{% url 'json_satellites_and_relationships' %}",
-                data: { "json_satellites": json_satellites, "json_relationships": json_relationships },
+                data: { "json_satellites": json_satellites, "json_relationships": json_relationships, "json_shortest_path": json_shortest_path},
                 async: false,
                 success: function (data) {
                     //TODO: edge toggle
                     drawRelationships(JSON.parse(data.json_relationships));
+                    drawShortestPath(JSON.parse(data.json_shortest_path));
                     drawSatellites(JSON.parse(data.json_satellites));
                     setTimeout(ajaxCall, 1000);
                 }
