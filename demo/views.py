@@ -18,25 +18,41 @@ def index(request):
 
     cities = db_connection.fetch_cities(db)
     satellites = db_connection.fetch_satellites(db)
-    db_connection.print_shortestpath(db)
+    relationships = db_connection.fetch_relationships(db)
 
     json_cities = json.dumps(db_connection.city_json_format(cities))
     json_satellites = json.dumps(
         db_connection.satellite_json_format(satellites))
+    json_relationships = json.dumps(db_connection.relationship_json_format(relationships))
 
     template = loader.get_template('demo/demo.html')
-    return render(request, "demo/demo.html", {"city_markers": json_cities, "sat_markers": json_satellites})
+    return render(request, "demo/demo.html", {"city_markers": json_cities, "sat_markers": json_satellites, "rel_markers": json_relationships})
 
 
-def postSatellites(request):
+def postSatellitesAndRelationships(request):
     db = Memgraph()
 
     satellites = []
     json_satellites = []
-
     satellites = db_connection.fetch_satellites(db)
+    json_satellites = json.dumps(db_connection.satellite_json_format(satellites))
 
-    json_satellites = json.dumps(
-        db_connection.satellite_json_format(satellites))
+    relationships = []
+    json_relationships = []
+    relationships = db_connection.fetch_relationships(db)
+    json_relationships = json.dumps(db_connection.relationship_json_format(relationships))
 
-    return JsonResponse({"json_satellites": json_satellites}, status=200)
+    return JsonResponse({"json_satellites": json_satellites, "json_relationships": json_relationships}, status=200)
+
+
+# Contents of this function are temporarily moved into above function until the ajax url problem is resolved
+def postRelationships(request):
+    db = Memgraph()
+
+    relationships = []
+    json_relationships = []
+    relationships = db_connection.fetch_relationships(db)
+
+    json_relationships = json.dumps(db_connection.relationship_json_format(relationships))
+
+    return JsonResponse({"json_relationships": json_relationships}, status = 200)

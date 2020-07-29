@@ -5,9 +5,9 @@ import demo.data.satellite as S
 import demo.data.city as C
 import demo.data.relationship as R
 
-city_markers = []
+
 def fetch_cities(db):
-    
+    city_markers = []
     cities = db_operations.import_all_cities(db)
     for cit in cities:
         c = cit['n']
@@ -34,18 +34,12 @@ def fetch_relationships(db):
         r = rel['r']
         s1 = rel['s1']
         s2 = rel['s2']
-        rel_obj = R.Relationship(
-            s1.properties['id'], s1.properties['x'], s1.properties['y'], s1.properties['z'],
-            s2.properties['id'], s2.properties['x'], s2.properties['y'], s2.properties['z'], 
-            r.properties['transmission_time'])
-        relations.append(rel_obj)     
+        rel_obj = R.Relationship(s1.properties['x'], s1.properties['y'], s1.properties['z'],
+        s2.properties['x'], s2.properties['y'], s2.properties['z'], r.properties['transmission_time'])
+        #print(rel_obj.transmission_time)
+        relations.append(rel_obj)
+        
     return relations
-
-def print_shortestpath(db):
-    city1 = city_markers[0]
-    city2 = city_markers[1]
-    path = db_operations.establish_connection(db, city1, city2)
-    print(path)
 
 def city_json_format(cities):
     json_cities = []
@@ -59,3 +53,10 @@ def satellite_json_format(satellites):
     for satellite in satellites:
         json_satellites.append([satellite.y, satellite.x, satellite.z])
     return json_satellites
+
+
+def relationship_json_format(relationships):
+    json_relationships = []
+    for r in relationships:
+        json_relationships.append([r.yS, r.xS, r.yE, r.xE, r.transmission_time])
+    return json_relationships

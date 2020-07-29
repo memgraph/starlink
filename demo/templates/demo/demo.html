@@ -24,6 +24,7 @@
         var map;
         var citiesLayer = new L.LayerGroup();
         var satellitesLayer = new L.LayerGroup();
+        var relationshipsLayer = new L.LayerGroup();
 
         function initMap() {
             map = L.map('map', { zoom: 3, center: [40, 10], layers: [citiesLayer] });
@@ -61,25 +62,47 @@
             satellitesLayer.addTo(map);
         }
 
-        initMap();
+        function drawRelationships(rel_markers){
+            relationshipsLayer.clearLayers();
+            for (var i = 0; i < rel_markers.length; i++) {
+                var obj = rel_markers[i];
+                var satStart = [obj[0], obj[1]];
+                var satEnd = [obj[2], obj[3]];
+                var latlngs = [
+                    satStart,
+                    satEnd
+                ];
+                var polyline = L.polyline(latlngs, {color: 'blue'}).addTo(map);
+                relationshipsLayer.addLayer(polyline);
+            }
+            relationshipsLayer.addTo(map);
+        }
 
+        initMap();
+        
         drawCities(JSON.parse("{{city_markers|escapejs}}"));
         citiesLayer.addTo(map);
+
+        //TODO: edge toggle
+        drawRelationships(JSON.parse("{{rel_markers|escapejs}}"));
+        relationshipsLayer.addTo(map);
 
         drawSatellites(JSON.parse("{{sat_markers|escapejs}}"));
         satellitesLayer.addTo(map);
 
         var json_satellites;
+        var json_relationships;
         function ajaxCall() {
             $.ajax({
                 type: 'GET',
-                url: "{% url 'json_satellites' %}",
-                data: { "json_satellites": json_satellites },
+                url: "{% url 'json_satellites_and_relationships' %}",
+                data: { "json_satellites": json_satellites, "json_relationships": json_relationships},
                 async: false,
                 success: function (data) {
-                    result = drawSatellites(JSON.parse(data.json_satellites));
+                    //TODO: edge toggle
+                    drawRelationships(JSON.parse(data.json_relationships));
+                    drawSatellites(JSON.parse(data.json_satellites));
                     setTimeout(ajaxCall, 1000);
-
                 }
             });
         }
