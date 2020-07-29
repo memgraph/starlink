@@ -19,7 +19,7 @@
 </head>
 
 <body>
-    <div id="map"></div>
+    <div id="map" style="width: 800px; height: 600px"></div>
     <script>
         var map;
         var citiesLayer = new L.LayerGroup();
@@ -27,12 +27,13 @@
         var relationshipsLayer = new L.LayerGroup();
 
         function initMap() {
-            map = L.map('map', { zoom: 3, center: [40, 10], layers: [citiesLayer] });
+            map = L.map('map', { zoom: 2, center: [30, 0], layers: [citiesLayer] });
             L.tileLayer("https://api.maptiler.com/maps/basic/{z}/{x}/{y}.png?key=cYtmZZ4gfz1cXNCBs8r4", {
                 attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
             }).addTo(map);
         }
 
+        
         function drawCities(city_markers) {
             for (var i = 0; i < city_markers.length; i++) {
                 var obj = city_markers[i].slice(0, 2);
@@ -46,7 +47,28 @@
                 citiesLayer.addLayer(marker);
             }
         }
+        
 
+        /*
+        function drawCities(city_markers) {
+            var cities = GetSelection();
+
+            for (var i = 0; i < city_markers.length; i++) {
+                if (city_markers[i][2] == cities[0] || city_markers[i][2] == cities[1]) {
+                    var obj = city_markers[i].slice(0, 2);
+
+                var marker = (L.marker(obj).bindTooltip(city_markers[i][2],
+                    {
+                        permanent: false,
+                        direction: "left"
+                    }
+                ));
+                citiesLayer.addLayer(marker);
+                }
+                
+            }
+        }
+        */
         function drawSatellites(sat_markers) {
             satellitesLayer.clearLayers();
             for (var i = 0; i < sat_markers.length; i++) {
@@ -109,6 +131,56 @@
         ajaxCall();
 
     </script>
+    <div style = "position:relative; left:880px; top:10px;">
+        <select id="selectCity1">
+            <option>Choose a city:</option>
+        </select>
+        <script>
+            var select = document.getElementById("selectCity1");
+            city_options = JSON.parse("{{city_markers|escapejs}}")
+        
+            for (var i = 0; i < city_options.length; i++) {
+                    var opt = city_options[i][2];
+                    var element = document.createElement("option");
+                    element.text = opt;
+                    element.value = opt;
+                    select.add(element);
+            }
+        </script>
+    </div>
+
+    <div style = "position:relative; left:880px; top:110px;">
+        <select id="selectCity2">
+            <option>Choose a city:</option>
+        </select>
+        <script>
+            var select = document.getElementById("selectCity2");
+           city_options = JSON.parse("{{city_markers|escapejs}}")
+    
+           for (var i = 0; i < city_options.length; i++) {
+                var opt = city_options[i][2];
+                var element = document.createElement("option");
+                element.text = opt;
+                element.value = opt;
+                select.add(element);
+           }
+        </script>
+    </div>
+    
+    <script>
+        function GetSelection(){
+            var element1 = document.getElementById("selectCity1");
+            var element2 = document.getElementById("selectCity2");
+            var result1 = element1.options[element1.selectedIndex].text;
+            var result2 = element2.options[element2.selectedIndex].text;
+
+            var selection = [result1, result2];
+            return selection;
+        }
+    </script>
+    <button type="button" style = "position:relative; left:880px; top:250px;" onclick="GetSelection()">Confirm selection</button>
+    
+
 </body>
 
 </html>
