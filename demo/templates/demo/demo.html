@@ -84,18 +84,20 @@
             satellitesLayer.addTo(map);
         }
 
-        function drawRelationships(rel_markers){
+        function drawRelationships(rel_markers) {
             relationshipsLayer.clearLayers();
             for (var i = 0; i < rel_markers.length; i++) {
                 var obj = rel_markers[i];
-                var satStart = [obj[0], obj[1]];
-                var satEnd = [obj[2], obj[3]];
-                var latlngs = [
-                    satStart,
-                    satEnd
-                ];
-                var polyline = L.polyline(latlngs, {color: 'blue'}).addTo(map);
-                relationshipsLayer.addLayer(polyline);
+                if (!(obj[1]<-50 && obj[3]>50) && !(obj[3]<-50 && obj[1]>50)) {
+                    var satStart = [obj[0], obj[1]];
+                    var satEnd = [obj[2], obj[3]];
+                    var latlngs = [
+                        satStart,
+                        satEnd
+                    ];
+                    var polyline = L.polyline(latlngs, { color: 'blue' }).addTo(map);
+                    relationshipsLayer.addLayer(polyline);
+                }
             }
             relationshipsLayer.addTo(map);
         }
