@@ -20,6 +20,9 @@ def index(request):
     satellites = db_connection.fetch_satellites(db)
     relationships = db_connection.fetch_relationships(db)
 
+    #HELP
+    db_connection.fetch_shortest_path(db, cities[0], cities[1])
+
     json_cities = json.dumps(db_connection.city_json_format(cities))
     json_satellites = json.dumps(
         db_connection.satellite_json_format(satellites))

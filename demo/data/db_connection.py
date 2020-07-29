@@ -41,6 +41,19 @@ def fetch_relationships(db):
         
     return relations
 
+# HELP
+def fetch_shortest_path(db, city1, city2):
+    shortest_path = []
+    #query promijenjen u db_operations.py
+    #query se poziva jednom u views.py i nije jos povezano s frontendom
+    shortest_path_info = db_operations.import_shortest_path(db, city1, city2)
+    #print(shortest_path_info) --> za RETURN nodes(p),r; vraca generator, not subscriptable
+    #i nodes(p) i r vracaju liste objekata u memgraph labu
+    #potrebno je dobiti vrhove i bridove iz kojih se mogu izluciti koordinate
+    sp_list = list(shortest_path_info) #pretvorba u listu koja bi trebala pomoci
+    print(sp_list) #printa praznu listu   
+
+
 def city_json_format(cities):
     json_cities = []
     for city in cities:
