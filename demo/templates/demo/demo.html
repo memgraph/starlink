@@ -138,7 +138,7 @@
         <script>
             var select = document.getElementById("selectCity1");
             city_options = JSON.parse("{{city_markers|escapejs}}")
-        
+            
             for (var i = 0; i < city_options.length; i++) {
                     var opt = city_options[i][2];
                     var element = document.createElement("option");
@@ -154,19 +154,41 @@
             <option>Choose a city:</option>
         </select>
         <script>
-            var select = document.getElementById("selectCity2");
-           city_options = JSON.parse("{{city_markers|escapejs}}")
+            var select= document.getElementById("selectCity2");
+           
+            city_options = JSON.parse("{{city_markers|escapejs}}")
     
-           for (var i = 0; i < city_options.length; i++) {
+            for (var i = 0; i < city_options.length; i++) {
                 var opt = city_options[i][2];
                 var element = document.createElement("option");
                 element.text = opt;
                 element.value = opt;
                 select.add(element);
-           }
+            }
         </script>
     </div>
     
+    <script>
+        var $dropdown1 = $("select[id='selectCity1']");
+        var $dropdown2 = $("select[id='selectCity2']");
+
+        $dropdown1.change(function() {
+            $dropdown2.empty().append($dropdown1.find('option').clone());
+            var selectedItem = $(this).val();
+            if (selectedItem) {
+                $dropdown2.find('option[value="' + selectedItem + '"]').remove();
+            }
+        });
+
+        $dropdown2.change(function() {
+            $dropdown1.empty().append($dropdown2.find('option').clone());
+            var selectedItem = $(this).val();
+            if (selectedItem) {
+                $dropdown1.find('option[value="' + selectedItem + '"]').remove();
+            }
+        });
+    </script>
+
     <script>
         function GetSelection(){
             var element1 = document.getElementById("selectCity1");
