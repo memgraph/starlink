@@ -1,113 +1,73 @@
+import constants as const
 import math as m
 import utils
 
 
 class MovingObject:
-    def __init__(self, id, id_in_orbit, orbit_id, is_in_horizontal_orbit,  x0, y0, z0, laser_left_id, laser_left_id_in_orbit, laser_right_id, laser_right_id_in_orbit):
+    def __init__(self, id, id_in_orbit, orbit_id,  longitude_positions, latitude_positions, altitude, eci_x_positions, eci_y_positions, eci_z_positions, laser_left_id, laser_left_id_in_orbit, laser_right_id, laser_right_id_in_orbit):
         self.id = id
         self.id_in_orbit = id_in_orbit
         self.orbit_id = orbit_id
-        self.is_in_horizontal_orbit = is_in_horizontal_orbit
 
-        # Initial position of the object
-        self.x0 = x0
-        self.y0 = y0
-        self.z0 = z0
+        self.longitude_positions = longitude_positions
+        self.latitude_positions = latitude_positions
+        self.altitude = altitude
 
-        # Current position of the object
-        self.x = x0
-        self.y = y0
-        self.z = z0
+        self.current_position = 0
 
-        # The left and right lasers are connected to objects in the same orbit
+        self.x = self.longitude_positions[self.current_position]
+        self.y = self.latitude_positions[self.current_position]
+        self.z = altitude
+
+        self.eci_x_positions = eci_x_positions
+        self.eci_y_positions = eci_y_positions
+        self.eci_z_positions = eci_z_positions
+
+        self.eci_x = self.eci_x_positions[self.current_position]
+        self.eci_y = self.eci_y_positions[self.current_position]
+        self.eci_z = self.eci_z_positions[self.current_position]
+
         self.laser_left_id = laser_left_id
         self.laser_left_id_in_orbit = laser_left_id_in_orbit
         self.laser_right_id = laser_right_id
         self.laser_right_id_in_orbit = laser_right_id_in_orbit
 
-        # The up and down lasers are connected to objects in neighbouring orbits
-        self.laser_up_id = -1000   # Global object id
-        self.laser_up_id_in_orbit = -1000  # Object id specific for the orbit
-        self.laser_up_orbit_id = -1000  # Id of the orbit that contains the object
-        self.laser_down_id = -1000
-        self.laser_down_id_in_orbit = -1000
-        self.laser_down_orbit_id = -1000
+    def updatePosition(self):
+        self.x = self.longitude_positions[self.current_position]
+        self.y = self.latitude_positions[self.current_position]
 
-        self.laser_left_distance = -1000
-        self.laser_right_distance = -1000
-        self.laser_up_distance = -1000
-        self.laser_down_distance = -1000
+        self.eci_x = self.eci_x_positions[self.current_position]
+        self.eci_y = self.eci_y_positions[self.current_position]
+        self.eci_z = self.eci_z_positions[self.current_position]
 
-    def set_laser_up(self, laser_up_id=-1000, laser_up_id_in_orbit=-1000, laser_up_orbit_id=-1000):
-        if laser_up_id != -1000:
-            self.laser_up_id = laser_up_id
-        if laser_up_id_in_orbit != -1000:
-            self.laser_up_id_in_orbit = laser_up_id_in_orbit
-        if laser_up_orbit_id != -1000:
-            self.laser_up_orbit_id = laser_up_orbit_id
-
-    def set_laser_down(self, laser_down_id=-1000, laser_down_id_in_orbit=-1000, laser_down_orbit_id=-1000):
-        if laser_down_id != -1000:
-            self.laser_down_id = laser_down_id
-        if laser_down_orbit_id != -1000:
-            self.laser_down_id_in_orbit = laser_down_id_in_orbit
-        if laser_down_orbit_id != -1000:
-            self.laser_down_orbit_id = laser_down_orbit_id
-
-    def update_laser_up(self, orbits_dict, num_of_orbits_horizontal, num_of_orbits_vertical):
+    def update_laser_up(self, orbits_dict):
         diff = 100000
-        if self.is_in_horizontal_orbit:
-            if self.orbit_id == 0:
-                laser_up_orbit = num_of_orbits_horizontal - 1
-            else:
-                laser_up_orbit = self.orbit_id - 1
-            for moving_object in orbits_dict[laser_up_orbit].moving_objects:
-                tmp_diff = utils.distance(self, moving_object)
-                if (tmp_diff < diff):
-                    self.laser_up_id = moving_object.id
-                    self.laser_up_id_in_orbit = moving_object.id_in_orbit
-                    self.laser_up_orbit_id = moving_object.orbit_id
-                    self.laser_up_distance = tmp_diff
-                    diff = tmp_diff
+        if self.orbit_id == 0:
+            laser_up_orbit = const.NUM_ORB - 1
         else:
-            if self.orbit_id == num_of_orbits_horizontal:
-                laser_up_orbit = num_of_orbits_horizontal + num_of_orbits_vertical - 1
-            else:
-                laser_up_orbit = self.orbit_id - 1
-            for moving_object in orbits_dict[laser_up_orbit].moving_objects:
-                tmp_diff = utils.distance(self, moving_object)
-                if (tmp_diff < diff):
-                    self.laser_up_id = moving_object.id
-                    self.laser_up_id_in_orbit = moving_object.id_in_orbit
-                    self.laser_up_orbit_id = moving_object.orbit_id
-                    self.laser_up_distance = tmp_diff
-                    diff = tmp_diff
+            laser_up_orbit = self.orbit_id - 1
+        for moving_object in orbits_dict[laser_up_orbit].moving_objects:
+            tmp_diff = utils.eci_distance(self, moving_object)
+            if (tmp_diff < diff):
+                self.laser_up_id = moving_object.id
+                self.laser_up_id_in_orbit = moving_object.id_in_orbit
+                self.laser_up_orbit_id = moving_object.orbit_id
+                self.laser_up_distance = tmp_diff
+                diff = tmp_diff
+        self.laser_up_transmission_time = self.laser_up_distance/const.V_LASER_VACUUM
 
-    def update_laser_down(self, orbits_dict, num_of_orbits_horizontal, num_of_orbits_vertical):
+    def update_laser_down(self, orbits_dict):
         diff = 100000
-        if self.is_in_horizontal_orbit:
-            if self.orbit_id == num_of_orbits_horizontal - 1:
-                laser_down_orbit = 0
-            else:
-                laser_down_orbit = self.orbit_id + 1
-            for moving_object in orbits_dict[laser_down_orbit].moving_objects:
-                tmp_diff = utils.distance(self, moving_object)
-                if (tmp_diff < diff):
-                    self.laser_down_id = moving_object.id
-                    self.laser_down_id_in_orbit = moving_object.id_in_orbit
-                    self.laser_down_orbit_id = moving_object.orbit_id
-                    self.laser_down_distance = tmp_diff
-                    diff = tmp_diff
+        if self.orbit_id == const.NUM_ORB - 1:
+            laser_down_orbit = 0
         else:
-            if self.orbit_id == num_of_orbits_horizontal + num_of_orbits_vertical - 1:
-                laser_down_orbit = num_of_orbits_horizontal
-            else:
-                laser_down_orbit = self.orbit_id + 1
-            for moving_object in orbits_dict[laser_down_orbit].moving_objects:
-                tmp_diff = utils.distance(self, moving_object)
-                if (tmp_diff < diff):
-                    self.laser_down_id = moving_object.id
-                    self.laser_down_id_in_orbit = moving_object.id_in_orbit
-                    self.laser_down_orbit_id = moving_object.orbit_id
-                    self.laser_down_distance = tmp_diff
-                    diff = tmp_diff
+            laser_down_orbit = self.orbit_id + 1
+        for moving_object in orbits_dict[laser_down_orbit].moving_objects:
+            tmp_diff = utils.eci_distance(self, moving_object)
+            if (tmp_diff < diff):
+                self.laser_down_id = moving_object.id
+                self.laser_down_id_in_orbit = moving_object.id_in_orbit
+                self.laser_down_orbit_id = moving_object.orbit_id
+                self.laser_down_distance = tmp_diff
+                diff = tmp_diff
+        self.laser_down_transmission_time = self.laser_down_distance/const.V_LASER_VACUUM
