@@ -1,19 +1,6 @@
-from starlink_simulator.city import City
-from starlink_simulator.constants import SAT_ALT
+import starlink_simulator.constants as const
 import csv
 import math as m
-
-
-# Imports city coordinates from a specified .csv file
-def import_cities(path):
-    cities = []
-    with open(path, 'r') as f:
-        reader = csv.reader(f, delimiter=',')
-        for row in reader:
-            city = City(id=row[0], x=float(row[1]), y=float(
-                row[2]), z=float(row[3]), name=row[4])
-            cities.append(city)
-    return cities
 
 
 # Prints the coordinates of all the objects in the orbits
@@ -48,16 +35,12 @@ def distance3D(point_a, point_b):
     return m.sqrt((point_b.x - point_a.x)**2 + (point_b.y - point_a.y)**2 + (point_b.z - point_a.z)**2)
 
 
+# Calculates the distance between two points in 3D
+def eci_distance(moving_object_a, moving_object_b):
+    return m.sqrt((moving_object_a.eci_x - moving_object_b.eci_x)**2 + (moving_object_a.eci_y - moving_object_b.eci_y)**2 + (moving_object_a.eci_z - moving_object_b.eci_z)**2)
+
+
 # Calculates angle in between two objects
 def calculate_angle(object_a, object_b):
-    angle = m.acos(SAT_ALT / distance3D(object_a, object_b))
+    angle = m.acos(const.SAT_ALT / distance3D(object_a, object_b))
     return angle
-
-
-# Assigns different speed depending on position
-def assign_speed(size_y, horizontal_orbits):
-    border_south = size_y/4-90
-    border_north = size_y*3/4-90
-    for orbit in horizontal_orbits:
-        if orbit.y_start <= border_south or orbit.y_start >= border_north:
-            orbit.moving_object_speed += 1

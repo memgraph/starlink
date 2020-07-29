@@ -1,24 +1,23 @@
-from starlink_simulator.stationary_object import StationaryObject as StationaryObject
+import starlink_simulator.constants as const
+from starlink_simulator.stationary_object import StationaryObject
 import starlink_simulator.utils as utils
 
 
 class City(StationaryObject):
-    def __init__(self, id, x, y, z, name):
-        StationaryObject.__init__(self, id, x, y, z)
+    def __init__(self, id, x, y, z, eci_x_positions, eci_y_positions, eci_z_positions, name):
+        StationaryObject.__init__(
+            self, id, x, y, z, eci_x_positions, eci_y_positions, eci_z_positions)
         self.name = name
+        self.id = id
         self.moving_objects_distances_dict = {}
+        self.moving_objects_tt_dict = {}
 
-    # Calculate distances between cities and all moving objects
-    def calc_dist_city_and_moving_objects_All(self, all_moving_objects):
-        for moving_object in all_moving_objects:
-            dist = utils.distance3D(self, moving_object)
-            self.moving_objects_distances_dict[moving_object.id] = dist
+    # Calculates distances between cities and moving objects in view_angle field of view
 
-    # Calculates distances between cities and moving objects in 45° field of view
-    def calc_dist_cities_and_moving_objects_angle(self, all_moving_objects, view_angle):
-        self.moving_objects_distances_dict.clear
-        for moving_object in all_moving_objects:
+    def city_visible_moving_object_distances(self, moving_objects):
+        for moving_object in moving_objects:
             angle = utils.calculate_angle(self, moving_object)
-            if angle <= view_angle:
-                dist = utils.distance3D(self, moving_object)
+            if angle <= const.VIEW_ANGLE:
+                dist = utils.eci_distance(self, moving_object)
                 self.moving_objects_distances_dict[moving_object.id] = dist
+            self.moving_objects_tt_dict[moving_object.id] = dist/const.V_RADIO

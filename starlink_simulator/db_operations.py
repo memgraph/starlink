@@ -5,8 +5,8 @@ def clear(db):
     db.execute_query(command)
 
 
-def create_moving_objects(db, all_moving_objects):
-    for moving_object in all_moving_objects:
+def create_moving_objects(db, moving_objects):
+    for moving_object in moving_objects:
         command = "CREATE (n:Satellite {id:'" + str(moving_object.id) + \
             "', x:" + str(moving_object.x) + \
             ", y:" + str(moving_object.y) + \
@@ -23,8 +23,8 @@ def create_cities(db, cities):
         db.execute_query(command)
 
 
-def update_object_positions(db, all_moving_objects):
-    for moving_object in all_moving_objects:
+def update_object_positions(db, moving_objects):
+    for moving_object in moving_objects:
         command = "MATCH (a:Satellite { id:'" + str(moving_object.id) + \
             "'}) SET a.x=" + str(moving_object.x) + \
             ", a.y=" + str(moving_object.y) + \
@@ -32,7 +32,7 @@ def update_object_positions(db, all_moving_objects):
         db.execute_query(command)
 
 
-def create_city_moving_objects_visibility(db, cities, all_moving_objects):
+def create_city_moving_objects_visibility(db, cities):
     for city in cities:
         command = "MATCH (a:City { id:'" + str(city.id) + \
             "'}),(b:Satellite) WHERE b.id = '" + str(min(city.moving_objects_distances_dict, key=city.moving_objects_distances_dict.get)) + \
@@ -42,7 +42,7 @@ def create_city_moving_objects_visibility(db, cities, all_moving_objects):
         db.execute_query(command)
 
 
-def update_city_moving_objects_visibility(db, cities, all_moving_objects):
+def update_city_moving_objects_visibility(db, cities):
     for city in cities:
         command = "MATCH (b:Satellite)-[r]->(a:City {id:'" + \
             str(city.id) + "'}) DELETE r"
@@ -55,50 +55,54 @@ def update_city_moving_objects_visibility(db, cities, all_moving_objects):
         db.execute_query(command)
 
 
-def create_laser_connections(db, all_moving_objects):
-    for moving_object_a in all_moving_objects:
+def create_laser_connections(db, moving_objects):
+    for moving_object_a in moving_objects:
         command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object_a.laser_left_id) + "' AND a.id = '" + str(moving_object_a.id) + \
             "' CREATE (a)-[r:CONNECTED_TO { transmission_time: " + \
-            str(moving_object_a.laser_left_distance) + " }]->(b)"
+            str(moving_object_a.laser_left_transmission_time) + " }]->(b)"
         db.execute_query(command)
 
         command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object_a.laser_right_id) + "' AND a.id = '" + str(moving_object_a.id) + \
             "' CREATE (a)-[r:CONNECTED_TO { transmission_time: " + \
-            str(moving_object_a.laser_right_distance) + " }]->(b)"
+            str(moving_object_a.laser_right_transmission_time) + " }]->(b)"
         db.execute_query(command)
 
-        command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object_a.laser_up_id) + "' AND a.id = '" + str(moving_object_a.id) + \
-            "' CREATE (a)-[r:CONNECTED_TO { transmission_time: " + \
-            str(moving_object_a.laser_up_distance) + " }]->(b)"
-        db.execute_query(command)
+        if hasattr(moving_object_a, 'laser_up_id'):
+            command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object_a.laser_up_id) + "' AND a.id = '" + str(moving_object_a.id) + \
+                "' CREATE (a)-[r:CONNECTED_TO { transmission_time: " + \
+                str(moving_object_a.laser_up_transmission_time) + " }]->(b)"
+            db.execute_query(command)
+        
+        if hasattr(moving_object_a, 'laser_down_id'):
+            command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object_a.laser_down_id) + "' AND a.id = '" + str(moving_object_a.id) + \
+                "' CREATE (a)-[r:CONNECTED_TO { transmission_time: " + \
+                str(moving_object_a.laser_down_transmission_time) + " }]->(b)"
+            db.execute_query(command)
 
-        command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object_a.laser_down_id) + "' AND a.id = '" + str(moving_object_a.id) + \
-            "' CREATE (a)-[r:CONNECTED_TO { transmission_time: " + \
-            str(moving_object_a.laser_down_distance) + " }]->(b)"
-        db.execute_query(command)
 
-
-def update_laser_connections(db, all_moving_objects):
-    for moving_object_a in all_moving_objects:
+def update_laser_connections(db, moving_objects):
+    for moving_object_a in moving_objects:
         command = "MATCH (a:Satellite {id:'" + str(moving_object_a.id) + "'})-[r]-(b:Satellite {id:'" + str(moving_object_a.laser_left_id) + "'})" + \
             " SET r.transmission_time=" + \
-            str(moving_object_a.laser_left_distance)
+            str(moving_object_a.laser_left_transmission_time)
         db.execute_query(command)
 
         command = "MATCH (a:Satellite {id:'" + str(moving_object_a.id) + "'})-[r]-(b:Satellite {id:'" + str(moving_object_a.laser_right_id) + "'})" + \
             " SET r.transmission_time=" + \
-            str(moving_object_a.laser_right_distance)
+            str(moving_object_a.laser_right_transmission_time)
         db.execute_query(command)
 
-        command = "MATCH (a:Satellite {id:'" + str(moving_object_a.id) + "'})-[r]-(b:Satellite {id:'" + str(moving_object_a.laser_up_id) + "'})" + \
-            " SET r.transmission_time=" + \
-            str(moving_object_a.laser_up_distance)
-        db.execute_query(command)
+        if hasattr(moving_object_a, 'laser_up_id'):
+            command = "MATCH (a:Satellite {id:'" + str(moving_object_a.id) + "'})-[r]-(b:Satellite {id:'" + str(moving_object_a.laser_up_id) + "'})" + \
+                " SET r.transmission_time=" + \
+                str(moving_object_a.laser_up_transmission_time)
+            db.execute_query(command)
 
-        command = "MATCH (a:Satellite {id:'" + str(moving_object_a.id) + "'})-[r]-(b:Satellite {id:'" + str(moving_object_a.laser_down_id) + "'})" + \
-            " SET r.transmission_time=" + \
-            str(moving_object_a.laser_down_distance)
-        db.execute_query(command)
+        if hasattr(moving_object_a, 'laser_down_id'):
+            command = "MATCH (a:Satellite {id:'" + str(moving_object_a.id) + "'})-[r]-(b:Satellite {id:'" + str(moving_object_a.laser_down_id) + "'})" + \
+                " SET r.transmission_time=" + \
+                str(moving_object_a.laser_down_transmission_time)
+            db.execute_query(command)
 
 
 def establish_connection(db, city1, city2):
