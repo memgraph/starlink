@@ -33,7 +33,7 @@
             }).addTo(map);
         }
 
-        
+
         function drawCities(city_markers) {
             for (var i = 0; i < city_markers.length; i++) {
                 var obj = city_markers[i].slice(0, 2);
@@ -47,7 +47,7 @@
                 citiesLayer.addLayer(marker);
             }
         }
-        
+
 
         /*
         function drawCities(city_markers) {
@@ -74,7 +74,7 @@
             for (var i = 0; i < sat_markers.length; i++) {
                 var obj = sat_markers[i].slice(0, 2);
                 var circle = L.circle(obj, {
-                    color: 'red',
+                    color: 'darkblue',
                     fillColor: '#f03',
                     fillOpacity: 0.5,
                     radius: 1000
@@ -88,14 +88,16 @@
             relationshipsLayer.clearLayers();
             for (var i = 0; i < rel_markers.length; i++) {
                 var obj = rel_markers[i];
-                if (!(obj[1]<-50 && obj[3]>50) && !(obj[3]<-50 && obj[1]>50)) {
+                if (!(obj[1] < -50 && obj[3] > 50) && !(obj[3] < -50 && obj[1] > 50)) {
                     var satStart = [obj[0], obj[1]];
                     var satEnd = [obj[2], obj[3]];
                     var latlngs = [
                         satStart,
                         satEnd
                     ];
-                    var polyline = L.polyline(latlngs, { color: 'blue' }).addTo(map);
+                    var polyline = L.polyline(latlngs, {
+                        color: 'lightgray', opacity: 0.1, weight: 1, smoothFactor: 1
+                    }).addTo(map);
                     relationshipsLayer.addLayer(polyline);
                 }
             }
@@ -103,7 +105,7 @@
         }
 
         initMap();
-        
+
         drawCities(JSON.parse("{{city_markers|escapejs}}"));
         citiesLayer.addTo(map);
 
@@ -120,7 +122,7 @@
             $.ajax({
                 type: 'GET',
                 url: "{% url 'json_satellites_and_relationships' %}",
-                data: { "json_satellites": json_satellites, "json_relationships": json_relationships},
+                data: { "json_satellites": json_satellites, "json_relationships": json_relationships },
                 async: false,
                 success: function (data) {
                     //TODO: edge toggle
@@ -133,33 +135,14 @@
         ajaxCall();
 
     </script>
-    <div style = "position:relative; left:880px; top:10px;">
+    <div style="position:relative; left:880px; top:10px;">
         <select id="selectCity1">
             <option>Choose a city:</option>
         </select>
         <script>
             var select = document.getElementById("selectCity1");
             city_options = JSON.parse("{{city_markers|escapejs}}")
-            
-            for (var i = 0; i < city_options.length; i++) {
-                    var opt = city_options[i][2];
-                    var element = document.createElement("option");
-                    element.text = opt;
-                    element.value = opt;
-                    select.add(element);
-            }
-        </script>
-    </div>
 
-    <div style = "position:relative; left:880px; top:110px;">
-        <select id="selectCity2">
-            <option>Choose a city:</option>
-        </select>
-        <script>
-            var select= document.getElementById("selectCity2");
-           
-            city_options = JSON.parse("{{city_markers|escapejs}}")
-    
             for (var i = 0; i < city_options.length; i++) {
                 var opt = city_options[i][2];
                 var element = document.createElement("option");
@@ -169,23 +152,42 @@
             }
         </script>
     </div>
-    
+
+    <div style="position:relative; left:880px; top:110px;">
+        <select id="selectCity2">
+            <option>Choose a city:</option>
+        </select>
+        <script>
+            var select = document.getElementById("selectCity2");
+
+            city_options = JSON.parse("{{city_markers|escapejs}}")
+
+            for (var i = 0; i < city_options.length; i++) {
+                var opt = city_options[i][2];
+                var element = document.createElement("option");
+                element.text = opt;
+                element.value = opt;
+                select.add(element);
+            }
+        </script>
+    </div>
+
     <script>
         var $dropdown1 = $("select[id='selectCity1']");
         var $dropdown2 = $("select[id='selectCity2']");
 
-        $dropdown1.change(function() {
+        $dropdown1.change(function () {
             $dropdown2.empty().append($dropdown1.find('option').clone());
             var selectedItem = $(this).val();
             if (selectedItem) {
                 $dropdown2.find('option[value="' + selectedItem + '"]').remove();
             }
         });
-        
+
     </script>
 
     <script>
-        function GetSelection(){
+        function GetSelection() {
             var element1 = document.getElementById("selectCity1");
             var element2 = document.getElementById("selectCity2");
             var result1 = element1.options[element1.selectedIndex].text;
@@ -195,8 +197,9 @@
             return selection;
         }
     </script>
-    <button type="button" style = "position:relative; left:880px; top:250px;" onclick="GetSelection()">Confirm selection</button>
-    
+    <button type="button" style="position:relative; left:880px; top:250px;" onclick="GetSelection()">Confirm
+        selection</button>
+
 
 </body>
 
