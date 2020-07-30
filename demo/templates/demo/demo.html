@@ -22,6 +22,7 @@
     <div id="map" style="width: 800px; height: 600px"></div>
     <script>
         var map;
+        var cities;
         var citiesLayer = new L.LayerGroup();
         var satellitesLayer = new L.LayerGroup();
         var relationshipsLayer = new L.LayerGroup();
@@ -34,11 +35,11 @@
             }).addTo(map);
         }
 
-        function drawCities(city_markers) {
-            for (var i = 0; i < city_markers.length; i++) {
-                var obj = city_markers[i].slice(0, 2);
+        function drawCities() {
+            for (var i = 0; i < cities.length; i++) {
+                var obj = cities[i].slice(0, 2);
 
-                var marker = (L.marker(obj).bindTooltip(city_markers[i][2],
+                var marker = (L.marker(obj).bindTooltip(cities[i][2],
                     {
                         permanent: false,
                         direction: "left"
@@ -47,28 +48,6 @@
                 citiesLayer.addLayer(marker);
             }
         }
-
-
-        /*
-        function drawCities(city_markers) {
-            var cities = GetSelection();
-
-            for (var i = 0; i < city_markers.length; i++) {
-                if (city_markers[i][2] == cities[0] || city_markers[i][2] == cities[1]) {
-                    var obj = city_markers[i].slice(0, 2);
-
-                var marker = (L.marker(obj).bindTooltip(city_markers[i][2],
-                    {
-                        permanent: false,
-                        direction: "left"
-                    }
-                ));
-                citiesLayer.addLayer(marker);
-                }
-                
-            }
-        }
-        */
 
         function drawSatellites(sat_markers) {
             satellitesLayer.clearLayers();
@@ -127,10 +106,10 @@
 
         initMap();
 
-        drawCities(JSON.parse("{{city_markers|escapejs}}"));
+        cities = JSON.parse("{{city_markers|escapejs}}");
+        drawCities();
         citiesLayer.addTo(map);
 
-        //TODO: edge toggle
         drawRelationships(JSON.parse("{{rel_markers|escapejs}}"));
         relationshipsLayer.addTo(map);
 
@@ -147,14 +126,13 @@
             $.ajax({
                 type: 'GET',
                 url: "{% url 'json_satellites_and_relationships' %}",
-                data: { "json_satellites": json_satellites, "json_relationships": json_relationships, "json_shortest_path": json_shortest_path},
+                data: { "json_satellites": json_satellites, "json_relationships": json_relationships, "json_shortest_path": json_shortest_path },
                 async: false,
                 success: function (data) {
-                    //TODO: edge toggle
                     drawRelationships(JSON.parse(data.json_relationships));
                     drawShortestPath(JSON.parse(data.json_shortest_path));
                     drawSatellites(JSON.parse(data.json_satellites));
-                    setTimeout(ajaxCall, 1000);
+                    setTimeout(ajaxCall, 1500);
                 }
             });
         }
@@ -167,10 +145,9 @@
         </select>
         <script>
             var select = document.getElementById("selectCity1");
-            city_options = JSON.parse("{{city_markers|escapejs}}")
 
-            for (var i = 0; i < city_options.length; i++) {
-                var opt = city_options[i][2];
+            for (var i = 0; i < cities.length; i++) {
+                var opt = cities[i][2];
                 var element = document.createElement("option");
                 element.text = opt;
                 element.value = opt;
@@ -186,10 +163,8 @@
         <script>
             var select = document.getElementById("selectCity2");
 
-            city_options = JSON.parse("{{city_markers|escapejs}}")
-
-            for (var i = 0; i < city_options.length; i++) {
-                var opt = city_options[i][2];
+            for (var i = 0; i < cities.length; i++) {
+                var opt = cities[i][2];
                 var element = document.createElement("option");
                 element.text = opt;
                 element.value = opt;
@@ -209,7 +184,6 @@
                 $dropdown2.find('option[value="' + selectedItem + '"]').remove();
             }
         });
-
     </script>
 
     <script>
@@ -225,8 +199,7 @@
     </script>
     <button type="button" style="position:relative; left:880px; top:250px;" onclick="GetSelection()">Confirm
         selection</button>
-
-
+        
 </body>
 
 </html>

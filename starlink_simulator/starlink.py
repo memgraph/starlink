@@ -34,4 +34,4 @@ def starlink(tmp: str) -> str:
         db_operations.update_laser_connections(db, moving_objects)
         db_operations.establish_connection(db, cities[0], cities[1])
 
-        time.sleep(1)
+        time.sleep(const.DB_UPDATE_TIME)

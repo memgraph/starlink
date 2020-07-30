@@ -49,8 +49,6 @@ def fetch_shortest_path(db, city1, city2):
     for r in sp_relationships:
         sp_rel = R.Relationship(r.nodes[0]['x'], r.nodes[0]['y'], r.nodes[0]['z'], r.nodes[1]['x'], 
         r.nodes[1]['y'], r.nodes[1]['z'], r['transmission_time'])
-        #print(r.nodes[1]['x'])
-        #print(r['transmission_time'])
         shortest_path.append(sp_rel)
     return shortest_path
     
@@ -80,5 +78,4 @@ def shortest_path_json_format(shortest_path):
     json_shortest_path = []
     for sp in shortest_path:
         json_shortest_path.append([sp.xS, sp.yS, sp.xE, sp.yE, sp.transmission_time])
-    #print(json_shortest_path)
     return json_shortest_path

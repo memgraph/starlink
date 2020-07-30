@@ -12,10 +12,10 @@ class Orbit:
 
     def update_moving_object_positions(self):
         for moving_object in self.moving_objects:
-            if (moving_object.current_position == 1439):
+            moving_object.current_position += 1
+            if (moving_object.current_position == moving_object.positions_lenght):
                 moving_object.current_position = 0
-            else:
-                moving_object.current_position += 1
+
             moving_object.updatePosition()
 
     def update_laser_connections(self, moving_objects):
