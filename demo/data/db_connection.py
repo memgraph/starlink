@@ -43,7 +43,6 @@ def fetch_relationships(db):
 
 def fetch_shortest_path(db, city1, city2):
     shortest_path = []
-    print("sss ",city1, " ", city2)
     shortest_path_info = db_operations.import_shortest_path(db, city1, city2)
     sp_list = list(shortest_path_info)
     sp_relationships = sp_list[0]['r']
