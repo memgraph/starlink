@@ -1,7 +1,7 @@
 SIZE_X = 360    # degrees [-180,180]
 SIZE_Y = 180    # degrees [-90,90]
 SAT_ALT = 550   # KM
-NUM_ORB = 12    # number of orbits for Starlink Phase 1 (FCC filing Nov 2018)
+NUM_ORB = 24    # number of orbits for Starlink Phase 1 (FCC filing Nov 2018)
 NUM_OBJ = 10    # number of satellites per orbits for Starlink Phase 1 (FCC filing Nov 2018)
 TLE_FILE = "starlink_simulator/starlink_phase_1_tle"
 V_LASER_VACUUM = 2.99792458E+8
