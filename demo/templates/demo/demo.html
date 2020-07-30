@@ -158,27 +158,30 @@
     </script>
     <div style="position:relative; left:880px; top:10px;">
         <select id="selectCity1">
-            <option>Choose a city:</option>
+             
         </select>
         <script>
             var select = document.getElementById("selectCity1");
-
+            document.getElementById("selectCity1").selectedIndex = "0";
+            
             for (var i = 0; i < cities.length; i++) {
-                var opt = cities[i][2];
-                var element = document.createElement("option");
-                element.text = opt;
-                element.value = opt;
-                select.add(element);
+                    var opt = cities[i][2];
+                    var element = document.createElement("option");
+                    element.text = opt;
+                    element.value = opt;
+                    select.add(element);
+                
             }
         </script>
     </div>
 
     <div style="position:relative; left:880px; top:110px;">
         <select id="selectCity2">
-            <option>Choose a city:</option>
+            
         </select>
         <script>
             var select = document.getElementById("selectCity2");
+            document.getElementById("selectCity1").selectedIndex = "1";
 
             for (var i = 0; i < cities.length; i++) {
                 var opt = cities[i][2];
