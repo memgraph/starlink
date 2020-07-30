@@ -36,17 +36,22 @@
         }
 
         function drawCities() {
+            var sel = GetSelection();
+            citiesLayer.clearLayers();
             for (var i = 0; i < cities.length; i++) {
-                var obj = cities[i].slice(0, 2);
-
-                var marker = (L.marker(obj).bindTooltip(cities[i][2],
-                    {
-                        permanent: false,
-                        direction: "left"
-                    }
-                ));
-                citiesLayer.addLayer(marker);
+                if(cities[i][2] == sel[0] || cities[i][2] == sel[1]){
+                    console.log("I'm in...");
+                    var obj = cities[i].slice(0, 2);
+                    var marker = (L.marker(obj).bindTooltip(cities[i][2],
+                        {
+                            permanent: false,
+                            direction: "left"
+                        }
+                    ));
+                    citiesLayer.addLayer(marker);
+                }
             }
+            citiesLayer.addTo(map);
         }
 
         function drawSatellites(sat_markers) {
@@ -107,13 +112,13 @@
         initMap();
 
         cities = JSON.parse("{{city_markers|escapejs}}");
-        drawCities();
-        citiesLayer.addTo(map);
+        //drawCities();
+        //citiesLayer.addTo(map);
 
         drawRelationships(JSON.parse("{{rel_markers|escapejs}}"));
         relationshipsLayer.addTo(map);
 
-        drawShortestPath(JSON.parse("{{sp_markers|escapejs}}"));
+        //drawShortestPath(JSON.parse("{{sp_markers|escapejs}}"));
         shortestPathLayer.addTo(map);
 
         drawSatellites(JSON.parse("{{sat_markers|escapejs}}"));
@@ -129,10 +134,22 @@
                 data: { "json_satellites": json_satellites, "json_relationships": json_relationships, "json_shortest_path": json_shortest_path },
                 async: false,
                 success: function (data) {
-                    drawRelationships(JSON.parse(data.json_relationships));
-                    drawShortestPath(JSON.parse(data.json_shortest_path));
+                    //drawRelationships(JSON.parse(data.json_relationships));
+                    //drawShortestPath(JSON.parse(data.json_shortest_path));
                     drawSatellites(JSON.parse(data.json_satellites));
                     setTimeout(ajaxCall, 1500);
+                }
+            });
+        }
+
+        function ajaxCallCities() {
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'json_satellites_and_relationships' %}",
+                data: { "json_satellites": json_satellites, "json_relationships": json_relationships, "json_shortest_path": json_shortest_path },
+                async: false,
+                success: function (data) {
+                    drawCities()
                 }
             });
         }
@@ -197,7 +214,7 @@
             return selection;
         }
     </script>
-    <button type="button" style="position:relative; left:880px; top:250px;" onclick="GetSelection()">Confirm
+    <button type="button" style="position:relative; left:880px; top:250px;" onclick="ajaxCallCities()">Confirm
         selection</button>
         
 </body>
