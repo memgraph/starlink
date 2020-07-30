@@ -126,13 +126,21 @@
             $.ajax({
                 type: 'GET',
                 url: "{% url 'json_satellites_and_relationships' %}",
-                data: { "json_satellites": json_satellites, "json_relationships": json_relationships, "json_shortest_path": json_shortest_path },
+                data: { 
+                    cityOne: 0, 
+                    cityTwo: 1, 
+                    "json_satellites": json_satellites, 
+                    "json_relationships": json_relationships, 
+                    "json_shortest_path": json_shortest_path },
                 async: false,
                 success: function (data) {
                     drawRelationships(JSON.parse(data.json_relationships));
                     drawShortestPath(JSON.parse(data.json_shortest_path));
                     drawSatellites(JSON.parse(data.json_satellites));
                     setTimeout(ajaxCall, 1500);
+                },
+                error: function (thrownError) {
+                    alert(thrownError);
                 }
             });
         }
@@ -199,7 +207,7 @@
     </script>
     <button type="button" style="position:relative; left:880px; top:250px;" onclick="GetSelection()">Confirm
         selection</button>
-        
+
 </body>
 
 </html>

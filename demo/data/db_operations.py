@@ -1,12 +1,12 @@
 
 
 def import_all_satellites(db):
-    command = "MATCH (n :Satellite) RETURN n;"
+    command = "MATCH (n:Satellite) RETURN n;"
     return db.execute_and_fetch(command)
 
 
 def import_all_cities(db):
-    command = "MATCH (n :City) RETURN n;"
+    command = "MATCH (n:City) RETURN n;"
     return db.execute_and_fetch(command)
 
 
@@ -16,7 +16,7 @@ def import_all_relationships(db):
 
 
 def import_shortest_path(db, city1, city2):
-    command = "MATCH p=(c1:City { id: '" + str(city1.id) + \
+    command = "MATCH p=(c1:City { id: '" + str(city1) + \
         "'})-[r *wShortest (e, n | e.transmission_time) total_transmission_time]-(c2:City { id: '" + str(
-            city2.id) + "'}) RETURN nodes(p), r;"
+            city2) + "'}) RETURN nodes(p), r;"
     return db.execute_and_fetch(command)
