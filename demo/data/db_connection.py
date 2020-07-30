@@ -65,20 +65,20 @@ def city_json_format(cities):
 def satellite_json_format(satellites):
     json_satellites = []
     for satellite in satellites:
-        json_satellites.append([satellite.y, satellite.x, satellite.z])
+        json_satellites.append([satellite.x, satellite.y, satellite.z])
     return json_satellites
 
 
 def relationship_json_format(relationships):
     json_relationships = []
     for r in relationships:
-        json_relationships.append([r.yS, r.xS, r.yE, r.xE, r.transmission_time])
+        json_relationships.append([r.xS, r.yS, r.xE, r.yE, r.transmission_time])
     return json_relationships
 
 
 def shortest_path_json_format(shortest_path):
     json_shortest_path = []
     for sp in shortest_path:
-        json_shortest_path.append([sp.yS, sp.xS, sp.yE, sp.xE, sp.transmission_time])
+        json_shortest_path.append([sp.xS, sp.yS, sp.xE, sp.yE, sp.transmission_time])
     #print(json_shortest_path)
     return json_shortest_path
