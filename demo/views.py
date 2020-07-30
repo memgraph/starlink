@@ -33,7 +33,7 @@ def index(request):
     #print(json_relationships)
 
     template = loader.get_template('demo/demo.html')
-    return render(request, "demo/demo.html", {"city_markers": json_cities, "sat_markers": json_satellites, "rel_markers": json_relationships, "sp_markers:": json_shortest_path})
+    return render(request, "demo/demo.html", {"city_markers": json_cities, "sat_markers": json_satellites, "rel_markers": json_relationships, "sp_markers": json_shortest_path})
 
 
 def postSatellitesAndRelationships(request):
