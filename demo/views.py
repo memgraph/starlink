@@ -11,7 +11,7 @@ import demo.utils as utils
 
 
 def index(request):
-    #time.sleep(5)
+
     db = Memgraph()
 
     satellites = []
@@ -73,18 +73,3 @@ def postSatellitesAndRelationships(request):
         db_connection.shortest_path_json_format(shortest_path))
 
     return JsonResponse({"json_satellites": json_satellites, "json_relationships": json_relationships, "json_shortest_path": json_shortest_path}, status=200)
-
-
-
-# Contents of this function are temporarily moved into above function until the ajax url problem is resolved
-def postRelationships(request):
-    db = Memgraph()
-
-    relationships = []
-    json_relationships = []
-    relationships = db_connection.fetch_relationships(db)
-
-    json_relationships = json.dumps(
-        db_connection.relationship_json_format(relationships))
-
-    return JsonResponse({"json_relationships": json_relationships}, status=200)
