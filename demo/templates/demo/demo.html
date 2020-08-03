@@ -21,17 +21,17 @@
 <body>
     <div id="map" style="width: 800px; height: 600px"></div>
 
-    <div style="position:relative; left:880px; top:10px;">
+    <div style="position:absolute; left:900px; top:200px;">
         <select id="selectCity1"></select>
     </div>
 
-    <div style="position:relative; left:880px; top:110px;">
+    <div style="position:absolute; left:1100px; top:200px;">
         <select id="selectCity2"></select>
     </div>
 
-    <button style="position:absolute; left:1200px; top:110x" type="button" id="btn1" onclick="runSimulation()">Start simulation</button>
+    <button style="position:absolute; left:900px; top:100px" type="button" id="btn1" onclick="runSimulation()">Start simulation</button>
 
-    <button style="position:absolute; left:1200px; top:200px" type="button" id="btn2" onclick="simStopped=true">Stop simulation</button>
+    <button style="position:absolute; left:1100px; top:100px" type="button" id="btn2" onclick="idleFunction()">Stop simulation</button>
 
     <!--
     <button type="button" style="position:relative; left:880px; top:250px;" onclick="ajaxCallCities()">Confirm
@@ -154,6 +154,8 @@
 
     var $dropdown1 = $("select[id='selectCity1']");
     var $dropdown2 = $("select[id='selectCity2']");
+    //$dropdown1.addEventListener("click", drawCities);
+    //$dropdown2.addEventListener("click", drawCities);
 
     $dropdown1.change(function () {
         $dropdown2.empty().append($dropdown1.find('option').clone());
@@ -173,6 +175,21 @@
         return selection;
     }
 
+    function idleFunction(){
+        simStopped = true;
+        relationshipsLayer.clearLayers();
+        shortestPathLayer.clearLayers();
+        satellitesLayer.clearLayers();
+        drawCities();
+        $dropdown1.removeAttr("disabled");
+        $dropdown2.removeAttr("disabled");
+        document.getElementById("selectCity1").addEventListener("click", drawCities);
+        document.getElementById("selectCity2").addEventListener("click", drawCities);
+    }
+
+    idleFunction();
+
+    /*
     drawCities();
     citiesLayer.addTo(map);
 
@@ -184,6 +201,7 @@
 
     drawSatellites(JSON.parse("{{sat_markers|escapejs}}"));
     satellitesLayer.addTo(map);
+    */
 
     var json_satellites;
     var json_relationships;
@@ -221,6 +239,8 @@
 
     async function runSimulation(){
         simStopped = false;
+        $dropdown1.attr("disabled", "disabled").off('click');
+        $dropdown2.attr("disabled", "disabled").off('click');
         while(!simStopped){
             ajaxCall();
             await sleep(1500);
