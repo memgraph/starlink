@@ -4,7 +4,8 @@
     <link rel='stylesheet' href='https://unpkg.com/leaflet@1.6.0/dist/leaflet.css' />
     <script src='https://unpkg.com/leaflet@1.6.0/dist/leaflet.js'></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/7.1.0/math.min.js"></script>
+    
     <style>
         body {
             margin: 0;
@@ -103,32 +104,58 @@
             relationshipsLayer.addTo(map);
         }
 
+
+        function drawPoly(line){
+            var polyline = L.polyline(line, {
+                color: 'red', opacity: 0.8, weight: 2.5, smoothFactor: 1
+                }).addTo(map);
+            shortestPathLayer.addLayer(polyline);
+        }
+
         function drawShortestPath(sp_markers) {
             shortestPathLayer.clearLayers();
+            
             for (var i = 0; i < sp_markers.length; i++) {
                 var obj = sp_markers[i];
-                if (!(obj[1] < -50 && obj[3] > 50) && !(obj[3] < -50 && obj[1] > 50)) {
-                    var satStart = [obj[0], obj[1]];
-                    var satEnd = [obj[2], obj[3]];
-                    var latlngs = [
-                        satStart,
-                        satEnd
-                    ];
-                    var polyline = L.polyline(latlngs, {
-                        color: 'orange', opacity: 0.8, weight: 3, smoothFactor: 1
-                    }).addTo(map);
-                    shortestPathLayer.addLayer(polyline);
+                var satStart = [obj[0], obj[1]];
+                var satEnd = [obj[2], obj[3]];
+                latlngS = { 'lat' : obj[0], 'lng' : obj[1]};
+                latlngE = { 'lat' : obj[2], 'lng' : obj[3]};
+
+                var latlngs = [
+                    latlngS,
+                    latlngE
+                ];
+
+                if(Math.abs(obj[3] - obj[1]) > 180){
+                    flipDirection = latlngs[1].lng < 0 ? -1 : 1;
+
+                    latlngs[0].lng = flipDirection * -179.9999999;
+                    latlngs[1].lng = flipDirection * 179.9999999;
+                        
+                    var intersection = math.intersect(satStart, satEnd, [90, 0], [-90, 0]);
+
+                    section1 = [[obj[0], obj[1]], [intersection[0], latlngs[0].lng]];
+                    section2 = [[intersection[0], latlngs[1].lng], [obj[2], obj[3]]];
+                        
+                    drawPoly(section1);
+                    drawPoly(section2);
+                    continue;
                 }
-            }
-            shortestPathLayer.addTo(map);
+
+                drawPoly(latlngs);
+         }
+        shortestPathLayer.addTo(map);
         }
+        
+
 
         initMap();
 
         cities = JSON.parse("{{city_markers|escapejs}}");
 
         var select = document.getElementById("selectCity1");
-        document.getElementById("selectCity1").selectedIndex = "0";
+        document.getElementById("selectCity1").selectedIndex = "3";
 
         for (var i = 0; i < cities.length; i++) {
             var element = document.createElement("option");
@@ -180,6 +207,7 @@
         drawSatellites(JSON.parse("{{sat_markers|escapejs}}"));
         satellitesLayer.addTo(map);
 
+        
         var json_satellites;
         var json_relationships;
         var json_shortest_path;
@@ -208,6 +236,11 @@
             });
         };
         ajaxCall();
+        
+    </script>
+
+    <script>
+        
     </script>
 </body>
 
