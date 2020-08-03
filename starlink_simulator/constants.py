@@ -10,4 +10,4 @@ V_RADIO = 2.99792458E+8
 VIEW_ANGLE = 45
 CITIES_FILE = "starlink_simulator/cities.csv"
 EDGE_CONNECTED = True
-DB_UPDATE_TIME = 2
+DB_UPDATE_TIME = 1.5

@@ -1,8 +1,4 @@
-
-
-def import_all_satellites(db):
-    command = "MATCH (n:Satellite) RETURN n;"
-    return db.execute_and_fetch(command)
+import demo.utils as utils
 
 
 def import_all_cities(db):
@@ -10,13 +6,22 @@ def import_all_cities(db):
     return db.execute_and_fetch(command)
 
 
-def import_all_relationships(db):
-    command = "MATCH (s1:Satellite)-[r]-(s2:Satellite) RETURN r, s1, s2;"
-    return db.execute_and_fetch(command)
+def import_data(tx, city1, city2):
+    print(f"{utils.bcolors.OKGREEN}Simulator DB update START{utils.bcolors.ENDC}")
+          
+    results = {}
 
+    command = "MATCH (s:Satellite) RETURN s;"
+    results[0] = tx.run(command) 
 
-def import_shortest_path(db, city1, city2):
     command = "MATCH p=(c1:City { id: '" + str(city1) + \
-        "'})-[r *wShortest (e, n | e.transmission_time) total_transmission_time]-(c2:City { id: '" + str(
-            city2) + "'}) RETURN nodes(p), r;"
-    return db.execute_and_fetch(command)
+        "'})-[rs *wShortest (e, n | e.transmission_time) total_transmission_time]-(c2:City { id: '" + str(
+            city2) + "'}) RETURN nodes(p), rs;"
+    results[2] = tx.run(command)
+
+    command = "MATCH (s1:Satellite)-[r]-(s2:Satellite) RETURN r, s1, s2;"
+    results[1] = tx.run(command)
+
+    print(f"{utils.bcolors.OKGREEN}Simulator DB update END{utils.bcolors.ENDC}")
+
+    return results

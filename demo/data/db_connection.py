@@ -17,20 +17,18 @@ def fetch_cities(db):
     return city_markers
 
 
-def fetch_satellites(db):
+def transform_satellites(satellites):
     sat_markers = []
-    satellites = db_operations.import_all_satellites(db)
     for sat in satellites:
-        s = sat['n']
+        s = sat['s']
         sat_obj = S.Satellite(
             s.properties['id'], s.properties['x'], s.properties['y'], s.properties['z'])
         sat_markers.append(sat_obj)
     return sat_markers
 
 
-def fetch_relationships(db):
+def transform_relationships(relationships):
     relations = []
-    relationships = db_operations.import_all_relationships(db)
     for rel in relationships:
         r = rel['r']
         s1 = rel['s1']
@@ -41,11 +39,10 @@ def fetch_relationships(db):
     return relations
 
 
-def fetch_shortest_path(db, city1, city2):
+def transform_shortest_path(shortest_path_info):
     shortest_path = []
-    shortest_path_info = db_operations.import_shortest_path(db, city1, city2)
     sp_list = list(shortest_path_info)
-    sp_relationships = sp_list[0]['r']
+    sp_relationships = sp_list[0]['rs']
     for r in sp_relationships:
         sp_rel = R.Relationship(r.nodes[0]['x'], r.nodes[0]['y'], r.nodes[0]['z'], r.nodes[1]['x'], 
         r.nodes[1]['y'], r.nodes[1]['z'], r['transmission_time'])

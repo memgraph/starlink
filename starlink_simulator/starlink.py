@@ -10,7 +10,6 @@ import time
 def starlink(tmp: str) -> str:
 
     db = Memgraph()
-    db_operations.clear(db)
 
     orbits, orbits_dict, moving_objects, moving_objects_dict = orbital_mechanics_utils.generateMovingObjects()
 
@@ -20,18 +19,22 @@ def starlink(tmp: str) -> str:
     relation_utils.update_laser_connections(
         orbits, orbits_dict, moving_objects_dict)
 
-    db_operations.create_moving_objects(db, moving_objects)
-    db_operations.create_cities(db, cities)
-    db_operations.create_city_moving_objects_visibility(db, cities)
-    db_operations.create_laser_connections(db, moving_objects)
+    db.execute_transaction(db_operations.create_data, moving_objects, cities)
 
     while(True):
         relation_utils.update_all_positions_and_relations(
             cities, orbits, orbits_dict, moving_objects, moving_objects_dict)
+        
+        #print(f"{utils.bcolors.WARNING}Simulator DB update START{utils.bcolors.ENDC}")
+        
+        #db_operations.update_object_positions(db, moving_objects)
+        #db_operations.update_city_moving_objects_visibility(db, cities)
+        #db_operations.update_laser_connections(db, moving_objects)
+        #db_operations.establish_connection(db, cities[0], cities[1])
 
-        db_operations.update_object_positions(db, moving_objects)
-        db_operations.update_city_moving_objects_visibility(db, cities)
-        db_operations.update_laser_connections(db, moving_objects)
-        db_operations.establish_connection(db, cities[0], cities[1])
-
+        db.execute_transaction(db_operations.update_data, moving_objects, cities)
+        
+        #print(f"{utils.bcolors.WARNING}Simulator DB update END{utils.bcolors.ENDC}")
+        
         time.sleep(const.DB_UPDATE_TIME)
+

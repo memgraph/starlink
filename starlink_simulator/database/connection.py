@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Iterator
 from starlink_simulator.database.models import Node, Relationship
+import starlink_simulator.utils as utils
 
 _use_mgclient = True
 try:
     import mgclient
 except ImportError:
-    from neo4j import GraphDatabase, basic_auth
+    from neo4j import GraphDatabase, basic_auth, unit_of_work
     from neo4j.types import Relationship as Neo4jRelationship
     from neo4j.types import Node as Neo4jNode
     _use_mgclient = False
@@ -108,6 +109,11 @@ class Neo4jConnection(Connection):
         with self._connection.session() as session:
             session.run(query)
 
+    def execute_transaction(self, func: Any, moving_objects: Any, cities: Any) -> None:
+        """Executes Cypher queries without returning any results."""
+        with self._connection.session() as session:   
+            session.write_transaction(func, moving_objects, cities)
+        
     def execute_and_fetch(self, query: str) -> Iterator[Dict[str, Any]]:
         """Executes Cypher query and returns iterator of results."""
         with self._connection.session() as session:

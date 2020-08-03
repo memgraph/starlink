@@ -44,3 +44,14 @@ def eci_distance(point_a, point_b):
 def calculate_angle(point_a, point_b):
     angle = m.acos(const.SAT_ALT / eci_distance(point_a, point_b))
     return angle
+
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'

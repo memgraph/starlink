@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Iterator
 from demo.database.models import Node, Relationship
+import demo.utils as utils
 
 _use_mgclient = True
 try:
@@ -72,6 +73,7 @@ class MemgraphConnection(Connection):
         cursor.execute(query)
         while True:
             row = cursor.fetchone()
+
             if row is None:
                 break
             yield {
@@ -107,6 +109,41 @@ class Neo4jConnection(Connection):
         """Executes Cypher query without returning any results."""
         with self._connection.session() as session:
             session.run(query)
+
+    def execute_transaction(self, func: Any, city1: Any, city2: Any) -> Any:
+        """Executes Cypher queries and returns dictionary of results."""
+
+        with self._connection.session() as session:
+            res = session.read_transaction(func, city1, city2)
+
+        output = {}
+        output[0] = []
+        output[1] = []
+        output[2] = []
+        
+        results = res[0]
+        columns = results.keys()
+        for result in results:
+            output[0].append({
+                column: _convert_neo4j_value(result[column])
+                for column in columns})
+        
+        results = res[1]
+        columns = results.keys()
+        for result in results:
+            output[1].append({
+                column: _convert_neo4j_value(result[column])
+                for column in columns})
+
+        results = res[2]
+        columns = results.keys()
+        for result in results:
+            output[2].append({
+                column: _convert_neo4j_value(result[column])
+                for column in columns})
+       
+        return output
+
 
     def execute_and_fetch(self, query: str) -> Iterator[Dict[str, Any]]:
         """Executes Cypher query and returns iterator of results."""
