@@ -106,9 +106,7 @@ function drawShortestPath(sp_markers) {
         }
         drawPoly(latlngs);
     }
-    if (!simStopped) {
-        shortestPathLayer.addTo(map);
-    }
+    shortestPathLayer.addTo(map);
 }
 
 function focusView(){
