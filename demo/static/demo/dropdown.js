@@ -43,7 +43,7 @@ function dropdownOneSelect() {
     }
     secondDropdown.options[findElement(secondDropdown.options, firstSelected.value)].remove();
     removedItemDropdownTwo = firstSelected.cloneNode(true);
-
+    focusView();
     drawCities();
 }
 
@@ -54,7 +54,7 @@ function dropdownTwoSelect() {
     }
     firstDropdown.options[findElement(firstDropdown.options, secondSelected.value)].remove();
     removedItemDropdownOne = secondSelected.cloneNode(true);
-
+    focusView();
     drawCities();
 }
 

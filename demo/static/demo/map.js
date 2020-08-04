@@ -44,7 +44,6 @@ function drawCities() {
             citiesLayer.addLayer(marker);
         }
     }
-    focusView();
     citiesLayer.addTo(map);
 }
 
@@ -80,7 +79,7 @@ function drawRelationships(rel_markers) {
             relationshipsLayer.addLayer(polyline);
         }
     }
-   relationshipsLayer.addTo(map);
+    relationshipsLayer.addTo(map);
 }
 
 function drawPoly(line) {
@@ -125,17 +124,21 @@ function drawShortestPath(sp_markers) {
     }
 }
 
-function focusView(){
+function focusView() {
     var sel = GetSelectionValue();
     var city1, city2;
     for (var i = 0; i < cities.length; i++) {
         if (cities[i][0] === sel[0]) {
             city1 = cities[i];
-        } else if (cities[i][0] === sel[1]){
+        } else if (cities[i][0] === sel[1]) {
             city2 = cities[i];
         }
     }
     console.log(city1, city2);
-    var focus = [(city1[1] + city2[1])/2, (city1[2] + city2[2])/2];
-    map.setView(focus, 3);
+    var focus = [(city1[1] + city2[1]) / 2, (city1[2] + city2[2]) / 2];
+    var zoom = 2;
+    if ((Math.abs(city1[1] - city2[1]) >= 50) || (Math.abs(city1[2] - city2[2]) >= 80)) {
+        zoom = 1;
+    } 
+    map.setView(focus, zoom);
 }

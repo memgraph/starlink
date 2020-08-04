@@ -58,23 +58,25 @@
             <div class="col">
                 <button type="button" class="btn btn-primary" id="startButton" onclick="runSimulation()">Start
                     simulation</button>
-            </div>
-            <div class="col">
                 <button type="button" class="btn btn-warning" id="stopButton" onclick="idleFunction()">Stop
                     simulation</button>
             </div>
         </div>
         <div class="row top-buffer">
-            <div class="col">
-                <select id="dropdownOne" class="form-control form-control-sm"
-                    onchange="if (this.selectedIndex!=-1)  dropdownOneSelect();">Select
-                    starting city</select>
+            <div class="col-3">
+                <div class="form-group">
+                    <select class="form-control form-control-md" id="dropdownOne"
+                        onchange="if (this.selectedIndex!=-1)  dropdownOneSelect();">Select
+                        starting city</select>
+                </div>
             </div>
-            <div class="col">
-                <select id="dropdownTwo" class="form-control form-control-sm"
-                    onchange="if (this.selectedIndex!=-1)  dropdownTwoSelect();">Select
-                    ending
-                    city</select>
+            <div class="col-3">
+                <div class="form-group">
+                    <select class="form-control form-control-md" id="dropdownTwo"
+                        onchange="if (this.selectedIndex!=-1)  dropdownTwoSelect();">Select
+                        ending
+                        city</select>
+                </div>
             </div>
         </div>
     </div>
@@ -159,7 +161,7 @@
                 async: true,
                 success: function (data) {
                     drawCities();
-                    focusView();
+                    //focusView();
                     drawRelationships(JSON.parse(data.json_relationships));
                     drawShortestPath(JSON.parse(data.json_shortest_path));
                     drawSatellites(JSON.parse(data.json_satellites));
