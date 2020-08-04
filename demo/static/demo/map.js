@@ -1,11 +1,25 @@
-function initMap() {
-    map = L.map('map', { zoom: 3, center: [30, 0], layers: [citiesLayer], attributionControl: false });
+function initMapMollweide() {
+    var crs = new L.Proj.CRS('ESRI:53009', '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs', {
+        resolutions: [65536, 32768, 16384, 8192, 4096, 2048]
+    });
+
+    map = L.map('map', { crs: crs, noWrap: true, minZoom: 1, maxZoom: 3, layers: [citiesLayer], attributionControl: false });
+}
+
+function initMapMercator() {
+    map = L.map('map', {
+        zoom: 3,
+        center: [30, 0],
+        layers: [citiesLayer],
+        attributionControl: false
+    });
     L.tileLayer("https://api.maptiler.com/maps/basic/{z}/{x}/{y}.png?key=cYtmZZ4gfz1cXNCBs8r4", {
         attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
         noWrap: true,
         maxZoom: 5,
-        minZoom: 1
+        minZoom: 1,
     }).addTo(map);
+
 
     var bounds = L.latLngBounds([[-70, -180], [80, 180]]);
     map.setMaxBounds(bounds);
