@@ -131,9 +131,6 @@
             $('#dropdownOne').prop('disabled', false);
             $('#dropdownTwo').prop('disabled', false);
 
-            relationshipsLayer.clearLayers();
-            shortestPathLayer.clearLayers();
-            satellitesLayer.clearLayers();
             drawCities();
             map.dragging.enable();
             map.touchZoom.enable();
@@ -197,7 +194,16 @@
 
             showAlert('Simulation is running...', 'warning');
 
-            while (!simStopped) {
+            while (true) {
+                if(simStopped){
+                    relationshipsLayer.clearLayers();
+                    satellitesLayer.clearLayers();
+                    shortestPathLayer.clearLayers();
+                    map.clearLayer(satellitesLayer);
+                    map.clearLayer(relationshipsLayer);
+                    map.clearLayer(shortestPathLayer);
+                    break;
+                }
                 ajaxCall();
                 await sleep(1500);
             }

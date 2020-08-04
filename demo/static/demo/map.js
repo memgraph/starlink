@@ -66,27 +66,49 @@ function drawRelationships(rel_markers) {
     relationshipsLayer.clearLayers();
     for (var i = 0; i < rel_markers.length; i++) {
         var obj = rel_markers[i];
-        if (!(obj[1] < -50 && obj[3] > 50) && !(obj[3] < -50 && obj[1] > 50)) {
-            var satStart = [obj[0], obj[1]];
-            var satEnd = [obj[2], obj[3]];
-            var latlngs = [
-                satStart,
-                satEnd
-            ];
-            var polyline = L.polyline(latlngs, {
-                color: 'lightgray', opacity: 0.1, weight: 1, smoothFactor: 1
-            }).addTo(map);
-            relationshipsLayer.addLayer(polyline);
+        var satStart = [obj[0], obj[1]];
+        var satEnd = [obj[2], obj[3]];
+        latlngS = { 'lat': obj[0], 'lng': obj[1] };
+        latlngE = { 'lat': obj[2], 'lng': obj[3] };
+        var latlngs = [
+            latlngS,
+            latlngE
+        ];
+
+        if (Math.abs(obj[3] - obj[1]) > 180) {
+            flipDirection = latlngs[1].lng < 0 ? -1 : 1;
+
+            latlngs[0].lng = flipDirection * -179.9999999;
+            latlngs[1].lng = flipDirection * 179.9999999;
+
+            var intersection = math.intersect(satStart, satEnd, [90, 0], [-90, 0]);
+
+            section1 = [[obj[0], obj[1]], [intersection[0], latlngs[0].lng]];
+            section2 = [[intersection[0], latlngs[1].lng], [obj[2], obj[3]]];
+
+            drawPolyRel(section1, 'lightgray', relationshipsLayer);
+            drawPolyRel(section2, 'lightgray', relationshipsLayer);
+            continue;
         }
+
+        drawPolyRel(latlngs,'lightgray', relationshipsLayer);
+        
     }
     relationshipsLayer.addTo(map);
 }
 
-function drawPoly(line) {
+function drawPoly(line, colour, layer) {
     var polyline = L.polyline(line, {
-        color: '#483D8B', opacity: 0.8, weight: 2.5, smoothFactor: 1
+        color: colour, opacity: 0.8, weight: 2.5, smoothFactor: 1
     }).addTo(map);
-    shortestPathLayer.addLayer(polyline);
+    layer.addLayer(polyline);
+}
+
+function drawPolyRel(line, colour, layer) {
+    var polyline = L.polyline(line, {
+        color: colour, opacity: 0.2, weight: 1, smoothFactor: 1
+    }).addTo(map);
+    layer.addLayer(polyline);
 }
 
 function drawShortestPath(sp_markers) {
@@ -113,15 +135,13 @@ function drawShortestPath(sp_markers) {
             section1 = [[obj[0], obj[1]], [intersection[0], latlngs[0].lng]];
             section2 = [[intersection[0], latlngs[1].lng], [obj[2], obj[3]]];
 
-            drawPoly(section1);
-            drawPoly(section2);
+            drawPoly(section1, '#483D8B', shortestPathLayer);
+            drawPoly(section2, '#483D8B', shortestPathLayer);
             continue;
         }
-        drawPoly(latlngs);
+        drawPoly(latlngs, '#483D8B', shortestPathLayer);
     }
-    if (!simStopped) {
-        shortestPathLayer.addTo(map);
-    }
+    shortestPathLayer.addTo(map);
 }
 
 function focusView() {
