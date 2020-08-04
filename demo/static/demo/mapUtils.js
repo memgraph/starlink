@@ -45,9 +45,7 @@ function drawSatellites(sat_markers) {
         });
         satellitesLayer.addLayer(circle);
     }
-    if (!simStopped) {
-        satellitesLayer.addTo(map);
-    }
+    satellitesLayer.addTo(map);
 }
 
 function drawRelationships(rel_markers) {
@@ -67,9 +65,7 @@ function drawRelationships(rel_markers) {
             relationshipsLayer.addLayer(polyline);
         }
     }
-    if (!simStopped) {
-        relationshipsLayer.addTo(map);
-    }
+   relationshipsLayer.addTo(map);
 }
 
 function drawPoly(line) {
