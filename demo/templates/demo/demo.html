@@ -195,13 +195,10 @@
             showAlert('Simulation is running...', 'warning');
 
             while (true) {
-                if(simStopped){
+                if (simStopped) {
                     relationshipsLayer.clearLayers();
                     satellitesLayer.clearLayers();
                     shortestPathLayer.clearLayers();
-                    map.clearLayer(satellitesLayer);
-                    map.clearLayer(relationshipsLayer);
-                    map.clearLayer(shortestPathLayer);
                     break;
                 }
                 ajaxCall();

@@ -154,7 +154,6 @@ function focusView() {
             city2 = cities[i];
         }
     }
-    console.log(city1, city2);
     var focus = [(city1[1] + city2[1]) / 2, (city1[2] + city2[2]) / 2];
     var zoom = 2;
     if ((Math.abs(city1[1] - city2[1]) >= 50) || (Math.abs(city1[2] - city2[2]) >= 80)) {
