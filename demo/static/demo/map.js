@@ -44,6 +44,7 @@ function drawCities() {
             citiesLayer.addLayer(marker);
         }
     }
+    focusView();
     citiesLayer.addTo(map);
 }
 
@@ -59,9 +60,7 @@ function drawSatellites(sat_markers) {
         });
         satellitesLayer.addLayer(circle);
     }
-    if (!simStopped) {
-        satellitesLayer.addTo(map);
-    }
+    satellitesLayer.addTo(map);
 }
 
 function drawRelationships(rel_markers) {
@@ -81,9 +80,7 @@ function drawRelationships(rel_markers) {
             relationshipsLayer.addLayer(polyline);
         }
     }
-    if (!simStopped) {
-        relationshipsLayer.addTo(map);
-    }
+   relationshipsLayer.addTo(map);
 }
 
 function drawPoly(line) {
@@ -126,4 +123,19 @@ function drawShortestPath(sp_markers) {
     if (!simStopped) {
         shortestPathLayer.addTo(map);
     }
+}
+
+function focusView(){
+    var sel = GetSelectionValue();
+    var city1, city2;
+    for (var i = 0; i < cities.length; i++) {
+        if (cities[i][0] === sel[0]) {
+            city1 = cities[i];
+        } else if (cities[i][0] === sel[1]){
+            city2 = cities[i];
+        }
+    }
+    console.log(city1, city2);
+    var focus = [(city1[1] + city2[1])/2, (city1[2] + city2[2])/2];
+    map.setView(focus, 3);
 }

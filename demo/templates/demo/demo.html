@@ -159,6 +159,7 @@
                 async: true,
                 success: function (data) {
                     drawCities();
+                    focusView();
                     drawRelationships(JSON.parse(data.json_relationships));
                     drawShortestPath(JSON.parse(data.json_shortest_path));
                     drawSatellites(JSON.parse(data.json_satellites));
