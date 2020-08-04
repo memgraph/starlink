@@ -2,7 +2,7 @@ import starlink_simulator.utils as utils
 
 
 def create_data(tx, moving_objects, cities):
-    print(f"{utils.bcolors.WARNING}Simulator DB update START{utils.bcolors.ENDC}")
+    #print(f"{utils.bcolors.WARNING}Simulator DB update START{utils.bcolors.ENDC}")
     
     command = "MATCH (node) DETACH DELETE node"
     tx.run(command)  
@@ -52,11 +52,11 @@ def create_data(tx, moving_objects, cities):
                 str(moving_object_a.laser_down_transmission_time) + " }]->(b)"
             tx.run(command) 
 
-    print(f"{utils.bcolors.WARNING}Simulator DB update END{utils.bcolors.ENDC}")
+    #print(f"{utils.bcolors.WARNING}Simulator DB update END{utils.bcolors.ENDC}")
 
 
 def update_data(tx, moving_objects, cities):
-    print(f"{utils.bcolors.WARNING}Simulator DB update START{utils.bcolors.ENDC}")
+    #print(f"{utils.bcolors.WARNING}Simulator DB update START{utils.bcolors.ENDC}")
     
     for moving_object in moving_objects:
         command = "MATCH (a:Satellite { id:'" + str(moving_object.id) + \
@@ -99,4 +99,4 @@ def update_data(tx, moving_objects, cities):
                 str(moving_object_a.laser_down_transmission_time)
             tx.run(command)
 
-    print(f"{utils.bcolors.WARNING}Simulator DB update END{utils.bcolors.ENDC}")
+    #print(f"{utils.bcolors.WARNING}Simulator DB update END{utils.bcolors.ENDC}")
