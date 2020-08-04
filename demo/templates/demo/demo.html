@@ -4,12 +4,18 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="https://uploads-ssl.webflow.com/5e7ceb09657a69bdab054b3a/5ea9d03561073b122a2bcf58_favicon.png" rel="shortcut icon" type="image/x-icon">
+
+    {% load static %}
+
+    <link href="https://uploads-ssl.webflow.com/5e7ceb09657a69bdab054b3a/5ea9d03561073b122a2bcf58_favicon.png"
+        rel="shortcut icon" type="image/x-icon">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel='stylesheet' href='https://unpkg.com/leaflet@1.6.0/dist/leaflet.css' />
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    
+        <link rel="stylesheet" type="text/css" href="{% static 'demo/style.css' %}">
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -26,15 +32,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/7.1.0/math.min.js"></script>
 
-    <style>
-        #map {
-            width: 100%;
-            height: 70vh;
-        }
 
-        .top-buffer {
-            margin-top: 20px;
-        }
+    <script src="{% static "demo/mapUtils.js" %}"></script>
+    <script src="{% static "demo/dropdownUtils.js" %}"></script>
+
+    <style>
+
     </style>
 
     <title>Starlink Simulator</title>
@@ -43,9 +46,11 @@
 <body>
     <div class="container">
         <div class="row top-buffer">
-            <div id="map" ></div>
+            <div class="card" style="width: 100%; border-radius: 10px;">
+                <div class="card-body" id="map"></div>
+                <div id='map-alert'></div>
+            </div>
         </div>
-
         <div class="row top-buffer">
             <div class="col">
                 <button type="button" class="btn btn-primary" id="startButton" onclick="runSimulation()">Start
@@ -85,121 +90,6 @@
         var removedItemDropdownOne;
         var removedItemDropdownTwo;
 
-        function initMap() {
-            map = L.map('map', { zoom: 2, center: [30, 0], layers: [citiesLayer], attributionControl: false });
-            L.tileLayer("https://api.maptiler.com/maps/basic/{z}/{x}/{y}.png?key=cYtmZZ4gfz1cXNCBs8r4", {
-                attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-                noWrap: true,
-                maxZoom: 5,
-                minZoom: 1
-            }).addTo(map);
-
-            var bounds = L.latLngBounds([[-70, -180], [80, 180]]);
-            map.setMaxBounds(bounds);
-
-            map.on('drag', function () {
-                map.panInsideBounds(bounds, { animate: false });
-            });
-        }
-
-        function drawCities() {
-            var sel = GetSelectionValue();
-            citiesLayer.clearLayers();
-            for (var i = 0; i < cities.length; i++) {
-                if (cities[i][0] == sel[0] || cities[i][0] == sel[1]) {
-                    var obj = cities[i].slice(1, 3);
-                    var marker = (L.marker(obj).bindTooltip(cities[i][3],
-                        {
-                            permanent: false,
-                            direction: "left"
-                        }
-                    ));
-                    citiesLayer.addLayer(marker);
-                }
-            }
-            citiesLayer.addTo(map);
-        }
-
-        function drawSatellites(sat_markers) {
-            satellitesLayer.clearLayers();
-            for (var i = 0; i < sat_markers.length; i++) {
-                var obj = sat_markers[i].slice(0, 2);
-                var circle = L.circle(obj, {
-                    color: 'darkblue',
-                    fillColor: '#f03',
-                    fillOpacity: 0.5,
-                    radius: 1000
-                });
-                satellitesLayer.addLayer(circle);
-            }
-            if (!simStopped) {
-                satellitesLayer.addTo(map);
-            }
-        }
-
-        function drawRelationships(rel_markers) {
-            relationshipsLayer.clearLayers();
-            for (var i = 0; i < rel_markers.length; i++) {
-                var obj = rel_markers[i];
-                if (!(obj[1] < -50 && obj[3] > 50) && !(obj[3] < -50 && obj[1] > 50)) {
-                    var satStart = [obj[0], obj[1]];
-                    var satEnd = [obj[2], obj[3]];
-                    var latlngs = [
-                        satStart,
-                        satEnd
-                    ];
-                    var polyline = L.polyline(latlngs, {
-                        color: 'lightgray', opacity: 0.1, weight: 1, smoothFactor: 1
-                    }).addTo(map);
-                    relationshipsLayer.addLayer(polyline);
-                }
-            }
-            if (!simStopped) {
-                relationshipsLayer.addTo(map);
-            }
-        }
-
-        function drawPoly(line) {
-            var polyline = L.polyline(line, {
-                color: 'red', opacity: 0.8, weight: 2.5, smoothFactor: 1
-            }).addTo(map);
-            shortestPathLayer.addLayer(polyline);
-        }
-
-        function drawShortestPath(sp_markers) {
-            shortestPathLayer.clearLayers();
-
-            for (var i = 0; i < sp_markers.length; i++) {
-                var obj = sp_markers[i];
-                var satStart = [obj[0], obj[1]];
-                var satEnd = [obj[2], obj[3]];
-                latlngS = { 'lat': obj[0], 'lng': obj[1] };
-                latlngE = { 'lat': obj[2], 'lng': obj[3] };
-                var latlngs = [
-                    latlngS,
-                    latlngE
-                ];
-                if (Math.abs(obj[3] - obj[1]) > 180) {
-                    flipDirection = latlngs[1].lng < 0 ? -1 : 1;
-
-                    latlngs[0].lng = flipDirection * -179.9999999;
-                    latlngs[1].lng = flipDirection * 179.9999999;
-
-                    var intersection = math.intersect(satStart, satEnd, [90, 0], [-90, 0]);
-
-                    section1 = [[obj[0], obj[1]], [intersection[0], latlngs[0].lng]];
-                    section2 = [[intersection[0], latlngs[1].lng], [obj[2], obj[3]]];
-
-                    drawPoly(section1);
-                    drawPoly(section2);
-                    continue;
-                }
-                drawPoly(latlngs);
-            }
-            if (!simStopped) {
-                shortestPathLayer.addTo(map);
-            }
-        }
 
         initMap();
 
@@ -212,76 +102,9 @@
 
         initDropdowns();
 
-        function dropdownOneSelect() {
-            var firstSelected = firstDropdown.options[firstDropdown.selectedIndex];
-            if (removedItemDropdownTwo != null) {
-                secondDropdown.add(removedItemDropdownTwo);
-            }
-            secondDropdown.options[findElement(secondDropdown.options, firstSelected.value)].remove();
-            removedItemDropdownTwo = firstSelected.cloneNode(true);
-
-            drawCities();
-        }
-
-        function dropdownTwoSelect() {
-            var secondSelected = secondDropdown.options[secondDropdown.selectedIndex];
-
-            if (removedItemDropdownOne != null) {
-                firstDropdown.add(removedItemDropdownOne);
-            }
-            firstDropdown.options[findElement(firstDropdown.options, secondSelected.value)].remove();
-            removedItemDropdownOne = secondSelected.cloneNode(true);
-
-            drawCities();
-        }
-
-        function findElement(list, value) {
-            for (var i = 0; i < list.length; i++) {
-                if (list[i].value == value) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        function populateDropdowns() {
-            for (var i = 0; i < cities.length; i++) {
-                var element = document.createElement("option");
-                element.text = cities[i][3];
-                element.value = cities[i][0];
-                firstDropdown.appendChild(element);
-            }
-            for (var i = 0; i < cities.length; i++) {
-                var element = document.createElement("option");
-                element.text = cities[i][3];
-                element.value = cities[i][0];
-                secondDropdown.appendChild(element);
-            }
-        }
-
-        function initDropdowns() {
-            firstDropdown.selectedIndex = 0;
-            secondDropdown.selectedIndex = 1;
-
-            var firstSelected = firstDropdown.options[firstDropdown.selectedIndex];
-            var secondSelected = secondDropdown.options[secondDropdown.selectedIndex];
-
-            firstDropdown.options[findElement(firstDropdown.options, secondSelected.value)].remove();
-            secondDropdown.options[findElement(secondDropdown.options, firstSelected.value)].remove();
-
-            removedItemDropdownOne = secondSelected.cloneNode(true);
-            removedItemDropdownTwo = firstSelected.cloneNode(true);
-        }
-
-        function GetSelectionValue() {
-            var element1 = document.getElementById("dropdownOne");
-            var element2 = document.getElementById("dropdownTwo");
-            var result1 = element1.options[element1.selectedIndex].value;
-            var result2 = element2.options[element2.selectedIndex].value;
-
-            var selection = [result1, result2];
-            return selection;
-        }
+        $(document).ready(function () {
+            idleFunction();
+        })
 
         function idleFunction() {
             simStopped = true;
@@ -304,6 +127,8 @@
             map.keyboard.enable();
             if (map.tap) map.tap.enable();
             document.getElementById('map').style.cursor = 'grab';
+
+            showAlert('Choose cities and start the simulation!', 'info');
         }
 
         function ajaxCall() {
@@ -352,15 +177,19 @@
             if (map.tap) map.tap.disable();
 
             document.getElementById('map').style.cursor = 'default';
+
+            showAlert('Simulation is running...', 'warning');
+
             while (!simStopped) {
                 ajaxCall();
                 await sleep(1500);
             }
         }
 
-        $(document).ready(function () {
-            idleFunction();
-        })
+        function showAlert(message, alertType) {
+            $('#map-alert').html("<div class='alert card-text alert-" + alertType + "'>" + message + "</div>");
+            $('#map-alert').show();
+        }
     </script>
 </body>
 
