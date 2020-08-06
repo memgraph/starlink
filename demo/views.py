@@ -12,7 +12,7 @@ import demo.utils as utils
 
 def index(request):
 
-    time.sleep(1)
+    time.sleep(2)
     db = Memgraph()
     #request.session['db'] = db
 
@@ -24,7 +24,6 @@ def index(request):
 
     json_cities = json.dumps(db_connection.city_json_format(cities))
 
-    #template = loader.get_template('demo/demo.html')
     return render(request, "demo/demo.html", {"city_markers": json_cities, "sat_markers": json_satellites, "rel_markers": json_relationships, "sp_markers": json_shortest_path})
 
 
@@ -54,7 +53,8 @@ def postSatellitesAndRelationships(request):
     json_relationships = json.dumps(
         db_connection.relationship_json_format(relationships))
 
-    json_shortest_path = json.dumps(
-        db_connection.shortest_path_json_format(shortest_path))
+    if (shortest_path != 0):
+        json_shortest_path = json.dumps(
+            db_connection.shortest_path_json_format(shortest_path))
 
     return JsonResponse({"json_satellites": json_satellites, "json_relationships": json_relationships, "json_shortest_path": json_shortest_path}, status=200)

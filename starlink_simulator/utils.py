@@ -42,7 +42,7 @@ def eci_distance(point_a, point_b):
 
 # Calculates angle in between two objects
 def calculate_angle(point_a, point_b):
-    angle = m.acos(const.SAT_ALT / eci_distance(point_a, point_b))
+    angle = m.acos(const.SAT_ALT / eci_distance(point_a, point_b)) *180.0/m.pi
     return angle
 
 

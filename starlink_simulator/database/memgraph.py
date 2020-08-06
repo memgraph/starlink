@@ -47,7 +47,6 @@ class Memgraph:
                         connection: Connection = None) -> None:
         """Executes Cypher query without returning any results."""
         connection = connection or self._get_cached_connection()
-        print("TRAN")
         return connection.execute_transaction(func, moving_objects, cities)
 
     def _get_cached_connection(self) -> Connection:

@@ -9,7 +9,7 @@ from skyfield.api import load, EarthSatellite, Topos
 
 satellites = []
 ts = load.timescale(builtin=True)
-minutes = np.arange(0, 24*60, 1)
+minutes = np.arange(0, 24*60*5, 1)
 time = ts.utc(2020, 7, 29, 0, minutes)
 
 
@@ -36,7 +36,7 @@ def import_cities():
                 row[2]), elevation_m=float(row[3]))
             geocentric = topos.at(time)
             city = City(id=row[0], x=topos.latitude.degrees, y=topos.longitude.degrees, z=topos.elevation.km,
-                        eci_x=geocentric.position.km[0], eci_y=geocentric.position.km[1], eci_z=geocentric.position.km[2], name=row[4])
+                        eci_x_positions=geocentric.position.km[0], eci_y_positions=geocentric.position.km[1], eci_z_positions=geocentric.position.km[2], name=row[4])
             cities.append(city)
     return cities
 
