@@ -3,7 +3,14 @@ function initMapMollweide() {
         resolutions: [65536, 32768, 16384, 8192, 4096, 2048]
     });
 
-    map = L.map('map', { crs: crs, noWrap: true, minZoom: 1, maxZoom: 3, layers: [citiesLayer], attributionControl: false });
+    map = L.map('map', {
+        renderer: L.canvas(),
+        crs: crs,
+        noWrap: true,
+        minZoom: 1,
+        maxZoom: 3,
+        attributionControl: false
+    });
 }
 
 function initMapMercator() {
@@ -20,7 +27,6 @@ function initMapMercator() {
         minZoom: 1,
     }).addTo(map);
 
-
     var bounds = L.latLngBounds([[-70, -180], [80, 180]]);
     map.setMaxBounds(bounds);
 
@@ -35,12 +41,12 @@ function drawCities() {
     for (var i = 0; i < cities.length; i++) {
         if (cities[i][0] == sel[0] || cities[i][0] == sel[1]) {
             var obj = cities[i].slice(1, 3);
-            var marker = (L.marker(obj).bindTooltip(cities[i][3],
+            var marker = L.circleMarker(obj,
                 {
-                    permanent: false,
-                    direction: "left"
+                    renderer: myRenderer,
+                    radius: 7
                 }
-            ));
+            ).bindPopup(cities[i][3]);
             citiesLayer.addLayer(marker);
         }
     }
@@ -48,14 +54,16 @@ function drawCities() {
 }
 
 function drawSatellites(sat_markers) {
+
     satellitesLayer.clearLayers();
     for (var i = 0; i < sat_markers.length; i++) {
         var obj = sat_markers[i].slice(0, 2);
-        var circle = L.circle(obj, {
+        var circle = L.circleMarker(obj, {
+            renderer: myRenderer,
             color: '#FF7F50',
             fillColor: '#f03',
             fillOpacity: 0.5,
-            radius: 1000
+            radius: 2
         });
         satellitesLayer.addLayer(circle);
     }
@@ -91,22 +99,30 @@ function drawRelationships(rel_markers) {
             continue;
         }
 
-        drawPolyRel(latlngs,'lightgray', relationshipsLayer);
-        
+        drawPolyRel(latlngs, 'lightgray', relationshipsLayer);
+
     }
     relationshipsLayer.addTo(map);
 }
 
 function drawPoly(line, colour, layer) {
     var polyline = L.polyline(line, {
-        color: colour, opacity: 0.8, weight: 2.5, smoothFactor: 1
+        renderer: myRenderer,
+        color: colour,
+        opacity: 0.8,
+        weight: 2.5,
+        smoothFactor: 1
     }).addTo(map);
     layer.addLayer(polyline);
 }
 
 function drawPolyRel(line, colour, layer) {
     var polyline = L.polyline(line, {
-        color: colour, opacity: 0.2, weight: 1, smoothFactor: 1
+        renderer: myRenderer,
+        color: colour,
+        opacity: 0.2,
+        weight: 1,
+        smoothFactor: 1
     }).addTo(map);
     layer.addLayer(polyline);
 }
@@ -158,6 +174,6 @@ function focusView() {
     var zoom = 2;
     if ((Math.abs(city1[1] - city2[1]) >= 50) || (Math.abs(city1[2] - city2[2]) >= 80)) {
         zoom = 1;
-    } 
+    }
     map.setView(focus, zoom);
 }

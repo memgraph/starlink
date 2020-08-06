@@ -94,7 +94,8 @@
         var json_shortest_path;
         var removedItemDropdownOne;
         var removedItemDropdownTwo;
-
+        var myRenderer;
+        var pane;
 
         initMapMollweide();
 
@@ -109,6 +110,9 @@
         }).addTo(map);
 
         map.fitWorld();
+
+        myRenderer = L.canvas({ padding: 0.5 });
+
         cities = JSON.parse("{{city_markers|escapejs}}");
 
         var firstDropdown = document.getElementById("dropdownOne");
@@ -158,10 +162,14 @@
                 async: true,
                 success: function (data) {
                     drawCities();
-                    //focusView();
                     drawRelationships(JSON.parse(data.json_relationships));
-                    drawShortestPath(JSON.parse(data.json_shortest_path));
                     drawSatellites(JSON.parse(data.json_satellites));
+
+                    if (data.json_shortest_path.length != 0) {
+                        drawShortestPath(JSON.parse(data.json_shortest_path));
+                    } else{
+                        shortestPathLayer.clearLayers();
+                    }
                 },
                 error: function (thrownError) {
                     alert(thrownError);
@@ -202,7 +210,7 @@
                     break;
                 }
                 ajaxCall();
-                await sleep(600);
+                await sleep(1000);
             }
         }
 
