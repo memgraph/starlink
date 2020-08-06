@@ -5,8 +5,8 @@ from starlink_simulator.database.connection import Connection
 __all__ = ('Memgraph',)
 
 
-MG_HOST = os.getenv('MG_HOST', '172.17.0.2')
-MG_PORT = int(os.getenv('MG_PORT', '7687'))
+MG_HOST = os.getenv('MG_HOST')
+MG_PORT = int(os.getenv('MG_PORT'))
 MG_USERNAME = os.getenv('MG_USERNAME', '')
 MG_PASSWORD = os.getenv('MG_PASSWORD', '')
 MG_ENCRYPTED = os.getenv('MG_ENCRYPT', 'true').lower() == 'true'
@@ -47,6 +47,7 @@ class Memgraph:
                         connection: Connection = None) -> None:
         """Executes Cypher query without returning any results."""
         connection = connection or self._get_cached_connection()
+        print("TRAN")
         return connection.execute_transaction(func, moving_objects, cities)
 
     def _get_cached_connection(self) -> Connection:

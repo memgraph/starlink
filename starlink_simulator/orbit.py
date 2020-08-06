@@ -27,9 +27,9 @@ class Orbit:
         for moving_object in self.moving_objects:
             moving_object.laser_left_distance = utils.eci_distance(
                 moving_object, moving_objects_dict[moving_object.laser_left_id])
-            moving_object.laser_left_transmission_time = moving_object.laser_left_distance / \
+            moving_object.laser_left_transmission_time = 1000*moving_object.laser_left_distance / \
                 const.V_LASER_VACUUM
             moving_object.laser_right_distance = utils.eci_distance(
                 moving_object, moving_objects_dict[moving_object.laser_right_id])
-            moving_object.laser_right_transmission_time = moving_object.laser_right_distance / \
+            moving_object.laser_right_transmission_time = 1000*moving_object.laser_right_distance / \
                 const.V_LASER_VACUUM
