@@ -4,9 +4,9 @@ import starlink_simulator.utils as utils
 
 
 class City(StationaryObject):
-    def __init__(self, id, x, y, z, eci_x_positions, eci_y_positions, eci_z_positions, name):
+    def __init__(self, id, x, y, z, eci_x, eci_y, eci_z, name):
         StationaryObject.__init__(
-            self, id, x, y, z, eci_x_positions, eci_y_positions, eci_z_positions)
+            self, id, x, y, z, eci_x, eci_y, eci_z)
         self.name = name
         self.id = id
         self.moving_objects_distances_dict = {}
