@@ -64,3 +64,10 @@ function GetSelectionValue() {
 
     return [firstSelected, secondSelected];
 }
+
+function GetSelectionText(){
+    var firstSelected = firstDropdown.options[firstDropdown.selectedIndex].text;
+    var secondSelected = secondDropdown.options[secondDropdown.selectedIndex].text;
+
+    return [firstSelected, secondSelected];
+}

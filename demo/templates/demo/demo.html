@@ -38,6 +38,7 @@
     <script src="{% static "demo/countries-110m.js" %}"></script>
     <script src="{% static "demo/map.js" %}"></script>
     <script src="{% static "demo/dropdown.js" %}"></script>
+    <script src="{% static "demo/transmission.js" %}"></script>
 
     <style>
 
@@ -60,6 +61,8 @@
                     simulation</button>
                 <button type="button" class="btn btn-warning" id="stopButton" onclick="idleFunction()">Stop
                     simulation</button>
+                <div id="ttime"></div>
+                <div id="optic"></div>
             </div>
         </div>
         <div class="row top-buffer">
@@ -167,8 +170,11 @@
 
                     if (data.json_shortest_path.length != 0) {
                         drawShortestPath(JSON.parse(data.json_shortest_path));
+                        document.getElementById("ttime").innerHTML = transmission_time(JSON.parse(data.json_shortest_path));
+                        optic_cable_time();
                     } else{
                         shortestPathLayer.clearLayers();
+                        document.getElementById("ttime").innerHTML = "No visible satellites.";
                     }
                 },
                 error: function (thrownError) {

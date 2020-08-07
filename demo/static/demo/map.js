@@ -36,6 +36,7 @@ function initMapMercator() {
 }
 
 function drawCities() {
+    
     var sel = GetSelectionValue();
     citiesLayer.clearLayers();
     for (var i = 0; i < cities.length; i++) {
