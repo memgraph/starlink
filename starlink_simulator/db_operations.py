@@ -2,6 +2,8 @@ import starlink_simulator.utils as utils
 
 
 def create_data(tx, moving_objects, cities):
+    print(f"{utils.bcolors.WARNING}Simulator DB update START{utils.bcolors.ENDC}")
+    
     for moving_object in moving_objects:
         command = "CREATE (n:Satellite {id:'" + str(moving_object.id) + \
             "', x:" + str(moving_object.x) + \
@@ -23,7 +25,7 @@ def create_data(tx, moving_objects, cities):
                 "' CREATE (b)-[r:VISIBLE_FROM { transmission_time: " + \
                 str(city.moving_objects_tt_dict[key]) + " }]->(a)"
             tx.run(command)
-    
+
     for moving_object_a in moving_objects:
         command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object_a.laser_left_id) + "' AND a.id = '" + str(moving_object_a.id) + \
             "' CREATE (a)-[r:CONNECTED_TO { transmission_time: " + \
@@ -45,8 +47,11 @@ def create_data(tx, moving_objects, cities):
                 str(moving_object_a.laser_down_transmission_time) + " }]->(b)"
             tx.run(command)
 
+    
+
 
 def update_data(tx, moving_objects, cities):
+    print(f"{utils.bcolors.WARNING}Simulator DB update START{utils.bcolors.ENDC}")
 
     for moving_object in moving_objects:
         command = "MATCH (a:Satellite { id:'" + str(moving_object.id) + \
@@ -85,6 +90,7 @@ def update_data(tx, moving_objects, cities):
                 " SET r.transmission_time=" + \
                 str(moving_object_a.laser_down_transmission_time)
             tx.run(command)
+
 
 
 def clear(db):

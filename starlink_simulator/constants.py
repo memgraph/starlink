@@ -20,4 +20,4 @@ VIEW_ANGLE = 60
 CITIES_FILE = "starlink_simulator/imports/cities.csv"
 OPTICAL_FILE = "starlink_simulator/imports/latencies.csv"
 EDGE_CONNECTED = True
-DB_UPDATE_TIME = 0.5
+DB_UPDATE_TIME = 1.5

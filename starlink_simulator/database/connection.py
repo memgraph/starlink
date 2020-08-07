@@ -113,6 +113,7 @@ class Neo4jConnection(Connection):
         """Executes Cypher queries without returning any results."""
         with self._connection.session() as session:   
             session.write_transaction(func, moving_objects, cities)
+        print(f"{utils.bcolors.WARNING}Simulator DB update END{utils.bcolors.ENDC}")
         
     def execute_and_fetch(self, query: str) -> Iterator[Dict[str, Any]]:
         """Executes Cypher query and returns iterator of results."""

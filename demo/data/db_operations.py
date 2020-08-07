@@ -7,7 +7,7 @@ def import_all_cities(db):
 
 
 def import_data(tx, city1, city2):
-    #print(f"{utils.bcolors.OKGREEN}Simulator DB update START{utils.bcolors.ENDC}")
+    print(f"{utils.bcolors.OKGREEN}Web DB update START{utils.bcolors.ENDC}")
           
     results = {}
 
@@ -21,7 +21,5 @@ def import_data(tx, city1, city2):
 
     command = "MATCH (s1:Satellite)-[r]-(s2:Satellite) RETURN r, s1, s2;"
     results[1] = tx.run(command)
-
-    #print(f"{utils.bcolors.OKGREEN}Simulator DB update END{utils.bcolors.ENDC}")
 
     return results

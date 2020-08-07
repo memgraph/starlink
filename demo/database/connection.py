@@ -114,7 +114,8 @@ class Neo4jConnection(Connection):
         """Executes Cypher queries and returns dictionary of results."""
 
         with self._connection.session() as session:
-            res = session.read_transaction(func, city1, city2)
+            res = session.write_transaction(func, city1, city2)
+        print(f"{utils.bcolors.OKGREEN}Web DB update END{utils.bcolors.ENDC}")
 
         output = {}
         output[0] = []
