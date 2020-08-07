@@ -57,28 +57,41 @@
         </div>
         <div class="row top-buffer">
             <div class="col">
-                <button type="button" class="btn btn-primary" id="startButton" onclick="runSimulation()">Start
-                    simulation</button>
-                <button type="button" class="btn btn-warning" id="stopButton" onclick="idleFunction()">Stop
-                    simulation</button>
-                <div id="ttime"></div>
-                <div id="optic"></div>
-            </div>
-        </div>
-        <div class="row top-buffer">
-            <div class="col-3">
-                <div class="form-group">
-                    <select class="form-control form-control-md" id="dropdownOne"
-                        onchange="if (this.selectedIndex!=-1)  dropdownOneSelect();">Select
-                        starting city</select>
+                <div class="row top-buffer">
+                    <div class="col-5">
+                        <button type="button" class="btn btn-primary" id="startButton" onclick="runSimulation()">Start
+                            simulation</button>
+                    </div>
+                    <div class="col-5">
+                        <button type="button" class="btn btn-warning" id="stopButton" onclick="idleFunction()">Stop
+                            simulation</button>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-5">
+                        <div class="form-group">
+                            <select class="form-control form-control-md" id="dropdownOne"
+                                onchange="if (this.selectedIndex!=-1)  dropdownOneSelect();">Select
+                                starting city</select>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="form-group">
+                            <select class="form-control form-control-md" id="dropdownTwo"
+                                onchange="if (this.selectedIndex!=-1)  dropdownTwoSelect();">Select
+                                ending
+                                city</select>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-3">
-                <div class="form-group">
-                    <select class="form-control form-control-md" id="dropdownTwo"
-                        onchange="if (this.selectedIndex!=-1)  dropdownTwoSelect();">Select
-                        ending
-                        city</select>
+            <div class="col">
+                <div class="card" style="width: 100%; border-radius: 10px;">
+                    <div id='tt-alert'></div>
+                    <div class="card-body">
+                        <div id="ttime"></div>
+                        <div id="optic"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -150,7 +163,8 @@
             if (map.tap) map.tap.enable();
             document.getElementById('map').style.cursor = 'grab';
 
-            showAlert('Choose cities and start the simulation!', 'info');
+            showMapAlert('Choose cities and start the simulation!', 'info');
+            showTransmissionTimeAlert('Transmission time for satellite communication and fiber-optic cable', 'info');
         }
 
         function ajaxCall() {
@@ -172,14 +186,14 @@
 
                     if (data.json_shortest_path.length != 0) {
                         drawShortestPath(JSON.parse(data.json_shortest_path));
-                        document.getElementById("ttime").innerHTML = "Transmission time with satellites: " + transmission_time(JSON.parse(data.json_shortest_path));
+                        document.getElementById("ttime").innerHTML = "Satellite communication: " + transmission_time(JSON.parse(data.json_shortest_path));
                         selectedCities = GetSelectionText();
-                        document.getElementById("optic").innerHTML = "Transmission time through fiber-optic cable: " + optical_time(opticalPaths, selectedCities[0], selectedCities[1]);
-                    } else{
+                        document.getElementById("optic").innerHTML = "Fiber-optic cable communication: " + optical_time(opticalPaths, selectedCities[0], selectedCities[1]);
+                    } else {
                         shortestPathLayer.clearLayers();
                         document.getElementById("ttime").innerHTML = "No visible satellites.";
                         selectedCities = GetSelectionText();
-                        document.getElementById("optic").innerHTML = "Transmission time through fiber-optic cable: " + optical_time(opticalPaths, selectedCities[0], selectedCities[1]);
+                        document.getElementById("optic").innerHTML = "Fiber-optic cable communication: " + optical_time(opticalPaths, selectedCities[0], selectedCities[1]);
                     }
                 },
                 error: function (thrownError) {
@@ -211,13 +225,15 @@
 
             document.getElementById('map').style.cursor = 'default';
 
-            showAlert('Simulation is running...', 'warning');
+            showMapAlert('Simulation is running...', 'warning');
 
             while (true) {
                 if (simStopped) {
                     relationshipsLayer.clearLayers();
                     satellitesLayer.clearLayers();
                     shortestPathLayer.clearLayers();
+                    document.getElementById("ttime").innerHTML = "";
+                    document.getElementById("optic").innerHTML = "";
                     break;
                 }
                 ajaxCall();
@@ -225,9 +241,14 @@
             }
         }
 
-        function showAlert(message, alertType) {
+        function showMapAlert(message, alertType) {
             $('#map-alert').html("<div class='alert card-text alert-" + alertType + "'>" + message + "</div>");
             $('#map-alert').show();
+        }
+
+        function showTransmissionTimeAlert(message, alertType) {
+            $('#tt-alert').html("<div class='alert card-text alert-" + alertType + "'>" + message + "</div>");
+            $('#tt-alert').show();
         }
     </script>
 </body>
