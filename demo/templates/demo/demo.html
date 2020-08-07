@@ -87,6 +87,7 @@
     <script>
         var map;
         var cities;
+        var opticalPaths;
         var simStopped = true;
         var citiesLayer = new L.LayerGroup();
         var satellitesLayer = new L.LayerGroup();
@@ -117,6 +118,7 @@
         myRenderer = L.canvas({ padding: 0.5 });
 
         cities = JSON.parse("{{city_markers|escapejs}}");
+        opticalPaths = JSON.parse("{{op_markers|escapejs}}");
 
         var firstDropdown = document.getElementById("dropdownOne");
         var secondDropdown = document.getElementById("dropdownTwo");
@@ -170,11 +172,14 @@
 
                     if (data.json_shortest_path.length != 0) {
                         drawShortestPath(JSON.parse(data.json_shortest_path));
-                        document.getElementById("ttime").innerHTML = transmission_time(JSON.parse(data.json_shortest_path));
-                        optic_cable_time();
+                        document.getElementById("ttime").innerHTML = "Transmission time with satellites: " + transmission_time(JSON.parse(data.json_shortest_path));
+                        selectedCities = GetSelectionText();
+                        document.getElementById("optic").innerHTML = "Transmission time through fiber-optic cable: " + optical_time(opticalPaths, selectedCities[0], selectedCities[1]);
                     } else{
                         shortestPathLayer.clearLayers();
                         document.getElementById("ttime").innerHTML = "No visible satellites.";
+                        selectedCities = GetSelectionText();
+                        document.getElementById("optic").innerHTML = "Transmission time through fiber-optic cable: " + optical_time(opticalPaths, selectedCities[0], selectedCities[1]);
                     }
                 },
                 error: function (thrownError) {

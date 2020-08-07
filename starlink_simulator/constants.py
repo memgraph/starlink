@@ -15,6 +15,6 @@ V_LASER_CABLE = 2.04190477E+8
 V_RADIO = 2.99792458E+8
 VIEW_ANGLE = 45
 CITIES_FILE = "starlink_simulator/imports/cities.csv"
-OPTIC_FILE = "starlink_simulator/imports/latencies.csv"
+OPTICAL_FILE = "starlink_simulator/imports/latencies.csv"
 EDGE_CONNECTED = True
 DB_UPDATE_TIME = 0.5

@@ -15,6 +15,7 @@ def starlink(tmp: str) -> str:
     orbits, orbits_dict, moving_objects, moving_objects_dict = orbital_mechanics_utils.generateMovingObjects()
 
     cities = orbital_mechanics_utils.import_cities()
+    optical_paths = orbital_mechanics_utils.import_optical_paths()
 
     relation_utils.update_city_moving_object_distances(cities, moving_objects)
 

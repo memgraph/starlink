@@ -8,6 +8,7 @@ from django.http import JsonResponse
 import demo.data.db_connection as db_connection
 import time
 import demo.utils as utils
+import starlink_simulator.orbital_mechanics_utils as omu
 
 
 def index(request):
@@ -21,10 +22,12 @@ def index(request):
     json_shortest_path = []
 
     cities = db_connection.fetch_cities(db)
+    optical_paths = omu.import_optical_paths()
 
     json_cities = json.dumps(db_connection.city_json_format(cities))
+    json_optical_paths = json.dumps(db_connection.optical_paths_json_format(optical_paths))
 
-    return render(request, "demo/demo.html", {"city_markers": json_cities, "sat_markers": json_satellites, "rel_markers": json_relationships, "sp_markers": json_shortest_path})
+    return render(request, "demo/demo.html", {"city_markers": json_cities, "sat_markers": json_satellites, "rel_markers": json_relationships, "sp_markers": json_shortest_path, "op_markers": json_optical_paths})
 
 
 def postSatellitesAndRelationships(request):

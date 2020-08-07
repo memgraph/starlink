@@ -80,3 +80,10 @@ def shortest_path_json_format(shortest_path):
         json_shortest_path.append(
             [sp.xS, sp.yS, sp.xE, sp.yE, sp.transmission_time])
     return json_shortest_path
+
+
+def optical_paths_json_format(optical_paths):
+    json_optical_paths = []
+    for op in optical_paths:
+        json_optical_paths.append([op.city1, op.city2, op.transmission_time_ms])
+    return json_optical_paths

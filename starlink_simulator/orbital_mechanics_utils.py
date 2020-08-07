@@ -5,6 +5,7 @@ from starlink_simulator.city import City
 from starlink_simulator.moving_object import MovingObject
 from starlink_simulator.orbit import Orbit
 from skyfield.api import load, EarthSatellite, Topos
+from starlink_simulator.optical_path import OpticalPath
 
 
 satellites = []
@@ -39,6 +40,17 @@ def import_cities():
                         eci_x_positions=geocentric.position.km[0], eci_y_positions=geocentric.position.km[1], eci_z_positions=geocentric.position.km[2], name=row[4])
             cities.append(city)
     return cities
+
+
+def import_optical_paths():
+    paths = []
+    with open(const.OPTICAL_FILE, 'r') as f:
+        reader = csv.reader(f, delimiter=',')
+        for row in reader:
+            if row:
+                optical_path = OpticalPath(city1=row[0], city2=row[1], transmission_time_ms=row[2])
+                paths.append(optical_path)
+    return paths
 
 
 def generateMovingObjects():
