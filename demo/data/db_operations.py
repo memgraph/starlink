@@ -1,4 +1,5 @@
-import demo.utils as utils
+"""TODO: remove before deployment"""
+#import demo.utils as utils
 
 
 def import_all_cities(db):
@@ -7,7 +8,9 @@ def import_all_cities(db):
 
 
 def import_data(tx, city1, city2):
-    print(f"{utils.bcolors.OKGREEN}Web DB update START{utils.bcolors.ENDC}")
+    """TODO: remove before deployment"""
+    #print(f"{utils.bcolors.OKGREEN}Web DB update START{utils.bcolors.ENDC}")
+
 
     results = {}
 

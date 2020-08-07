@@ -34,6 +34,8 @@ class MovingObject:
         self.laser_right_id_in_orbit = laser_right_id_in_orbit
 
     def updatePosition(self):
+        """TODO: remove before deployment"""
+        """
         if(utils.eci_distance_coordinates(self.eci_x, self.eci_y, self.eci_z, self.eci_x_positions[self.current_position], self.eci_y_positions[self.current_position], self.eci_z_positions[self.current_position]) < 420):
             print("NOT POSSIBLE")
 
@@ -41,6 +43,7 @@ class MovingObject:
             print("NOT POSSIBLE")
             print(utils.distance_coordinates(self.x, self.y,
                                              self.longitude_positions[self.current_position], self.latitude_positions[self.current_position]))
+        """
 
         self.x = self.longitude_positions[self.current_position]
         self.y = self.latitude_positions[self.current_position]

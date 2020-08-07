@@ -2,8 +2,10 @@ import starlink_simulator.utils as utils
 
 
 def create_data(tx, moving_objects, cities):
-    print(f"{utils.bcolors.WARNING}Simulator DB update START{utils.bcolors.ENDC}")
-    
+    """TODO: remove before deployment"""
+    #print(f"{utils.bcolors.WARNING}Simulator DB update START{utils.bcolors.ENDC}")
+
+    tx.run("BEGIN")
     for moving_object in moving_objects:
         command = "CREATE (n:Satellite {id:'" + str(moving_object.id) + \
             "', x:" + str(moving_object.x) + \
@@ -46,13 +48,14 @@ def create_data(tx, moving_objects, cities):
                 "' CREATE (a)-[r:CONNECTED_TO { transmission_time: " + \
                 str(moving_object_a.laser_down_transmission_time) + " }]->(b)"
             tx.run(command)
-
-    
+    tx.run("COMMIT")
 
 
 def update_data(tx, moving_objects, cities):
-    print(f"{utils.bcolors.WARNING}Simulator DB update START{utils.bcolors.ENDC}")
+    """TODO: remove before deployment"""
+    #print(f"{utils.bcolors.WARNING}Simulator DB update START{utils.bcolors.ENDC}")
 
+    tx.run("BEGIN")
     for moving_object in moving_objects:
         command = "MATCH (a:Satellite { id:'" + str(moving_object.id) + \
             "'}) SET a.x=" + str(moving_object.x) + \
@@ -90,7 +93,7 @@ def update_data(tx, moving_objects, cities):
                 " SET r.transmission_time=" + \
                 str(moving_object_a.laser_down_transmission_time)
             tx.run(command)
-
+    tx.run("COMMIT")
 
 
 def clear(db):

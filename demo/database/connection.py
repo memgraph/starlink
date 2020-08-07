@@ -115,7 +115,11 @@ class Neo4jConnection(Connection):
 
         with self._connection.session() as session:
             res = session.read_transaction(func, city1, city2)
-        print(f"{utils.bcolors.OKGREEN}Web DB update END{utils.bcolors.ENDC}")
+        
+
+        """TODO: remove before deployment"""
+        #print(f"{utils.bcolors.OKGREEN}Web DB update END{utils.bcolors.ENDC}")
+
 
         output = {}
         output[0] = []
