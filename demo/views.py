@@ -35,13 +35,13 @@ def postSatellitesAndRelationships(request):
     #db = request.session['db']
 
     satellites = []
-    relationships = []
-    shortest_path = []
+    relationships = [] 
+    shortest_path = [] 
 
     json_satellites = []
-    json_relationships = []
+    json_relationships = []   
     json_shortest_path = []
-
+ 
     results = db.execute_transaction(db_operations.import_data, request.GET.get(
         'cityOne', None), request.GET.get('cityTwo', None))
 

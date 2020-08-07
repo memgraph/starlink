@@ -1,10 +1,10 @@
-import starlink_simulator.constants as const
-import starlink_simulator.utils as utils
+import simulator.constants as const
+import simulator.utils as utils
 
 
 class Orbit:
     def __init__(self, id):
-        self.id = id
+        self.id = id 
         self.moving_objects = []
 
     def add_object(self, moving_objects):

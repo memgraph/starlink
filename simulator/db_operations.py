@@ -1,4 +1,4 @@
-import starlink_simulator.utils as utils
+import simulator.utils as utils
 
 
 def create_data(tx, moving_objects, cities):

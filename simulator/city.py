@@ -1,6 +1,6 @@
-import starlink_simulator.constants as const
-from starlink_simulator.stationary_object import StationaryObject
-import starlink_simulator.utils as utils
+import simulator.constants as const
+from simulator.stationary_object import StationaryObject
+import simulator.utils as utils
 
 
 class City(StationaryObject):
@@ -10,7 +10,7 @@ class City(StationaryObject):
         self.name = name
         self.id = id
         self.moving_objects_distances_dict = {}
-        self.moving_objects_tt_dict = {}
+        self.moving_objects_tt_dict = {} 
 
 
     # Calculates distances between cities and moving objects in view_angle field of view
@@ -18,7 +18,7 @@ class City(StationaryObject):
         self.moving_objects_distances_dict = {}
         self.moving_objects_tt_dict = {}
         for moving_object in moving_objects:
-            angle = utils.calculate_angle(self, moving_object)
+            angle = utils.calculate_angle(self, moving_object)  
             if angle <= const.VIEW_ANGLE:
                 dist = utils.eci_distance(self, moving_object)
                 self.moving_objects_distances_dict[moving_object.id] = dist

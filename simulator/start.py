@@ -1,4 +1,4 @@
-import starlink_simulator.starlink as s
+import simulator.starlink as s
 
 
 def start(name: str) -> str:

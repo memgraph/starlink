@@ -1,11 +1,15 @@
 version: '3'
 services:
-  starlink_simulator:
+  memgraph:
+    image: "memgraph"
+    ports:
+      - "7687:7687"
+  simulator:
     build: .
+    volumes:
+      - ./simulator:/app/simulator
     ports:
       - "3000:3000"
-    volumes:
-      - ./starlink_simulator:/app/starlink_simulator
     environment:
       MG_HOST: memgraph
       MG_PORT: 7687
@@ -15,16 +19,12 @@ services:
   web:
     build: .
     volumes:
-      - ./starlink_simulator:/app/starlink_simulator
-      - .:/app
+      - ./demo:/app/demo
     ports:
       - "8000:8000"
     environment:
       MG_HOST: memgraph
       MG_PORT: 7687
+    command: python manage.py runserver 0.0.0.0:8000
     depends_on:
-      - starlink_simulator
-  memgraph:
-    image: "memgraph"
-    ports:
-      - "7687:7687"
+      - simulator

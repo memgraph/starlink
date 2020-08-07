@@ -1,9 +1,9 @@
-import starlink_simulator.constants as const
+import simulator.constants as const
 import csv
 import numpy as np
-from starlink_simulator.city import City
-from starlink_simulator.moving_object import MovingObject
-from starlink_simulator.orbit import Orbit
+from simulator.city import City
+from simulator.moving_object import MovingObject
+from simulator.orbit import Orbit
 from skyfield.api import load, EarthSatellite, Topos
 
 

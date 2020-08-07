@@ -20,7 +20,7 @@ logger.setLevel(logging.INFO)
 
 
 def load(cypher_stream: Iterator[str], total_count: int = None):
-    from starlink_simulator.database import Memgraph
+    from simulator.database import Memgraph
     db = Memgraph()
 
     one_percentage = None

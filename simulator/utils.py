@@ -1,4 +1,4 @@
-import starlink_simulator.constants as const
+import simulator.constants as const
 import math as m
 
 

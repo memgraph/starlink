@@ -1,6 +1,6 @@
-import starlink_simulator.constants as const
+import simulator.constants as const
 import math as m
-import starlink_simulator.utils as utils
+import simulator.utils as utils
 
 
 class MovingObject:
@@ -14,8 +14,8 @@ class MovingObject:
         self.altitude = altitude
 
         self.current_position = 0
-        self.positions_lenght = len(longitude_positions)
-
+        self.positions_lenght = len(longitude_positions) 
+        
         self.x = self.longitude_positions[self.current_position]
         self.y = self.latitude_positions[self.current_position]
         self.z = altitude

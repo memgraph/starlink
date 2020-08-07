@@ -1,6 +1,6 @@
 import os
 from typing import Any, Dict, Iterator
-from starlink_simulator.database.connection import Connection
+from simulator.database.connection import Connection
 
 __all__ = ('Memgraph',)
 

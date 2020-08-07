@@ -1,6 +1,6 @@
 import pytest
-from starlink_simulator.database import Memgraph, Node
-from starlink_simulator import query
+from simulator.database import Memgraph, Node
+from simulator import query
 
 
 @pytest.fixture

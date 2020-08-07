@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "starlink_simulator"
+name = "simulator"
 version = "0.1.0"
 description = ""
 authors = []

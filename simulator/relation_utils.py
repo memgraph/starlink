@@ -1,4 +1,4 @@
-import starlink_simulator.utils as utils
+import simulator.utils as utils
 
 
 # Updates the position of each object in all orbits
@@ -16,7 +16,7 @@ def update_city_positions(cities):
 def update_city_moving_object_distances(cities, moving_objects):
     for city in cities:
         city.city_visible_moving_object_distances(moving_objects)
-
+ 
 
 # Updates all object laser connections
 def update_laser_connections(orbits, orbits_dict, moving_objects_dict):

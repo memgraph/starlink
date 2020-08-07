@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Iterator
-from starlink_simulator.database.models import Node, Relationship
-import starlink_simulator.utils as utils
+from simulator.database.models import Node, Relationship
+import simulator.utils as utils
 
 _use_mgclient = True
 try:

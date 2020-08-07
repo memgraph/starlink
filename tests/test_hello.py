@@ -1,5 +1,5 @@
 import pytest
-from starlink_simulator import hello
+from simulator import hello
 
 
 @pytest.mark.parametrize('name', [
@@ -15,7 +15,7 @@ def test_error_hello(name):
 @pytest.mark.parametrize('name', [
     'Memgraph',
     'Multiple words',
-    '"Escaped"',
+    '"Escaped"', 
 ])
 def test_correct_hello(name):
     hello_name = hello(name)

@@ -1,4 +1,4 @@
-starlink_simulator
+Starlink simulator and web app
 ===
 
 ## 1. Local
@@ -34,7 +34,7 @@ poetry run python main.py hello <name>
 Build docker image with following command:
 
 ```shell
-docker build -t starlink_simulator .
+docker build -t simulator .
 
 # If using docker-compose
 docker-compose build
@@ -45,13 +45,13 @@ docker-compose build
 If you have Memgraph already running you can run tests from application Docker only:
 
 ```shell
-docker run --rm -e MG_HOST=<host> -e MG_PORT=<port> starlink_simulator python -m pytest
+docker run --rm -e MG_HOST=<host> -e MG_PORT=<port> simulator python -m pytest
 ```
 
 If you want to run a full setup of Memgraph database and the application, use docker compose instead:
 
 ```shell
-docker-compose run starlink_simulator python -m pytest
+docker-compose run simulator python -m pytest
 ```
 
 ### 2.3. Run
@@ -59,7 +59,7 @@ docker-compose run starlink_simulator python -m pytest
 Run docker container with custom arguments:
 
 ```shell
-docker run --rm -p 3000:3000 starlink_simulator python main.py
+docker run --rm -p 3000:3000 simulator python main.py
 ```
 
 In order to run full setup: Memgraph database and application, use docker compose instead:
