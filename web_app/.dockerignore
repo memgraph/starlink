@@ -1,0 +1,6 @@
+*.egg-info
+.git
+.cache
+htmlcov
+**/__pycache__
+**/*.pyc

@@ -5,9 +5,9 @@ services:
     ports:
       - "7687:7687"
   simulator:
-    build: .
+    build: ./simulator
     volumes:
-      - ./simulator:/app/simulator
+      - ./simulator:/app
     ports:
       - "3000:3000"
     environment:
@@ -17,9 +17,9 @@ services:
     depends_on:
       - memgraph
   web:
-    build: .
+    build: ./web_app
     volumes:
-      - ./demo:/app/demo
+      - ./web_app:/app
     ports:
       - "8000:8000"
     environment:
