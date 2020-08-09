@@ -45,32 +45,37 @@
 
 <body>
     <div class="container">
-        <div class="row top-buffer">
-            <div class="jumbotron m-0 p-3">
-                <h2>Starlink Network Simulator</h2>
-                <hr class="m-0 p-1">
-                <div class="row top-buffer-sm">
-                    <div class="col-sm-12 col-md-9">
-                        <p>This is a demonstration of how Memgraph DB can be used to calculate the shortest path
-                            for data transmission using a satellite network. For more information, visit our blog post:
-                        </p>
-                    </div>
-                    <div class="col-sm-12 col-md-3">
-                        <a class="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer"
-                            href="https://memgraph.com/blog" role="button">BLOG POST</a>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="jumbotron m-0 p-3">
+                    <h2>Starlink Network Simulator</h2>
+                    <hr class="m-0 p-1">
+                    <div class="row mt-3">
+                        <div class="col-sm-12 col-md-9">
+                            <p>This is a demonstration of how Memgraph DB can be used to calculate the shortest path
+                                for data transmission using a satellite network. For more information, visit our blog
+                                post:
+                            </p>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <a class="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer"
+                                href="https://memgraph.com/blog" role="button">BLOG POST</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row top-buffer">
-            <div class="card" style="width: 100%; height:60vh; border-radius: 10px;">
-                <div class="card-body" id="map"></div>
-                <div id='map-alert'></div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="card" style="width: 100%; height:58vh; border-radius: 10px;">
+                    <div class="card-body" id="map"></div>
+                    <div id='map-alert'></div>
+                </div>
             </div>
         </div>
-        <div class="row top-buffer">
+        <div class="row mt-3">
             <div class="col-sm-12 col-md-6">
-                <div class="row top-buffer">
+                <div class="row mt-3">
                     <div class="col-sm-6 col-md-5">
                         <button type="button" class="btn btn-primary mb-3" id="startButton"
                             onclick="simulationStarted()">Start
@@ -81,7 +86,7 @@
                             simulation</button>
                     </div>
                 </div>
-                <div class="row top-buffer">
+                <div class="row mt-3">
                     <div class="col-sm-6 col-md-5">
                         <div class="form-group">
                             <select class="form-control form-control-md" id="dropdownOne"
