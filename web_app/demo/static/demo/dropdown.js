@@ -1,4 +1,7 @@
-function populateDropdowns() {
+function createDropdowns() {
+    firstDropdown = document.getElementById("dropdownOne");
+    secondDropdown = document.getElementById("dropdownTwo");
+
     for (var i = 0; i < cities.length; i++) {
         var element = document.createElement("option");
         element.text = cities[i][3];
@@ -11,9 +14,7 @@ function populateDropdowns() {
         element.value = cities[i][0];
         secondDropdown.appendChild(element);
     }
-}
 
-function initDropdowns() {
     firstDropdown.selectedIndex = 0;
     secondDropdown.selectedIndex = 1;
 
@@ -65,7 +66,7 @@ function GetSelectionValue() {
     return [firstSelected, secondSelected];
 }
 
-function GetSelectionText(){
+function GetSelectionText() {
     var firstSelected = firstDropdown.options[firstDropdown.selectedIndex].text;
     var secondSelected = secondDropdown.options[secondDropdown.selectedIndex].text;
 

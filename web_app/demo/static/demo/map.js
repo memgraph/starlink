@@ -55,7 +55,6 @@ function drawCities() {
 }
 
 function drawSatellites(sat_markers) {
-
     satellitesLayer.clearLayers();
     for (var i = 0; i < sat_markers.length; i++) {
         var obj = sat_markers[i].slice(0, 2);
@@ -68,6 +67,7 @@ function drawSatellites(sat_markers) {
         });
         satellitesLayer.addLayer(circle);
     }
+    if (simStopped) return;
     satellitesLayer.addTo(map);
 }
 
@@ -99,10 +99,10 @@ function drawRelationships(rel_markers) {
             drawPolyRel(section2, 'lightgray', relationshipsLayer);
             continue;
         }
-
         drawPolyRel(latlngs, 'lightgray', relationshipsLayer);
 
     }
+    if (simStopped) return;
     relationshipsLayer.addTo(map);
 }
 
@@ -158,6 +158,7 @@ function drawShortestPath(sp_markers) {
         }
         drawPoly(latlngs, '#483D8B', shortestPathLayer);
     }
+    if (simStopped) return;
     shortestPathLayer.addTo(map);
 }
 
@@ -177,4 +178,14 @@ function focusView() {
         zoom = 1;
     }
     map.setView(focus, zoom);
+}
+
+function showMapAlert(message, alertType) {
+    $('#map-alert').html("<div class='alert card-text alert-" + alertType + "'>" + message + "</div>");
+    $('#map-alert').show();
+}
+
+function showTransmissionTimeAlert(message, alertType) {
+    $('#tt-alert').html("<div class='alert card-text alert-" + alertType + "'>" + message + "</div>");
+    $('#tt-alert').show();
 }
