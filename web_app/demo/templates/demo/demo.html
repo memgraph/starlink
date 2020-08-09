@@ -40,15 +40,27 @@
     <script src="{% static "demo/dropdown.js" %}"></script>
     <script src="{% static "demo/transmission.js" %}"></script>
 
-    <title>Starlink Simulator</title>
+    <title>Memgraph | Starlink Network Simulator</title>
 </head>
 
 <body>
     <div class="container">
         <div class="row mt-3">
             <div class="col-md-12">
-                <div class="jumbotron m-0 p-3">
-                    <h2>Starlink Network Simulator</h2>
+                <div class="jumbotron m-0 pt-3 pl-3 pr-3 pb-0">
+                    <div class="row mt-3">
+                        <div class="col-6 col-md-2">
+                            <a class="pr-2" target="_blank" rel="noopener noreferrer" href="https://memgraph.com/">
+                                <img class="img-fluid"
+                                    src="https://uploads-ssl.webflow.com/5e7ceb09657a69bdab054b3a/5e7ceb09657a6937ab054bba_Black_Original%20_Logo.png"
+                                    srcset="https://uploads-ssl.webflow.com/5e7ceb09657a69bdab054b3a/5e7ceb09657a6937ab054bba_Black_Original%2520_Logo-p-800.png 800w, https://uploads-ssl.webflow.com/5e7ceb09657a69bdab054b3a/5e7ceb09657a6937ab054bba_Black_Original%2520_Logo-p-1080.png 1080w, https://uploads-ssl.webflow.com/5e7ceb09657a69bdab054b3a/5e7ceb09657a6937ab054bba_Black_Original%2520_Logo-p-1600.png 1600w, https://uploads-ssl.webflow.com/5e7ceb09657a69bdab054b3a/5e7ceb09657a6937ab054bba_Black_Original%20_Logo.png 1608w"
+                                    alt="Memgraph logo">
+                            </a>
+                        </div>
+                        <div class="col-sm-12 col-md-10">
+                            <h2>Starlink Network Simulator</h2>
+                        </div>
+                    </div>
                     <hr class="m-0 p-1">
                     <div class="row mt-3">
                         <div class="col-sm-12 col-md-9">
@@ -58,8 +70,8 @@
                             </p>
                         </div>
                         <div class="col-sm-12 col-md-3">
-                            <a class="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer"
-                                href="https://memgraph.com/blog" role="button">BLOG POST</a>
+                            <a class="btn btn-danger btn-lg" target="_blank" rel="noopener noreferrer"
+                                href="https://memgraph.com/blog" role="button">Blog Post</a>
                         </div>
                     </div>
                 </div>
@@ -67,7 +79,7 @@
         </div>
         <div class="row mt-3">
             <div class="col-md-12">
-                <div class="card" style="width: 100%; height:58vh; border-radius: 10px;">
+                <div class="card bg-light" style="width: 100%; height:58vh;">
                     <div class="card-body" id="map"></div>
                     <div id='map-alert'></div>
                 </div>
@@ -76,25 +88,25 @@
         <div class="row mt-3">
             <div class="col-sm-12 col-md-6">
                 <div class="row mt-3">
-                    <div class="col-sm-6 col-md-5">
-                        <button type="button" class="btn btn-primary mb-3" id="startButton"
+                    <div class="col-6 col-md-5">
+                        <button type="button" class="btn btn-danger mb-3" id="startButton"
                             onclick="simulationStarted()">Start
                             simulation</button>
                     </div>
-                    <div class="col-sm-6 col-md-5">
+                    <div class="col-6 col-md-5">
                         <button type="button" class="btn btn-warning" id="stopButton" onclick="simulationStopped()">Stop
                             simulation</button>
                     </div>
                 </div>
                 <div class="row mt-3">
-                    <div class="col-sm-6 col-md-5">
+                    <div class="col-6 col-md-5">
                         <div class="form-group">
                             <select class="form-control form-control-md" id="dropdownOne"
                                 onchange="if (this.selectedIndex!=-1)  dropdownOneSelect();">Select
                                 starting city</select>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-md-5">
+                    <div class="col-6 col-md-5">
                         <div class="form-group">
                             <select class="form-control form-control-md" id="dropdownTwo"
                                 onchange="if (this.selectedIndex!=-1)  dropdownTwoSelect();">Select
@@ -105,7 +117,7 @@
                 </div>
             </div>
             <div class="col-sm-12 col-md-6">
-                <div class="card mb-3" style="width: 100%; border-radius: 10px;">
+                <div class="card bg-light mb-3">
                     <div id='tt-alert'></div>
                     <div class="card-body">
                         <div id="ttime"></div>

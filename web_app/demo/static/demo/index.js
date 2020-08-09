@@ -61,7 +61,7 @@ async function simulationStarted() {
 
     document.getElementById('map').style.cursor = 'default';
 
-    showMapAlert('Simulation is running...', 'warning');
+    showMapAlert('Simulation is running...', '');
 
     while (!simStopped) {
         ajaxCall();
@@ -94,8 +94,8 @@ function simulationStopped() {
     if (map.tap) map.tap.enable();
     document.getElementById('map').style.cursor = 'grab';
 
-    showMapAlert('Choose cities and start the simulation!', 'info');
-    showTransmissionTimeAlert('Transmission time for satellite communication and fiber-optic cable', 'info');
+    showMapAlert('Choose cities and start the simulation!', '');
+    showTransmissionTimeAlert('Transmission time for satellite communication and fiber-optic cable', '');
 }
 
 function sleep(ms) {

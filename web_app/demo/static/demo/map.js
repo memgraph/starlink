@@ -36,7 +36,6 @@ function initMapMercator() {
 }
 
 function drawCities() {
-
     var sel = GetSelectionValue();
     citiesLayer.clearLayers();
     for (var i = 0; i < cities.length; i++) {
@@ -45,6 +44,8 @@ function drawCities() {
             var marker = L.circleMarker(obj,
                 {
                     renderer: myRenderer,
+                    color: '#7a0099',
+                    fillColor: '#f03',
                     radius: 7
                 }
             ).bindPopup(cities[i][3]);
@@ -56,7 +57,6 @@ function drawCities() {
 
 function drawSatellites() {
     satellitesLayer.clearLayers();
-    console.log("draw");
     for (var i = 0; i < sat_markers.length; i++) {
         var obj = sat_markers[i].slice(0, 2);
         var circle = L.circleMarker(obj, {
@@ -96,11 +96,11 @@ function drawRelationships(rel_markers) {
             section1 = [[obj[0], obj[1]], [intersection[0], latlngs[0].lng]];
             section2 = [[intersection[0], latlngs[1].lng], [obj[2], obj[3]]];
 
-            drawPolyRel(section1, 'lightgray', relationshipsLayer);
-            drawPolyRel(section2, 'lightgray', relationshipsLayer);
+            drawPolyRel(section1, '#bfbfbf', relationshipsLayer);
+            drawPolyRel(section2, '#bfbfbf', relationshipsLayer);
             continue;
         }
-        drawPolyRel(latlngs, 'lightgray', relationshipsLayer);
+        drawPolyRel(latlngs, '#bfbfbf', relationshipsLayer);
 
     }
     if (simStopped) return;
@@ -152,11 +152,11 @@ function drawShortestPath(sp_markers) {
             section1 = [[obj[0], obj[1]], [intersection[0], latlngs[0].lng]];
             section2 = [[intersection[0], latlngs[1].lng], [obj[2], obj[3]]];
 
-            drawPoly(section1, '#483D8B', shortestPathLayer);
-            drawPoly(section2, '#483D8B', shortestPathLayer);
+            drawPoly(section1, '#7a0099', shortestPathLayer);
+            drawPoly(section2, '#7a0099', shortestPathLayer);
             continue;
         }
-        drawPoly(latlngs, '#483D8B', shortestPathLayer);
+        drawPoly(latlngs, '#7a0099', shortestPathLayer);
     }
     if (simStopped) return;
     shortestPathLayer.addTo(map);
@@ -181,12 +181,12 @@ function focusView() {
 }
 
 function showMapAlert(message, alertType) {
-    $('#map-alert').html("<div class='alert card-text alert-" + alertType + "'>" + message + "</div>");
+    $('#map-alert').html("<div class='alert card-text" + alertType + "'>" + message + "</div>");
     $('#map-alert').show();
 }
 
 function showTransmissionTimeAlert(message, alertType) {
-    $('#tt-alert').html("<div class='alert card-text alert-" + alertType + "'>" + message + "</div>");
+    $('#tt-alert').html("<div class='card-header " + alertType + "'>" + message + "</div>");
     $('#tt-alert').show();
 }
 
