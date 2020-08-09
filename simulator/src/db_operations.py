@@ -6,6 +6,7 @@ def create_data(tx, moving_objects, cities):
     #print(f"{utils.bcolors.WARNING}Simulator DB update START{utils.bcolors.ENDC}")
 
     tx.run("BEGIN")
+
     for moving_object in moving_objects:
         command = "CREATE (n:Satellite {id:'" + str(moving_object.id) + \
             "', x:" + str(moving_object.x) + \
@@ -28,26 +29,29 @@ def create_data(tx, moving_objects, cities):
                 str(city.moving_objects_tt_dict[key]) + " }]->(a)"
             tx.run(command)
 
-    for moving_object_a in moving_objects:
-        command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object_a.laser_left_id) + "' AND a.id = '" + str(moving_object_a.id) + \
+    for moving_object in moving_objects:
+        command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object.laser_left_id) + "' AND a.id = '" + str(moving_object.id) + \
             "' CREATE (a)-[r:CONNECTED_TO { transmission_time: " + \
-            str(moving_object_a.laser_left_transmission_time) + " }]->(b)"
-        tx.run(command)
-        command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object_a.laser_right_id) + "' AND a.id = '" + str(moving_object_a.id) + \
-            "' CREATE (a)-[r:CONNECTED_TO { transmission_time: " + \
-            str(moving_object_a.laser_right_transmission_time) + " }]->(b)"
+            str(moving_object.laser_left_transmission_time) + " }]->(b)"
         tx.run(command)
 
-        if hasattr(moving_object_a, 'laser_up_id'):
-            command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object_a.laser_up_id) + "' AND a.id = '" + str(moving_object_a.id) + \
+        command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object.laser_right_id) + "' AND a.id = '" + str(moving_object.id) + \
+            "' CREATE (a)-[r:CONNECTED_TO { transmission_time: " + \
+            str(moving_object.laser_right_transmission_time) + " }]->(b)"
+        tx.run(command)
+
+        if hasattr(moving_object, 'laser_up_id'):
+            command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object.laser_up_id) + "' AND a.id = '" + str(moving_object.id) + \
                 "' CREATE (a)-[r:CONNECTED_TO { transmission_time: " + \
-                str(moving_object_a.laser_up_transmission_time) + " }]->(b)"
+                str(moving_object.laser_up_transmission_time) + " }]->(b)"
             tx.run(command)
-        if hasattr(moving_object_a, 'laser_down_id'):
-            command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object_a.laser_down_id) + "' AND a.id = '" + str(moving_object_a.id) + \
+
+        if hasattr(moving_object, 'laser_down_id'):
+            command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object.laser_down_id) + "' AND a.id = '" + str(moving_object.id) + \
                 "' CREATE (a)-[r:CONNECTED_TO { transmission_time: " + \
-                str(moving_object_a.laser_down_transmission_time) + " }]->(b)"
+                str(moving_object.laser_down_transmission_time) + " }]->(b)"
             tx.run(command)
+
     tx.run("COMMIT")
 
 
@@ -56,12 +60,6 @@ def update_data(tx, moving_objects, cities):
     #print(f"{utils.bcolors.WARNING}Simulator DB update START{utils.bcolors.ENDC}")
 
     tx.run("BEGIN")
-    for moving_object in moving_objects:
-        command = "MATCH (a:Satellite { id:'" + str(moving_object.id) + \
-            "'}) SET a.x=" + str(moving_object.x) + \
-            ", a.y=" + str(moving_object.y) + \
-            ", a.z=" + str(moving_object.z)
-        tx.run(command)
 
     for city in cities:
         command = "MATCH (b:Satellite)-[r]->(a:City {id:'" + \
@@ -74,25 +72,35 @@ def update_data(tx, moving_objects, cities):
                 str(city.moving_objects_tt_dict[key]) + " }]->(a)"
             tx.run(command)
 
-    for moving_object_a in moving_objects:
-        command = "MATCH (a:Satellite {id:'" + str(moving_object_a.id) + "'})-[r]-(b:Satellite {id:'" + str(moving_object_a.laser_left_id) + "'})" + \
-            " SET r.transmission_time=" + \
-            str(moving_object_a.laser_left_transmission_time)
+    for moving_object in moving_objects:
+        command = "MATCH (a:Satellite { id:'" + str(moving_object.id) + \
+            "'}) SET a.x=" + str(moving_object.x) + \
+            ", a.y=" + str(moving_object.y) + \
+            ", a.z=" + str(moving_object.z)
         tx.run(command)
-        command = "MATCH (a:Satellite {id:'" + str(moving_object_a.id) + "'})-[r]-(b:Satellite {id:'" + str(moving_object_a.laser_right_id) + "'})" + \
+
+        command = "MATCH (a:Satellite {id:'" + str(moving_object.id) + "'})-[r]-(b:Satellite {id:'" + str(moving_object.laser_left_id) + "'})" + \
             " SET r.transmission_time=" + \
-            str(moving_object_a.laser_right_transmission_time)
+            str(moving_object.laser_left_transmission_time)
         tx.run(command)
-        if hasattr(moving_object_a, 'laser_up_id'):
-            command = "MATCH (a:Satellite {id:'" + str(moving_object_a.id) + "'})-[r]-(b:Satellite {id:'" + str(moving_object_a.laser_up_id) + "'})" + \
+
+        command = "MATCH (a:Satellite {id:'" + str(moving_object.id) + "'})-[r]-(b:Satellite {id:'" + str(moving_object.laser_right_id) + "'})" + \
+            " SET r.transmission_time=" + \
+            str(moving_object.laser_right_transmission_time)
+        tx.run(command)
+
+        if hasattr(moving_object, 'laser_up_id'):
+            command = "MATCH (a:Satellite {id:'" + str(moving_object.id) + "'})-[r]-(b:Satellite {id:'" + str(moving_object.laser_up_id) + "'})" + \
                 " SET r.transmission_time=" + \
-                str(moving_object_a.laser_up_transmission_time)
+                str(moving_object.laser_up_transmission_time)
             tx.run(command)
-        if hasattr(moving_object_a, 'laser_down_id'):
-            command = "MATCH (a:Satellite {id:'" + str(moving_object_a.id) + "'})-[r]-(b:Satellite {id:'" + str(moving_object_a.laser_down_id) + "'})" + \
+
+        if hasattr(moving_object, 'laser_down_id'):
+            command = "MATCH (a:Satellite {id:'" + str(moving_object.id) + "'})-[r]-(b:Satellite {id:'" + str(moving_object.laser_down_id) + "'})" + \
                 " SET r.transmission_time=" + \
-                str(moving_object_a.laser_down_transmission_time)
+                str(moving_object.laser_down_transmission_time)
             tx.run(command)
+
     tx.run("COMMIT")
 
 
