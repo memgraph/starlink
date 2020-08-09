@@ -47,7 +47,7 @@
     <div class="container">
         <div class="row mt-3">
             <div class="col-md-12">
-                <div class="jumbotron m-0 pt-3 pl-3 pr-3 pb-0">
+                <div class="jumbotron m-0 pt-2 pl-3 pr-3 pb-2">
                     <div class="row mt-3">
                         <div class="col-6 col-md-2">
                             <a class="pr-2" target="_blank" rel="noopener noreferrer" href="https://memgraph.com/">
@@ -62,7 +62,7 @@
                         </div>
                     </div>
                     <hr class="m-0 p-1">
-                    <div class="row mt-3">
+                    <div class="row mt-2">
                         <div class="col-sm-12 col-md-9">
                             <p>This is a demonstration of how Memgraph DB can be used to calculate the shortest path
                                 for data transmission using a satellite network. For more information, visit our blog
@@ -85,8 +85,8 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-3">
-            <div class="col-sm-12 col-md-6">
+        <div class="row mt-3 ml-0 mr-0">
+            <div class="col-sm-12 col-md-5 mb-3 border rounded">
                 <div class="row mt-3">
                     <div class="col-6 col-md-5">
                         <button type="button" class="btn btn-danger mb-3" id="startButton"
@@ -98,6 +98,7 @@
                             simulation</button>
                     </div>
                 </div>
+                <hr class="mt-1">
                 <div class="row mt-3">
                     <div class="col-6 col-md-5">
                         <div class="form-group">
@@ -116,12 +117,21 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-6">
+            <div class="col-sm-12 col-md-7">
                 <div class="card bg-light mb-3">
-                    <div id='tt-alert'></div>
-                    <div class="card-body">
-                        <div id="ttime"></div>
-                        <div id="optic"></div>
+                    <div class="row no-gutters">
+                        <div class="col-2 my-auto">
+                            <img class="img-fluid p-2"
+                                src="https://uploads-ssl.webflow.com/5e7ceb09657a69bdab054b3a/5ea135c6c6dcbc51c8d7d510_dashboard-fast.svg"
+                                alt="...">
+                        </div>
+                        <div class="col-10 border-left">
+                            <div id='tt-alert'></div>
+                            <div class="card-body">
+                                <div id="ttime"></div>
+                                <div id="optic"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

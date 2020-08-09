@@ -34,6 +34,6 @@ RUN chmod +x /wait-for-it.sh
 
 COPY . /app
 
-EXPOSE 8000
+EXPOSE 3000
 
 ENTRYPOINT [ "poetry", "run" ]

@@ -181,7 +181,7 @@ function focusView() {
 }
 
 function showMapAlert(message, alertType) {
-    $('#map-alert').html("<div class='alert card-text" + alertType + "'>" + message + "</div>");
+    $('#map-alert').html("<div class='alert card-text " + alertType + "'>" + message + "</div>");
     $('#map-alert').show();
 }
 
