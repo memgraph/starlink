@@ -1,7 +1,7 @@
 var map;
 var myRenderer;
 
-var cities;
+var cities = [];
 var opticalPaths;
 
 var citiesLayer = new L.LayerGroup();

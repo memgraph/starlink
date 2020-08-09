@@ -8,6 +8,7 @@ function createDropdowns() {
         element.value = cities[i][0];
         firstDropdown.appendChild(element);
     }
+    
     for (var i = 0; i < cities.length; i++) {
         var element = document.createElement("option");
         element.text = cities[i][3];

@@ -1,9 +1,13 @@
 #map {
     width: 100%;
-    height: 70vh;
+    height: 100%;
     border-radius: 10px 10px 0px 0px;
 }
 
 .top-buffer {
     margin-top: 20px;
+}
+
+.top-buffer-sm {
+    margin-top: px;
 }

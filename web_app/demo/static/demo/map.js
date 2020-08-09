@@ -16,7 +16,7 @@ function initMapMollweide() {
 function initMapMercator() {
     map = L.map('map', {
         zoom: 3,
-        center: [30, 0],
+        center: [15, -5],
         layers: [citiesLayer],
         attributionControl: false
     });

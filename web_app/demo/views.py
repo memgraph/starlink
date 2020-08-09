@@ -13,7 +13,7 @@ import pickle
 
 def index(request):
 
-    #time.sleep(2)
+    # time.sleep(2)
     db = Memgraph()
     request.session['db'] = pickle.dumps(db)
 
@@ -21,11 +21,14 @@ def index(request):
     json_relationships = []
     json_shortest_path = []
 
-    cities = db_connection.fetch_cities(db)
+    cities = []
+    while len(cities) == 0:
+        cities = db_connection.fetch_cities(db)
     optical_paths = utils.import_optical_paths()
 
     json_cities = json.dumps(db_connection.city_json_format(cities))
-    json_optical_paths = json.dumps(db_connection.optical_paths_json_format(optical_paths))
+    json_optical_paths = json.dumps(
+        db_connection.optical_paths_json_format(optical_paths))
 
     return render(request, "demo/demo.html", {"city_markers": json_cities, "sat_markers": json_satellites, "rel_markers": json_relationships, "sp_markers": json_shortest_path, "op_markers": json_optical_paths})
 
@@ -35,13 +38,13 @@ def postSatellitesAndRelationships(request):
     db = pickle.loads(request.session['db'])
 
     satellites = []
-    relationships = [] 
-    shortest_path = []  
+    relationships = []
+    shortest_path = []
 
     json_satellites = []
-    json_relationships = []   
+    json_relationships = []
     json_shortest_path = []
- 
+
     results = db.execute_transaction(db_operations.import_data, request.GET.get(
         'cityOne', None), request.GET.get('cityTwo', None))
 
@@ -51,14 +54,12 @@ def postSatellitesAndRelationships(request):
 
     json_satellites = json.dumps(
         db_connection.satellite_json_format(satellites))
-    
 
     """TODO: remove before deployment"""
     """
     utils.distance_coordinates(satellites)
     utils.old_sats = satellites
     """
-    
 
     json_relationships = json.dumps(
         db_connection.relationship_json_format(relationships))
