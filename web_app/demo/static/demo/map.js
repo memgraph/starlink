@@ -36,7 +36,7 @@ function initMapMercator() {
 }
 
 function drawCities() {
-    
+
     var sel = GetSelectionValue();
     citiesLayer.clearLayers();
     for (var i = 0; i < cities.length; i++) {
@@ -54,8 +54,9 @@ function drawCities() {
     citiesLayer.addTo(map);
 }
 
-function drawSatellites(sat_markers) {
+function drawSatellites() {
     satellitesLayer.clearLayers();
+    console.log("draw");
     for (var i = 0; i < sat_markers.length; i++) {
         var obj = sat_markers[i].slice(0, 2);
         var circle = L.circleMarker(obj, {
@@ -130,7 +131,6 @@ function drawPolyRel(line, colour, layer) {
 
 function drawShortestPath(sp_markers) {
     shortestPathLayer.clearLayers();
-
     for (var i = 0; i < sp_markers.length; i++) {
         var obj = sp_markers[i];
         var satStart = [obj[0], obj[1]];
@@ -188,4 +188,16 @@ function showMapAlert(message, alertType) {
 function showTransmissionTimeAlert(message, alertType) {
     $('#tt-alert').html("<div class='alert card-text alert-" + alertType + "'>" + message + "</div>");
     $('#tt-alert').show();
+}
+
+function newDataLoaded() {
+    if (firstSatellite == undefined) {
+        return true;
+    }
+    newFirstSatellite = sat_markers[0].slice(0, 2)
+    if (newFirstSatellite[0] != firstSatellite[0]) {
+        return true;
+    } else {
+        return false;
+    }
 }

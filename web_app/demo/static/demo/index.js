@@ -13,6 +13,9 @@ var json_satellites;
 var json_relationships;
 var json_shortest_path;
 
+var sat_markers;
+var firstSatellite;
+
 var firstDropdown;
 var secondDropdown;
 var removedItemDropdownOne;

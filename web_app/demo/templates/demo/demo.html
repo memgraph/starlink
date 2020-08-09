@@ -141,10 +141,13 @@
                 },
                 async: true,
                 success: function (data) {
-                    if (!simStopped) {
+                    sat_markers = JSON.parse(data.json_satellites);
+                    if (!simStopped && newDataLoaded()) {
                         drawCities();
+                        firstSatellite = sat_markers[0].slice(0, 2);
                         drawRelationships(JSON.parse(data.json_relationships));
-                        drawSatellites(JSON.parse(data.json_satellites));
+                        drawSatellites();
+
                         if (data.json_shortest_path.length != 0) {
                             drawShortestPath(JSON.parse(data.json_shortest_path));
                             document.getElementById("ttime").innerHTML = "Satellite communication: " + transmission_time(JSON.parse(data.json_shortest_path));
@@ -158,8 +161,8 @@
                         }
                     }
                 },
-                error: function (thrownError) {
-                    alert(thrownError);
+                error: function () {
+                    alert("Something went wrong!");
                 }
             });
         };
