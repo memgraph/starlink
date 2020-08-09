@@ -67,6 +67,14 @@ version = "1.19.1"
 
 [[package]]
 category = "main"
+description = "Memgraph database adapter for Python language"
+name = "pymgclient"
+optional = false
+python-versions = ">=3.5"
+version = "0.1.0"
+
+[[package]]
+category = "main"
 description = "World timezone definitions, modern and historical"
 name = "pytz"
 optional = false
@@ -107,7 +115,7 @@ sgp4 = ">=2.2"
 tests = ["pytz"]
 
 [metadata]
-content-hash = "00898ee399d80ea8b6670ba2eeea1f8bd47fae527213cb5939509e86a5d40869"
+content-hash = "ec4f03ee5c18f3e8f26e0887b234b61bab082df3647065d25d9aa54c7db63b72"
 lock-version = "1.0"
 python-versions = "^3.7"
 
@@ -158,6 +166,9 @@ numpy = [
     {file = "numpy-1.19.1-cp38-cp38-win_amd64.whl", hash = "sha256:92feb989b47f83ebef246adabc7ff3b9a59ac30601c3f6819f8913458610bdcc"},
     {file = "numpy-1.19.1-pp36-pypy36_pp73-manylinux2010_x86_64.whl", hash = "sha256:e1b1dc0372f530f26a03578ac75d5e51b3868b9b76cd2facba4c9ee0eb252ab1"},
     {file = "numpy-1.19.1.zip", hash = "sha256:b8456987b637232602ceb4d663cb34106f7eb780e247d51a260b84760fd8f491"},
+]
+pymgclient = [
+    {file = "pymgclient-0.1.0.tar.gz", hash = "sha256:b881252d76c82329421a19bc3140016fb4bf4ce13740b68eae98e53c4598535e"},
 ]
 pytz = [
     {file = "pytz-2020.1-py2.py3-none-any.whl", hash = "sha256:a494d53b6d39c3c6e44c3bec237336e14305e4f29bbf800b599253057fbb79ed"},

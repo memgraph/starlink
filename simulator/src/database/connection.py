@@ -3,14 +3,16 @@ from typing import Any, Dict, Iterator
 from src.database.models import Node, Relationship
 import src.utils as utils
 
+"""
 _use_mgclient = True
 try:
     import mgclient
 except ImportError:
-    from neo4j import GraphDatabase, basic_auth, unit_of_work
-    from neo4j.types import Relationship as Neo4jRelationship
-    from neo4j.types import Node as Neo4jNode
-    _use_mgclient = False
+"""
+from neo4j import GraphDatabase, basic_auth, unit_of_work
+from neo4j.types import Relationship as Neo4jRelationship
+from neo4j.types import Node as Neo4jNode
+_use_mgclient = False
 
 
 __all__ = ('Connection',)
@@ -67,6 +69,11 @@ class MemgraphConnection(Connection):
         cursor.execute(query)
         cursor.fetchall()
 
+    def execute_transaction(self, func: Any, moving_objects: Any, cities: Any) -> None:
+        """Executes Cypher queries without returning any results."""
+        cursor = self._connection.cursor()
+        func(cursor, moving_objects, cities)
+
     def execute_and_fetch(self, query: str) -> Iterator[Dict[str, Any]]:
         """Executes Cypher query and returns iterator of results."""
         cursor = self._connection.cursor()
@@ -111,13 +118,12 @@ class Neo4jConnection(Connection):
 
     def execute_transaction(self, func: Any, moving_objects: Any, cities: Any) -> None:
         """Executes Cypher queries without returning any results."""
-        with self._connection.session() as session:   
+        with self._connection.session() as session:
             session.write_transaction(func, moving_objects, cities)
-
 
         """TODO: remove before deployment"""
         #print(f"{utils.bcolors.WARNING}Simulator DB update END{utils.bcolors.ENDC}")
-        
+
     def execute_and_fetch(self, query: str) -> Iterator[Dict[str, Any]]:
         """Executes Cypher query and returns iterator of results."""
         with self._connection.session() as session:

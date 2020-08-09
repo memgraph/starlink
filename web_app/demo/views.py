@@ -13,7 +13,6 @@ import pickle
 
 def index(request):
 
-    # time.sleep(2)
     db = Memgraph()
     request.session['db'] = pickle.dumps(db)
 
@@ -23,6 +22,7 @@ def index(request):
 
     cities = []
     while len(cities) == 0:
+        time.sleep(1)
         cities = db_connection.fetch_cities(db)
     optical_paths = utils.import_optical_paths()
 

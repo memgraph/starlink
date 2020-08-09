@@ -15,13 +15,19 @@ RUN pip install -U pip \
 ENV PATH="${PATH}:/root/.poetry/bin"
 
 # Install mgclient
-RUN git clone https://github.com/memgraph/mgclient.git /mgclient && \
+RUN apt-get install -y git cmake make gcc g++ libssl-dev && \
+    git clone https://github.com/memgraph/mgclient.git /mgclient && \
     cd mgclient && \
     mkdir build && \
     cd build && \
     cmake .. && \
     make && \
     make install
+
+#RUN git clone https://github.com/memgraph/pymgclient /pymgclient && \
+#    cd pymgclient && \
+#    python3 setup.py build && \
+#    python3 setup.py install
 
 WORKDIR /app
 COPY poetry.lock pyproject.toml /app/
