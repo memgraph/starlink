@@ -14,8 +14,8 @@ class MovingObject:
         self.altitude = altitude
 
         self.current_position = 0
-        self.positions_lenght = len(longitude_positions) 
-        
+        self.positions_lenght = len(longitude_positions)
+
         self.x = self.longitude_positions[self.current_position]
         self.y = self.latitude_positions[self.current_position]
         self.z = altitude
@@ -68,7 +68,7 @@ class MovingObject:
                     self.laser_up_distance = tmp_diff
                     diff = tmp_diff
             self.laser_up_transmission_time = 1000 * \
-                self.laser_up_distance/const.V_LASER_VACUUM
+                self.laser_up_distance/const.V_LASER_VACUUM + const.SAT_DELAY
 
     def update_laser_down(self, orbits_dict):
         if(const.EDGE_CONNECTED or (not const.EDGE_CONNECTED) and self.orbit_id != (const.NUM_ORB - 1)):
@@ -86,4 +86,4 @@ class MovingObject:
                     self.laser_down_distance = tmp_diff
                     diff = tmp_diff
             self.laser_down_transmission_time = 1000 * \
-                self.laser_down_distance/const.V_LASER_VACUUM
+                self.laser_down_distance/const.V_LASER_VACUUM + const.SAT_DELAY

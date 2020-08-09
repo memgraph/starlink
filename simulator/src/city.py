@@ -22,4 +22,4 @@ class City(StationaryObject):
             if angle <= const.VIEW_ANGLE:
                 dist = utils.eci_distance(self, moving_object)
                 self.moving_objects_distances_dict[moving_object.id] = dist
-                self.moving_objects_tt_dict[moving_object.id] = dist*1000/const.V_RADIO
+                self.moving_objects_tt_dict[moving_object.id] = dist*1000/const.V_RADIO + const.RELAY_DELAY
