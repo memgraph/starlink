@@ -23,5 +23,5 @@ docker-compose up
 # The web app will be listening on port 8000
 
 ```
-http://localhost:8000
+curl http://localhost:8000
 ```
