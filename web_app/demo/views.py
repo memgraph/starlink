@@ -8,13 +8,14 @@ from django.http import JsonResponse
 import demo.data.db_connection as db_connection
 import time
 import demo.utils as utils
+import pickle
 
 
 def index(request):
 
-    time.sleep(2)
+    #time.sleep(2)
     db = Memgraph()
-    #request.session['db'] = db
+    request.session['db'] = pickle.dumps(db)
 
     json_satellites = []
     json_relationships = []
@@ -31,8 +32,7 @@ def index(request):
 
 def postSatellitesAndRelationships(request):
 
-    db = Memgraph()
-    #db = request.session['db']
+    db = pickle.loads(request.session['db'])
 
     satellites = []
     relationships = [] 

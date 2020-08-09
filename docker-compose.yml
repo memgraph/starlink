@@ -4,6 +4,10 @@ services:
     image: "memgraph"
     ports:
       - "7687:7687"
+  memcached:
+    image: memcached:latest
+    ports:
+      - "11211:11211"
   simulator:
     build: ./simulator
     volumes:
@@ -13,7 +17,7 @@ services:
     environment:
       MG_HOST: memgraph
       MG_PORT: 7687
-    command: python main.py start nm
+    command: /wait-for-it.sh memgraph:7687 -- python main.py start nm
     depends_on:
       - memgraph
   web:
@@ -25,6 +29,8 @@ services:
     environment:
       MG_HOST: memgraph
       MG_PORT: 7687
+      MC_HOST: memcached
+      MC_PORT: 11211
     command: python manage.py runserver 0.0.0.0:8000
     depends_on:
       - simulator

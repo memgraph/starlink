@@ -29,6 +29,9 @@ COPY poetry.lock pyproject.toml /app/
 RUN poetry config virtualenvs.create false && \
     poetry install --no-interaction --no-ansi
 
+COPY ./wait-for-it.sh /wait-for-it.sh 
+RUN chmod +x /wait-for-it.sh
+
 COPY . /app
 
 EXPOSE 8000
