@@ -75,8 +75,9 @@ function simulationStopped() {
     relationshipsLayer.clearLayers();
     satellitesLayer.clearLayers();
     shortestPathLayer.clearLayers();
-    document.getElementById("ttime").innerHTML = "";
-    document.getElementById("optic").innerHTML = "";
+
+    document.getElementById("ttime").innerHTML = "Satellite communication: -";
+    document.getElementById("optic").innerHTML = "Fiber-optic cable communication: -";
 
     $('#stopButton').prop('disabled', true);
     $('#startButton').prop('disabled', false);
@@ -93,9 +94,6 @@ function simulationStopped() {
     map.keyboard.enable();
     if (map.tap) map.tap.enable();
     document.getElementById('map').style.cursor = 'grab';
-
-    showMapAlert('Choose cities and start the simulation!', '');
-    showTransmissionTimeAlert('Transmission time for satellite communication and fiber-optic cable', '');
 }
 
 function sleep(ms) {

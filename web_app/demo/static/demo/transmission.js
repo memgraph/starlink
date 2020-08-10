@@ -18,3 +18,7 @@ function optical_time(opticalPaths, city1, city2) {
 
     return "no data found for selected cities."
 }
+
+function createTransmissionTimeCard() {
+    showTransmissionTimeAlert('Transmission time for satellite communication and fiber-optic cable', '');
+}
