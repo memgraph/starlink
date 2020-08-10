@@ -14,6 +14,8 @@ RUN pip install -U pip \
     && curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 ENV PATH="${PATH}:/root/.poetry/bin"
 
+RUN apt-get update && apt-get install -y dos2unix
+
 # Install mgclient
 RUN apt-get install -y git cmake make gcc g++ libssl-dev && \
     git clone https://github.com/memgraph/mgclient.git /mgclient && \
@@ -37,6 +39,7 @@ RUN poetry config virtualenvs.create false && \
 
 COPY ./wait-for-it.sh /wait-for-it.sh 
 RUN chmod +x /wait-for-it.sh
+RUN dos2unix /wait-for-it.sh 
 
 COPY . /app
 
