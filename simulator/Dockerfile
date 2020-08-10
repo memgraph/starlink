@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 FROM python:3.7
 
 # Keeps Python from generating .pyc files in the container
@@ -45,4 +46,50 @@ COPY . /app
 
 EXPOSE 3000
 
+=======
+FROM python:3.7
+
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE 1
+
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED 1
+
+RUN apt-get update && \
+    apt-get --yes install cmake
+
+# Install poetry
+RUN pip install -U pip \
+    && curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+ENV PATH="${PATH}:/root/.poetry/bin"
+
+# Install mgclient
+RUN apt-get install -y git cmake make gcc g++ libssl-dev && \
+    git clone https://github.com/memgraph/mgclient.git /mgclient && \
+    cd mgclient && \
+    mkdir build && \
+    cd build && \
+    cmake .. && \
+    make && \
+    make install
+
+#RUN git clone https://github.com/memgraph/pymgclient /pymgclient && \
+#    cd pymgclient && \
+#    python3 setup.py build && \
+#    python3 setup.py install
+
+WORKDIR /app
+COPY poetry.lock pyproject.toml /app/
+
+RUN poetry config virtualenvs.create false && \
+    poetry install --no-interaction --no-ansi
+
+COPY ./wait-for-it.sh /wait-for-it.sh 
+RUN chmod +x /wait-for-it.sh
+
+COPY . /app
+
+EXPOSE 3000
+
+>>>>>>> 6b87f193eb7d598091dfbc988c519387e3bcfb45
 ENTRYPOINT [ "poetry", "run" ]
