@@ -76,6 +76,8 @@ function simulationStopped() {
     satellitesLayer.clearLayers();
     shortestPathLayer.clearLayers();
 
+    showMapAlert('Choose cities and start the simulation!', 'info');
+
     document.getElementById("ttime").innerHTML = "Satellite communication: -";
     document.getElementById("optic").innerHTML = "Fiber-optic cable communication: -";
 
