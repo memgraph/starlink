@@ -23,6 +23,8 @@ var removedItemDropdownTwo;
 
 var simStopped = true;
 
+var xhr;
+
 
 async function createMap() {
     initMapMollweide();
@@ -96,8 +98,16 @@ function simulationStopped() {
     map.keyboard.enable();
     if (map.tap) map.tap.enable();
     document.getElementById('map').style.cursor = 'grab';
+
+    if (xhr != null) {
+        xhr.abort()
+    }
 }
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function userAborted(xhr) {
+    return !xhr.getAllResponseHeaders();
 }

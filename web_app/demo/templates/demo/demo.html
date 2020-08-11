@@ -152,7 +152,7 @@
         })
 
         function ajaxCall() {
-            var xhr = $.ajax({
+            xhr = $.ajax({
                 type: 'GET',
                 url: "{% url 'json_satellites_and_relationships' %}",
                 data: {
@@ -185,8 +185,10 @@
                         }
                     }
                 },
-                error: function () {
-                    alert("Something went wrong!");
+                error: function (xhr, textStatus, errorThrown) {
+                    if (!userAborted(xhr)) {
+                        showError("Somrthing went wrong...");
+                    }
                 }
             });
         };
