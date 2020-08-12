@@ -1,1 +1,1 @@
-OPTICAL_FILE = "demo/imports/latencies.csv"
+OPTICAL_FILE = "demo/resources/latencies.csv"

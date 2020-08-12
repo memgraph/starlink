@@ -1,6 +1,6 @@
 import csv
 import demo.data.constants as const
-from demo.data.optical_path import OpticalPath
+from demo.data.model.optical_path import OpticalPath
 
 
 """TODO: remove before deployment"""
@@ -33,7 +33,7 @@ def distance_coordinates(new_sats):
         print("CNT: ", cnt)
 """
 
-
+'''
 def import_optical_paths():
     paths = []
     with open(const.OPTICAL_FILE, 'r') as f:
@@ -42,4 +42,14 @@ def import_optical_paths():
             if row:
                 optical_path = OpticalPath(city1=row[0], city2=row[1], transmission_time_ms=row[2])
                 paths.append(optical_path)
+    return paths
+'''
+
+def import_optical_paths():
+    paths = []
+    with open(const.OPTICAL_FILE, mode="r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            optical_path = OpticalPath(row["Source"], row["Destination"], row["Latency"])
+            paths.append(optical_path)
     return paths
