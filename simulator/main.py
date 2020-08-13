@@ -2,7 +2,7 @@
 simulator
 
 Usage:
-    main.py start NAME
+    main.py start
     main.py -h | --help
 
 Arguments:
@@ -19,13 +19,13 @@ logger = logging.getLogger('simulator')
 logger.setLevel(logging.INFO)
 
 
-def _start(name: str) -> None:
-    from src.start import start
-    start(name)
+def _start() -> None:
+    from simulator import starlink
+    starlink.run()
 
 def main(args: Dict[str, Any]) -> None:
     if args['start']:
-        return _start(args['NAME'])
+        return _start()
 
  
 if __name__ == '__main__':

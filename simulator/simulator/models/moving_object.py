@@ -1,6 +1,6 @@
-import src.constants as const
+from simulator.constants import EDGE_CONNECTED, NUM_ORB, V_LASER_VACUUM, SAT_DELAY
 import math as m
-import src.utils as utils
+from simulator import utils
 
 
 class MovingObject:
@@ -34,17 +34,6 @@ class MovingObject:
         self.laser_right_id_in_orbit = laser_right_id_in_orbit
 
     def updatePosition(self):
-        """TODO: remove before deployment"""
-        """
-        if(utils.eci_distance_coordinates(self.eci_x, self.eci_y, self.eci_z, self.eci_x_positions[self.current_position], self.eci_y_positions[self.current_position], self.eci_z_positions[self.current_position]) < 420):
-            print("NOT POSSIBLE")
-
-        if(utils.distance_coordinates(self.x, self.y, self.longitude_positions[self.current_position], self.latitude_positions[self.current_position]) < 3):
-            print("NOT POSSIBLE")
-            print(utils.distance_coordinates(self.x, self.y,
-                                             self.longitude_positions[self.current_position], self.latitude_positions[self.current_position]))
-        """
-
         self.x = self.longitude_positions[self.current_position]
         self.y = self.latitude_positions[self.current_position]
 
@@ -53,10 +42,10 @@ class MovingObject:
         self.eci_z = self.eci_z_positions[self.current_position]
 
     def update_laser_up(self, orbits_dict):
-        if(const.EDGE_CONNECTED or not const.EDGE_CONNECTED and self.orbit_id != 0):
+        if(EDGE_CONNECTED or not EDGE_CONNECTED and self.orbit_id != 0):
             diff = 100000
             if self.orbit_id == 0:
-                laser_up_orbit = const.NUM_ORB - 1
+                laser_up_orbit = NUM_ORB - 1
             else:
                 laser_up_orbit = self.orbit_id - 1
             for moving_object in orbits_dict[laser_up_orbit].moving_objects:
@@ -68,12 +57,12 @@ class MovingObject:
                     self.laser_up_distance = tmp_diff
                     diff = tmp_diff
             self.laser_up_transmission_time = 1000 * \
-                self.laser_up_distance/const.V_LASER_VACUUM + const.SAT_DELAY
+                self.laser_up_distance/V_LASER_VACUUM + SAT_DELAY
 
     def update_laser_down(self, orbits_dict):
-        if(const.EDGE_CONNECTED or (not const.EDGE_CONNECTED) and self.orbit_id != (const.NUM_ORB - 1)):
+        if(EDGE_CONNECTED or (not EDGE_CONNECTED) and self.orbit_id != (NUM_ORB - 1)):
             diff = 100000
-            if self.orbit_id == const.NUM_ORB - 1:
+            if self.orbit_id == NUM_ORB - 1:
                 laser_down_orbit = 0
             else:
                 laser_down_orbit = self.orbit_id + 1
@@ -86,4 +75,4 @@ class MovingObject:
                     self.laser_down_distance = tmp_diff
                     diff = tmp_diff
             self.laser_down_transmission_time = 1000 * \
-                self.laser_down_distance/const.V_LASER_VACUUM + const.SAT_DELAY
+                self.laser_down_distance/V_LASER_VACUUM + SAT_DELAY

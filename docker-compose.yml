@@ -17,7 +17,9 @@ services:
     environment:
       MG_HOST: memgraph
       MG_PORT: 7687
-    command: /wait-for-it.sh memgraph:7687 -- python main.py start nm
+      TLE_FILE_PATH: "imports/tle_1"
+      CITIES_FILE_PATH: "imports/cities.csv"
+    command: /wait-for-it.sh memgraph:7687 -- python main.py start
     depends_on:
       - memgraph
   web:

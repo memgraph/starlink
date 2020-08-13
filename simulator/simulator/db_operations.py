@@ -1,13 +1,14 @@
-import src.utils as utils
+from simulator import utils
 
 
-def create_data(tx, moving_objects, cities):
+def create_data(tx, moving_objects_dict_by_id, cities):
     """TODO: remove before deployment"""
     #print(f"{utils.bcolors.WARNING}Simulator DB update START{utils.bcolors.ENDC}")
 
     tx.run("BEGIN")
 
-    for moving_object in moving_objects:
+    for moving_object_id in moving_objects_dict_by_id.keys():
+        moving_object = moving_objects_dict_by_id[moving_object_id]
         command = "CREATE (n:Satellite {id:'" + str(moving_object.id) + \
             "', x:" + str(moving_object.x) + \
             ", y:" + str(moving_object.y) + \
@@ -29,7 +30,8 @@ def create_data(tx, moving_objects, cities):
                 str(city.moving_objects_tt_dict[key]) + " }]->(a)"
             tx.run(command)
 
-    for moving_object in moving_objects:
+    for moving_object_id in moving_objects_dict_by_id.keys():
+        moving_object = moving_objects_dict_by_id[moving_object_id]
         command = "MATCH (a:Satellite),(b:Satellite) WHERE b.id = '" + str(moving_object.laser_left_id) + "' AND a.id = '" + str(moving_object.id) + \
             "' CREATE (a)-[r:CONNECTED_TO { transmission_time: " + \
             str(moving_object.laser_left_transmission_time) + " }]->(b)"
@@ -55,7 +57,7 @@ def create_data(tx, moving_objects, cities):
     tx.run("COMMIT")
 
 
-def update_data(tx, moving_objects, cities):
+def update_data(tx, moving_objects_dict_by_id, cities):
     """TODO: remove before deployment"""
     #print(f"{utils.bcolors.WARNING}Simulator DB update START{utils.bcolors.ENDC}")
 
@@ -72,7 +74,8 @@ def update_data(tx, moving_objects, cities):
                 str(city.moving_objects_tt_dict[key]) + " }]->(a)"
             tx.run(command)
 
-    for moving_object in moving_objects:
+    for moving_object_id in moving_objects_dict_by_id.keys():
+        moving_object = moving_objects_dict_by_id[moving_object_id]
         command = "MATCH (a:Satellite { id:'" + str(moving_object.id) + \
             "'}) SET a.x=" + str(moving_object.x) + \
             ", a.y=" + str(moving_object.y) + \

@@ -1,6 +1,6 @@
 import os
 from typing import Any, Dict, Iterator
-from src.database.connection import Connection
+from simulator.database.connection import Connection
 
 __all__ = ('Memgraph',)
 

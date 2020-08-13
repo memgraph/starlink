@@ -1,5 +1,5 @@
-import src.constants as const
-import src.utils as utils
+from simulator.constants import V_LASER_VACUUM, SAT_DELAY
+from simulator import utils
 
 
 class Orbit:
@@ -18,18 +18,18 @@ class Orbit:
 
             moving_object.updatePosition()
 
-    def update_laser_connections(self, moving_objects):
+    def update_laser_connections(self, orbits_dict_by_id):
         for moving_object in self.moving_objects:
-            moving_object.update_laser_up(moving_objects)
-            moving_object.update_laser_down(moving_objects)
+            moving_object.update_laser_up(orbits_dict_by_id)
+            moving_object.update_laser_down(orbits_dict_by_id)
 
-    def update_laser_distances(self, moving_objects_dict):
+    def update_laser_distances(self, moving_objects_dict_by_id):
         for moving_object in self.moving_objects:
             moving_object.laser_left_distance = utils.eci_distance(
-                moving_object, moving_objects_dict[moving_object.laser_left_id])
+                moving_object, moving_objects_dict_by_id[moving_object.laser_left_id])
             moving_object.laser_left_transmission_time = 1000*moving_object.laser_left_distance / \
-                const.V_LASER_VACUUM + const.SAT_DELAY
+                V_LASER_VACUUM + SAT_DELAY
             moving_object.laser_right_distance = utils.eci_distance(
-                moving_object, moving_objects_dict[moving_object.laser_right_id])
+                moving_object, moving_objects_dict_by_id[moving_object.laser_right_id])
             moving_object.laser_right_transmission_time = 1000*moving_object.laser_right_distance / \
-                const.V_LASER_VACUUM + const.SAT_DELAY
+                V_LASER_VACUUM + SAT_DELAY
