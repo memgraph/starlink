@@ -21,7 +21,7 @@ def run():
     db = Memgraph()
     db_operations.clear(db)
 
-    ObjectsAndOrbits = orbital_mechanics_utils.generate_moving_objects(
+    ObjectsAndOrbits = orbital_mechanics_utils.generate_orbits_and_moving_objects(
         os.getenv('TLE_FILE_PATH', 'imports/tle_1'), time_of_simulation)
 
     cities = City.generate_cities(

@@ -6,6 +6,7 @@ from pathlib import Path
 import csv
 from dataclasses import dataclass, field
 from typing import List
+import math
 
 
 @dataclass
@@ -21,7 +22,7 @@ class City(StationaryObject):
         self.moving_objects_distances_dict = {}
         self.moving_objects_tt_dict = {}
         for moving_object_id in moving_objects_dict_by_id.keys():
-            angle = utils.calculate_angle(
+            angle = City.calculate_angle(
                 self, moving_objects_dict_by_id[moving_object_id])
             if angle <= VIEW_ANGLE:
                 dist = utils.eci_distance(
@@ -37,10 +38,27 @@ class City(StationaryObject):
         with path.open() as f:
             reader = csv.DictReader(f, delimiter=',')
             for row in reader:
-                topos = Topos(latitude_degrees=float(row['latitude']), longitude_degrees=float(
-                    row['longitude']), elevation_m=float(row['altitude']))
+
+                topos = Topos(latitude_degrees=float(row['latitude']),
+                              longitude_degrees=float(row['longitude']),
+                              elevation_m=float(row['altitude']))
+
                 geocentric = topos.at(time)
-                city = City(id=row['id'], x=topos.latitude.degrees, y=topos.longitude.degrees, z=topos.elevation.km,
-                            eci_x_positions=geocentric.position.km[0], eci_y_positions=geocentric.position.km[1], eci_z_positions=geocentric.position.km[2], name=row['name'])
+
+                city = City(id=row['id'],
+                            x=topos.latitude.degrees,
+                            y=topos.longitude.degrees,
+                            z=topos.elevation.km,
+                            eci_x_positions=geocentric.position.km[0],
+                            eci_y_positions=geocentric.position.km[1],
+                            eci_z_positions=geocentric.position.km[2],
+                            name=row['name'])
+
                 cities.append(city)
         return cities
+
+    @staticmethod
+    def calculate_angle(city, moving_object):
+        angle = math.acos(
+            moving_object.z / utils.eci_distance(moving_object, city)) * 180.0/math.pi
+        return angle

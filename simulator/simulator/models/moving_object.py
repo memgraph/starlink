@@ -13,7 +13,7 @@ class MovingObject:
 
     longitude_positions: List
     latitude_positions: List
-    altitude: List
+    elevation_positions: List
 
     eci_x_positions: List
     eci_y_positions: List
@@ -28,17 +28,18 @@ class MovingObject:
         self.current_position = 0
         self.positions_lenght = len(self.longitude_positions)
 
-        self.x = self.longitude_positions[self.current_position]
-        self.y = self.latitude_positions[self.current_position]
-        self.z = self.altitude
+        self.x = self.latitude_positions[self.current_position]
+        self.y = self.longitude_positions[self.current_position]
+        self.z = self.elevation_positions[self.current_position]
 
         self.eci_x = self.eci_x_positions[self.current_position]
         self.eci_y = self.eci_y_positions[self.current_position]
         self.eci_z = self.eci_z_positions[self.current_position]
 
     def updatePosition(self):
-        self.x = self.longitude_positions[self.current_position]
-        self.y = self.latitude_positions[self.current_position]
+        self.x = self.latitude_positions[self.current_position]
+        self.y = self.longitude_positions[self.current_position]
+        self.z = self.elevation_positions[self.current_position]
 
         self.eci_x = self.eci_x_positions[self.current_position]
         self.eci_y = self.eci_y_positions[self.current_position]
