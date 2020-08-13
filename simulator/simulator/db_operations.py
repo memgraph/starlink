@@ -1,7 +1,9 @@
-from simulator import utils
+from simulator.database import Memgraph
+from simulator.models import City, MovingObject, Orbit
+from typing import List, Dict, Any
 
 
-def create_data(tx, moving_objects_dict_by_id, cities):
+def create_data(tx: Any, moving_objects_dict_by_id: Dict[id, MovingObject], cities: List[City]) -> None:
     tx.run("BEGIN")
 
     for moving_object_id in moving_objects_dict_by_id.keys():
@@ -54,7 +56,7 @@ def create_data(tx, moving_objects_dict_by_id, cities):
     tx.run("COMMIT")
 
 
-def update_data(tx, moving_objects_dict_by_id, cities):
+def update_data(tx: Any, moving_objects_dict_by_id: Dict[id, MovingObject], cities: List[City]) -> None:
     tx.run("BEGIN")
 
     for city in cities:
@@ -101,6 +103,6 @@ def update_data(tx, moving_objects_dict_by_id, cities):
     tx.run("COMMIT")
 
 
-def clear(db):
+def clear(db: Memgraph) -> None:
     command = "MATCH (node) DETACH DELETE node"
     db.execute_query(command)

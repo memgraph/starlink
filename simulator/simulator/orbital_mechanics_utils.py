@@ -1,9 +1,8 @@
 import collections
 from pathlib import Path
-from simulator.models import City
-from simulator.models import MovingObject
-from simulator.models import Orbit
+from simulator.models import City, MovingObject, Orbit
 from skyfield.api import EarthSatellite
+from typing import List, Dict, Any
 
 
 OrbitsAndObjects = collections.namedtuple(
@@ -13,7 +12,7 @@ OrbitsAndObjects = collections.namedtuple(
                          'moving_objects_dict_by_id'])
 
 
-def read_tle(file_path):
+def read_tle(file_path: str) -> None:
     satellites = []
     path = Path(__file__).parent.parent / file_path
     with path.open() as f:
@@ -33,7 +32,7 @@ def read_tle(file_path):
     return num_of_orbits, num_objects_in_orbibt, satellites
 
 
-def generate_orbits_and_moving_objects(file_path, time):
+def generate_orbits_and_moving_objects(file_path: str, time: Any) -> OrbitsAndObjects:
     num_of_orbits, num_objects_in_orbibt, satellites = read_tle(file_path)
 
     object_data = []

@@ -1,8 +1,8 @@
+from __future__ import annotations
 import os
 import math as m
 from dataclasses import dataclass, field
-from simulator import utils
-from typing import List
+from typing import List, Dict, Any
 
 
 V_LASER_VACUUM = 2.99792458E+8
@@ -43,7 +43,7 @@ class MovingObject:
         self.eci_y = self.eci_y_positions[self.current_position]
         self.eci_z = self.eci_z_positions[self.current_position]
 
-    def updatePosition(self):
+    def updatePosition(self) -> None:
         self.x = self.latitude_positions[self.current_position]
         self.y = self.longitude_positions[self.current_position]
         self.z = self.elevation_positions[self.current_position]
@@ -52,7 +52,7 @@ class MovingObject:
         self.eci_y = self.eci_y_positions[self.current_position]
         self.eci_z = self.eci_z_positions[self.current_position]
 
-    def update_laser_up(self, orbits_dict):
+    def update_laser_up(self, orbits_dict: Dict[int, Any]) -> None:
         if(not EDGE_CONNECTED and self.orbit_id == 0):
             return
 
@@ -63,7 +63,7 @@ class MovingObject:
 
         diff = 100000
         for moving_object in orbits_dict[laser_up_orbit].moving_objects:
-            tmp_diff = utils.eci_distance(self, moving_object)
+            tmp_diff = MovingObject.eci_distance(self, moving_object)
             if(tmp_diff >= diff):
                 continue
 
@@ -76,7 +76,7 @@ class MovingObject:
         self.laser_up_transmission_time = 1000 * \
             self.laser_up_distance/V_LASER_VACUUM + SAT_PROCESSING_DELAY
 
-    def update_laser_down(self, orbits_dict):
+    def update_laser_down(self, orbits_dict: Dict[int, Any]) -> None:
         if(not EDGE_CONNECTED and self.orbit_id == (self.num_of_orbits - 1)):
             return
 
@@ -87,7 +87,7 @@ class MovingObject:
 
         diff = 100000
         for moving_object in orbits_dict[laser_down_orbit].moving_objects:
-            tmp_diff = utils.eci_distance(self, moving_object)
+            tmp_diff = MovingObject.eci_distance(self, moving_object)
             if (tmp_diff >= diff):
                 continue
 
@@ -98,3 +98,22 @@ class MovingObject:
             diff = tmp_diff
         self.laser_down_transmission_time = 1000 * \
             self.laser_down_distance/V_LASER_VACUUM + SAT_PROCESSING_DELAY
+
+    def update_laser_left_right(self, moving_objects_dict_by_id: Dict[id, MovingObject]) -> None:
+        self.laser_left_distance = MovingObject.eci_distance(
+            self, moving_objects_dict_by_id[self.laser_left_id])
+
+        self.laser_left_transmission_time = 1000*self.laser_left_distance / \
+            V_LASER_VACUUM + SAT_PROCESSING_DELAY
+
+        self.laser_right_distance = MovingObject.eci_distance(
+            self, moving_objects_dict_by_id[self.laser_right_id])
+
+        self.laser_right_transmission_time = 1000*self.laser_right_distance / \
+            V_LASER_VACUUM + SAT_PROCESSING_DELAY
+
+    @staticmethod
+    def eci_distance(moving_object_one: MovingObject, moving_object_two: MovingObject) -> float:
+        return m.sqrt((moving_object_one.eci_x - moving_object_two.eci_x)**2 +
+                      (moving_object_one.eci_y - moving_object_two.eci_y)**2 +
+                      (moving_object_one.eci_z - moving_object_two.eci_z)**2)

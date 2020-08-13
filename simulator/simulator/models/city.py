@@ -1,12 +1,13 @@
+from __future__ import annotations
 import os
 import csv
-import math
+import math as m
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List
+from simulator.models.moving_object import MovingObject
 from simulator.models.stationary_object import StationaryObject
-from simulator import utils
 from skyfield.api import Topos
+from typing import List, Dict, Any
 
 
 V_RADIO = 2.99792458E+8
@@ -31,25 +32,23 @@ class City(StationaryObject):
                 self, moving_objects_dict_by_id[moving_object_id])
 
             if angle <= VIEW_ANGLE:
-                dist = utils.eci_distance(
+                dist = City.eci_distance(
                     self, moving_objects_dict_by_id[moving_object_id])
                 self.moving_objects_distances_dict[moving_object_id] = dist
                 self.moving_objects_tt_dict[moving_object_id] = dist * \
                     1000/V_RADIO + RELAY_PROCESSING_DELAY
 
     @staticmethod
-    def update_city_positions(cities):
+    def update_cities(cities: List[City], moving_objects_dict_by_id: Dict[int, MovingObject]) -> None:
         for city in cities:
             city.update_position()
 
-    @staticmethod
-    def update_city_moving_object_distances(cities, moving_objects_dict_by_id):
         for city in cities:
             city.city_visible_moving_object_distances(
                 moving_objects_dict_by_id)
 
     @staticmethod
-    def generate_cities(file_path, time):
+    def generate_cities(file_path: str, time: Any) -> List[City]:
         cities = []
         path = Path(__file__).parent.parent.parent / file_path
         with path.open() as f:
@@ -75,8 +74,13 @@ class City(StationaryObject):
         return cities
 
     @staticmethod
-    def calculate_angle(city, moving_object):
-        angle = math.acos(
-            moving_object.z / utils.eci_distance(moving_object, city)) * 180.0/math.pi
+    def eci_distance(city: City, moving_object: MovingObject) -> float:
+        return m.sqrt((city.eci_x - moving_object.eci_x)**2 +
+                      (city.eci_y - moving_object.eci_y)**2 +
+                      (city.eci_z - moving_object.eci_z)**2)
 
+    @staticmethod
+    def calculate_angle(city: City, moving_object: MovingObject) -> float:
+        angle = m.acos(
+            moving_object.z / City.eci_distance(moving_object, city)) * 180.0/m.pi
         return angle

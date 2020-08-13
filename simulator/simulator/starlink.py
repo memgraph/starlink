@@ -1,7 +1,5 @@
 from simulator.database import Memgraph
-from simulator.models import City
-from simulator import utils
-from simulator import relation_utils
+from simulator.models import City, Orbit
 from simulator import orbital_mechanics_utils
 from simulator import db_operations
 import time
@@ -20,7 +18,7 @@ CITIES_FILE_PATH = os.getenv('CITIES_FILE_PATH', 'imports/cities.csv')
 DB_UPDATE_TIME = int(os.getenv('DB_UPDATE_TIME', 0))
 
 
-def run():
+def run() -> None:
 
     db = Memgraph()
     db_operations.clear(db)
@@ -30,18 +28,18 @@ def run():
 
     cities = City.generate_cities(CITIES_FILE_PATH, time_of_simulation)
 
-    City.update_city_moving_object_distances(
-        cities, ObjectsAndOrbits.moving_objects_dict_by_id)
+    City.update_cities(cities, ObjectsAndOrbits.moving_objects_dict_by_id)
 
-    relation_utils.update_laser_connections(
+    Orbit.update_orbits(
         ObjectsAndOrbits.orbits_dict_by_id, ObjectsAndOrbits.moving_objects_dict_by_id)
 
     db.execute_transaction(db_operations.create_data,
                            ObjectsAndOrbits.moving_objects_dict_by_id, cities)
 
     while(True):
-        relation_utils.update_all_positions_and_relations(
-            cities, ObjectsAndOrbits.orbits_dict_by_id, ObjectsAndOrbits.moving_objects_dict_by_id)
+        Orbit.update_orbits(ObjectsAndOrbits.orbits_dict_by_id,
+                            ObjectsAndOrbits.moving_objects_dict_by_id)
+        City.update_cities(cities, ObjectsAndOrbits.moving_objects_dict_by_id)
 
         db.execute_transaction(db_operations.update_data,
                                ObjectsAndOrbits.moving_objects_dict_by_id, cities)

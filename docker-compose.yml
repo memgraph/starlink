@@ -24,7 +24,6 @@ services:
       SAT_PROCESSING_DELAY: 0.004
       RELAY_PROCESSING_DELAY: 0.008 
       VIEW_ANGLE: 70
-
     command: /wait-for-it.sh memgraph:7687 -- python main.py start
     depends_on:
       - memgraph

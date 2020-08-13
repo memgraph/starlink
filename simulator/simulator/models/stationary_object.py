@@ -20,7 +20,7 @@ class StationaryObject:
         self.eci_y = self.eci_y_positions[self.current_position]
         self.eci_z = self.eci_z_positions[self.current_position]
 
-    def update_position(self):
+    def update_position(self) -> None:
         self.current_position += 1
         if self.current_position == self.positions_lenght:
             self.current_position = 0

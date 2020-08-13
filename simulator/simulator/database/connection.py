@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Iterator
 from simulator.database.models import Node, Relationship
-from simulator import utils
 
 """
 _use_mgclient = True
