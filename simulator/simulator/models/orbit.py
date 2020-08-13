@@ -1,7 +1,11 @@
-from simulator.constants import V_LASER_VACUUM, SAT_DELAY
-from simulator import utils
+import os
 from dataclasses import dataclass, field
+from simulator import utils
 from typing import List
+
+
+V_LASER_VACUUM = 2.99792458E+8
+SAT_PROCESSING_DELAY = float(os.getenv('SAT_PROCESSING_DELAY', 0))
 
 
 @dataclass
@@ -32,8 +36,8 @@ class Orbit:
             moving_object.laser_left_distance = utils.eci_distance(
                 moving_object, moving_objects_dict_by_id[moving_object.laser_left_id])
             moving_object.laser_left_transmission_time = 1000*moving_object.laser_left_distance / \
-                V_LASER_VACUUM + SAT_DELAY
+                V_LASER_VACUUM + SAT_PROCESSING_DELAY
             moving_object.laser_right_distance = utils.eci_distance(
                 moving_object, moving_objects_dict_by_id[moving_object.laser_right_id])
             moving_object.laser_right_transmission_time = 1000*moving_object.laser_right_distance / \
-                V_LASER_VACUUM + SAT_DELAY
+                V_LASER_VACUUM + SAT_PROCESSING_DELAY

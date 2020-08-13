@@ -1,14 +1,16 @@
-from simulator.constants import NUM_OBJ, NUM_ORB
+import collections
+from pathlib import Path
 from simulator.models import City
 from simulator.models import MovingObject
 from simulator.models import Orbit
 from skyfield.api import EarthSatellite
-import collections
-from pathlib import Path
 
 
 OrbitsAndObjects = collections.namedtuple(
-    'ObjectsAndOrbits', ['orbits_dict_by_id', 'moving_objects_dict_by_id'])
+    'ObjectsAndOrbits', ['num_of_orbits',
+                         'num_objects_in_orbibt',
+                         'orbits_dict_by_id',
+                         'moving_objects_dict_by_id'])
 
 
 def read_tle(file_path):
@@ -16,18 +18,23 @@ def read_tle(file_path):
     path = Path(__file__).parent.parent / file_path
     with path.open() as f:
         lines = f.readlines()
+
     cnt = 0
+    tmp = lines[cnt].strip().split(',')
+    num_of_orbits = int(tmp[0].strip().split('=')[1])
+    num_objects_in_orbibt = int(tmp[1].strip().split('=')[1])
+    cnt += 1
     while(cnt < len(lines)):
         line1 = lines[cnt+1]
         line2 = lines[cnt+2]
 
         satellites.append(EarthSatellite(line1, line2))
         cnt += 3
-    return satellites
+    return num_of_orbits, num_objects_in_orbibt, satellites
 
 
 def generate_orbits_and_moving_objects(file_path, time):
-    satellites = read_tle(file_path)
+    num_of_orbits, num_objects_in_orbibt, satellites = read_tle(file_path)
 
     object_data = []
     for satellite in satellites:
@@ -40,18 +47,19 @@ def generate_orbits_and_moving_objects(file_path, time):
     moving_objects_dict_by_id = {}
 
     object_id = 0
-    for orbit_id in range(NUM_ORB):
+    for orbit_id in range(num_of_orbits):
         orbit = Orbit(orbit_id)
-        for id_in_orbit in range(NUM_OBJ):
+        for id_in_orbit in range(num_objects_in_orbibt):
             if id_in_orbit == 0:
-                laser_left_id = NUM_OBJ * orbit_id + NUM_OBJ - 1
-                laser_left_id_in_orbit = NUM_OBJ - 1
+                laser_left_id = num_objects_in_orbibt * \
+                    orbit_id + num_objects_in_orbibt - 1
+                laser_left_id_in_orbit = num_objects_in_orbibt - 1
                 laser_right_id = object_id + 1
                 laser_right_id_in_orbit = id_in_orbit + 1
-            elif id_in_orbit == NUM_OBJ - 1:
+            elif id_in_orbit == num_objects_in_orbibt - 1:
                 laser_left_id = object_id - 1
                 laser_left_id_in_orbit = id_in_orbit - 1
-                laser_right_id = NUM_OBJ * orbit_id
+                laser_right_id = num_objects_in_orbibt * orbit_id
                 laser_right_id_in_orbit = 0
             else:
                 laser_left_id = object_id - 1
@@ -62,6 +70,7 @@ def generate_orbits_and_moving_objects(file_path, time):
             imo = MovingObject(id=object_id,
                                id_in_orbit=id_in_orbit,
                                orbit_id=orbit_id,
+                               num_of_orbits=num_of_orbits,
                                latitude_positions=object_data[object_id][0].latitude.degrees,
                                longitude_positions=object_data[object_id][0].longitude.degrees,
                                elevation_positions=object_data[object_id][0].elevation.km,
@@ -77,4 +86,8 @@ def generate_orbits_and_moving_objects(file_path, time):
             orbit.add_object(imo)
             object_id += 1
         orbits_dict_by_id[orbit_id] = orbit
-    return OrbitsAndObjects(orbits_dict_by_id, moving_objects_dict_by_id)
+
+    return OrbitsAndObjects(num_of_orbits,
+                            num_objects_in_orbibt,
+                            orbits_dict_by_id,
+                            moving_objects_dict_by_id)

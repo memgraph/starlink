@@ -1,12 +1,17 @@
-from simulator.constants import VIEW_ANGLE, V_RADIO, RELAY_DELAY
+import os
+import csv
+import math
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import List
 from simulator.models.stationary_object import StationaryObject
 from simulator import utils
 from skyfield.api import Topos
-from pathlib import Path
-import csv
-from dataclasses import dataclass, field
-from typing import List
-import math
+
+
+V_RADIO = 2.99792458E+8
+RELAY_PROCESSING_DELAY = float(os.getenv('RELAY_PROCESSING_DELAY', 0))
+VIEW_ANGLE = float(os.getenv('VIEW_ANGLE', 70))
 
 
 @dataclass
@@ -24,12 +29,24 @@ class City(StationaryObject):
         for moving_object_id in moving_objects_dict_by_id.keys():
             angle = City.calculate_angle(
                 self, moving_objects_dict_by_id[moving_object_id])
+
             if angle <= VIEW_ANGLE:
                 dist = utils.eci_distance(
                     self, moving_objects_dict_by_id[moving_object_id])
                 self.moving_objects_distances_dict[moving_object_id] = dist
                 self.moving_objects_tt_dict[moving_object_id] = dist * \
-                    1000/V_RADIO + RELAY_DELAY
+                    1000/V_RADIO + RELAY_PROCESSING_DELAY
+
+    @staticmethod
+    def update_city_positions(cities):
+        for city in cities:
+            city.update_position()
+
+    @staticmethod
+    def update_city_moving_object_distances(cities, moving_objects_dict_by_id):
+        for city in cities:
+            city.city_visible_moving_object_distances(
+                moving_objects_dict_by_id)
 
     @staticmethod
     def generate_cities(file_path, time):
@@ -61,4 +78,5 @@ class City(StationaryObject):
     def calculate_angle(city, moving_object):
         angle = math.acos(
             moving_object.z / utils.eci_distance(moving_object, city)) * 180.0/math.pi
+
         return angle

@@ -2,9 +2,6 @@ from simulator import utils
 
 
 def create_data(tx, moving_objects_dict_by_id, cities):
-    """TODO: remove before deployment"""
-    #print(f"{utils.bcolors.WARNING}Simulator DB update START{utils.bcolors.ENDC}")
-
     tx.run("BEGIN")
 
     for moving_object_id in moving_objects_dict_by_id.keys():
@@ -58,9 +55,6 @@ def create_data(tx, moving_objects_dict_by_id, cities):
 
 
 def update_data(tx, moving_objects_dict_by_id, cities):
-    """TODO: remove before deployment"""
-    #print(f"{utils.bcolors.WARNING}Simulator DB update START{utils.bcolors.ENDC}")
-
     tx.run("BEGIN")
 
     for city in cities:
