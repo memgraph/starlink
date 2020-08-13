@@ -19,7 +19,7 @@ services:
       MG_PORT: 7687
       TLE_FILE_PATH: "imports/tle_1"
       CITIES_FILE_PATH: "imports/cities.csv"
-      DB_UPDATE_TIME: 0
+      DB_UPDATE_TIME: 3
       EDGE_CONNECTED: 'true'
       SAT_PROCESSING_DELAY: 0.004
       RELAY_PROCESSING_DELAY: 0.008 

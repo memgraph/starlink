@@ -6,9 +6,7 @@ from typing import List, Dict, Any
 
 
 OrbitsAndObjects = collections.namedtuple(
-    'ObjectsAndOrbits', ['num_of_orbits',
-                         'num_objects_in_orbibt',
-                         'orbits_dict_by_id',
+    'ObjectsAndOrbits', ['orbits_dict_by_id',
                          'moving_objects_dict_by_id'])
 
 
@@ -21,7 +19,7 @@ def read_tle(file_path: str) -> None:
     cnt = 0
     tmp = lines[cnt].strip().split(',')
     num_of_orbits = int(tmp[0].strip().split('=')[1])
-    num_objects_in_orbibt = int(tmp[1].strip().split('=')[1])
+    num_objects_in_orbit = int(tmp[1].strip().split('=')[1])
     cnt += 1
     while(cnt < len(lines)):
         line1 = lines[cnt+1]
@@ -29,11 +27,11 @@ def read_tle(file_path: str) -> None:
 
         satellites.append(EarthSatellite(line1, line2))
         cnt += 3
-    return num_of_orbits, num_objects_in_orbibt, satellites
+    return num_of_orbits, num_objects_in_orbit, satellites
 
 
 def generate_orbits_and_moving_objects(file_path: str, time: Any) -> OrbitsAndObjects:
-    num_of_orbits, num_objects_in_orbibt, satellites = read_tle(file_path)
+    num_of_orbits, num_objects_in_orbit, satellites = read_tle(file_path)
 
     object_data = []
     for satellite in satellites:
@@ -48,17 +46,22 @@ def generate_orbits_and_moving_objects(file_path: str, time: Any) -> OrbitsAndOb
     object_id = 0
     for orbit_id in range(num_of_orbits):
         orbit = Orbit(orbit_id)
-        for id_in_orbit in range(num_objects_in_orbibt):
+        for id_in_orbit in range(num_objects_in_orbit):
             if id_in_orbit == 0:
-                laser_left_id = num_objects_in_orbibt * \
-                    orbit_id + num_objects_in_orbibt - 1
-                laser_left_id_in_orbit = num_objects_in_orbibt - 1
+                if(object_id == 0):
+                    laser_left_id = num_of_orbits * num_objects_in_orbit - 1
+                else:
+                    laser_left_id = num_objects_in_orbit * orbit_id - 1
+                laser_left_id_in_orbit = num_objects_in_orbit - 1
                 laser_right_id = object_id + 1
                 laser_right_id_in_orbit = id_in_orbit + 1
-            elif id_in_orbit == num_objects_in_orbibt - 1:
+            elif id_in_orbit == num_objects_in_orbit - 1:
                 laser_left_id = object_id - 1
                 laser_left_id_in_orbit = id_in_orbit - 1
-                laser_right_id = num_objects_in_orbibt * orbit_id
+                if(object_id == num_of_orbits*num_objects_in_orbit-1):
+                    laser_right_id = 0
+                else:
+                    laser_right_id = num_objects_in_orbit * orbit_id + num_objects_in_orbit
                 laser_right_id_in_orbit = 0
             else:
                 laser_left_id = object_id - 1
@@ -86,7 +89,4 @@ def generate_orbits_and_moving_objects(file_path: str, time: Any) -> OrbitsAndOb
             object_id += 1
         orbits_dict_by_id[orbit_id] = orbit
 
-    return OrbitsAndObjects(num_of_orbits,
-                            num_objects_in_orbibt,
-                            orbits_dict_by_id,
-                            moving_objects_dict_by_id)
+    return OrbitsAndObjects(orbits_dict_by_id, moving_objects_dict_by_id)
