@@ -4,14 +4,16 @@ from simulator import utils
 from skyfield.api import Topos
 from pathlib import Path
 import csv
+from dataclasses import dataclass, field
+from typing import List
 
 
+@dataclass
 class City(StationaryObject):
-    def __init__(self, id, x, y, z, eci_x_positions, eci_y_positions, eci_z_positions, name):
-        StationaryObject.__init__(
-            self, id, x, y, z, eci_x_positions, eci_y_positions, eci_z_positions)
-        self.name = name
-        self.id = id
+    name: str
+
+    def __post_init__(self):
+        StationaryObject.__post_init__(self)
         self.moving_objects_distances_dict = {}
         self.moving_objects_tt_dict = {}
 

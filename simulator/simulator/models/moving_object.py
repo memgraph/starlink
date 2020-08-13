@@ -1,37 +1,40 @@
 from simulator.constants import EDGE_CONNECTED, NUM_ORB, V_LASER_VACUUM, SAT_DELAY
 import math as m
 from simulator import utils
+from dataclasses import dataclass, field
+from typing import List
 
 
+@dataclass
 class MovingObject:
-    def __init__(self, id, id_in_orbit, orbit_id,  longitude_positions, latitude_positions, altitude, eci_x_positions, eci_y_positions, eci_z_positions, laser_left_id, laser_left_id_in_orbit, laser_right_id, laser_right_id_in_orbit):
-        self.id = id
-        self.id_in_orbit = id_in_orbit
-        self.orbit_id = orbit_id
+    id: int
+    id_in_orbit: int
+    orbit_id: int
 
-        self.longitude_positions = longitude_positions
-        self.latitude_positions = latitude_positions
-        self.altitude = altitude
+    longitude_positions: List
+    latitude_positions: List
+    altitude: List
 
+    eci_x_positions: List
+    eci_y_positions: List
+    eci_z_positions: List
+
+    laser_left_id: int
+    laser_left_id_in_orbit: int
+    laser_right_id: int
+    laser_right_id_in_orbit: int
+
+    def __post_init__(self):
         self.current_position = 0
-        self.positions_lenght = len(longitude_positions)
+        self.positions_lenght = len(self.longitude_positions)
 
         self.x = self.longitude_positions[self.current_position]
         self.y = self.latitude_positions[self.current_position]
-        self.z = altitude
-
-        self.eci_x_positions = eci_x_positions
-        self.eci_y_positions = eci_y_positions
-        self.eci_z_positions = eci_z_positions
+        self.z = self.altitude
 
         self.eci_x = self.eci_x_positions[self.current_position]
         self.eci_y = self.eci_y_positions[self.current_position]
         self.eci_z = self.eci_z_positions[self.current_position]
-
-        self.laser_left_id = laser_left_id
-        self.laser_left_id_in_orbit = laser_left_id_in_orbit
-        self.laser_right_id = laser_right_id
-        self.laser_right_id_in_orbit = laser_right_id_in_orbit
 
     def updatePosition(self):
         self.x = self.longitude_positions[self.current_position]

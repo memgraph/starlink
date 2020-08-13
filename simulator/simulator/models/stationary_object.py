@@ -1,19 +1,20 @@
+from dataclasses import dataclass
+from typing import List
 
 
+@dataclass
 class StationaryObject:
-    def __init__(self, id, x, y, z, eci_x_positions, eci_y_positions, eci_z_positions):
-        self.id = id
+    id: int
+    x: float
+    y: float
+    z: float
+    eci_x_positions: List
+    eci_y_positions: List
+    eci_z_positions: List
 
-        self.x = x
-        self.y = y
-        self.z = z
-
+    def __post_init__(self):
         self.current_position = 0
-        self.positions_lenght = len(eci_x_positions)
-
-        self.eci_x_positions = eci_x_positions
-        self.eci_y_positions = eci_y_positions
-        self.eci_z_positions = eci_z_positions
+        self.positions_lenght = len(self.eci_x_positions)
 
         self.eci_x = self.eci_x_positions[self.current_position]
         self.eci_y = self.eci_y_positions[self.current_position]

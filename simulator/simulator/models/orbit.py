@@ -1,10 +1,14 @@
 from simulator.constants import V_LASER_VACUUM, SAT_DELAY
 from simulator import utils
+from dataclasses import dataclass, field
+from typing import List
 
 
+@dataclass
 class Orbit:
-    def __init__(self, id):
-        self.id = id
+    id: int
+
+    def __post_init__(self):
         self.moving_objects = []
 
     def add_object(self, moving_objects):
