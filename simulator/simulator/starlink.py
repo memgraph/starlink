@@ -6,12 +6,12 @@ from simulator import orbital_mechanics_utils
 from simulator import db_operations
 from simulator.constants import DB_UPDATE_TIME
 import time
-from skyfield.api import load
+from skyfield.api import load as skyfield_load
 import numpy as np
 import os
 
 
-ts = load.timescale(builtin=True)
+ts = skyfield_load.timescale(builtin=True)
 minutes = np.arange(0, 24*60*5, 1)
 time_of_simulation = ts.utc(2020, 7, 29, 0, minutes)
 

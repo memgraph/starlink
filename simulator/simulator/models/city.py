@@ -2,6 +2,7 @@ from simulator.constants import VIEW_ANGLE, V_RADIO, RELAY_DELAY
 from simulator.models.stationary_object import StationaryObject
 from simulator import utils
 from skyfield.api import Topos
+from pathlib import Path
 import csv
 
 
@@ -30,7 +31,8 @@ class City(StationaryObject):
     @staticmethod
     def generate_cities(file_path, time):
         cities = []
-        with open(file_path, 'r') as f:
+        path = Path(__file__).parent.parent.parent / file_path
+        with path.open() as f:
             reader = csv.DictReader(f, delimiter=',')
             for row in reader:
                 topos = Topos(latitude_degrees=float(row['latitude']), longitude_degrees=float(

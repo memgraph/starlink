@@ -4,6 +4,8 @@ from simulator.models import MovingObject
 from simulator.models import Orbit
 from skyfield.api import EarthSatellite
 import collections
+from pathlib import Path
+
 
 OrbitsAndObjects = collections.namedtuple(
     'ObjectsAndOrbits', ['orbits_dict_by_id', 'moving_objects_dict_by_id'])
@@ -11,7 +13,8 @@ OrbitsAndObjects = collections.namedtuple(
 
 def read_tle(file_path):
     satellites = []
-    with open(file_path, 'r') as f:
+    path = Path(__file__).parent.parent / file_path
+    with path.open() as f:
         lines = f.readlines()
     cnt = 0
     while(cnt < len(lines)):
@@ -36,20 +39,19 @@ def generate_moving_objects(file_path, time):
     orbits_dict_by_id = {}
     moving_objects_dict_by_id = {}
 
-    orbit_id = 0
     object_id = 0
-    for x in range(NUM_ORB):
+    for orbit_id in range(NUM_ORB):
         orbit = Orbit(orbit_id)
         for y in range(NUM_OBJ):
             if y == 0:
-                laser_left_id = NUM_OBJ * x + NUM_OBJ - 1
+                laser_left_id = NUM_OBJ * orbit_id + NUM_OBJ - 1
                 laser_left_id_in_orbit = NUM_OBJ - 1
                 laser_right_id = object_id + 1
                 laser_right_id_in_orbit = y + 1
             elif y == NUM_OBJ - 1:
                 laser_left_id = object_id - 1
                 laser_left_id_in_orbit = y - 1
-                laser_right_id = NUM_OBJ * x
+                laser_right_id = NUM_OBJ * orbit_id
                 laser_right_id_in_orbit = 0
             else:
                 laser_left_id = object_id - 1
@@ -62,5 +64,4 @@ def generate_moving_objects(file_path, time):
             orbit.add_object(imo)
             object_id += 1
         orbits_dict_by_id[orbit_id] = orbit
-        orbit_id += 1
     return OrbitsAndObjects(orbits_dict_by_id, moving_objects_dict_by_id)
