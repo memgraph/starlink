@@ -29,8 +29,12 @@ def index(request):
     json_cities = json.dumps(db_connection.city_json_format(cities))
     json_optical_paths = json.dumps(
         db_connection.optical_paths_json_format(optical_paths))
-
-    return render(request, "demo/demo.html", {"city_markers": json_cities, "sat_markers": json_satellites, "rel_markers": json_relationships, "sp_markers": json_shortest_path, "op_markers": json_optical_paths})
+    
+    return render(request, "demo/demo.html", {"city_markers": json_cities, 
+                                                "sat_markers": json_satellites, 
+                                                "rel_markers": json_relationships, 
+                                                "sp_markers": json_shortest_path,
+                                                "op_markers": json_optical_paths})
 
 
 def postSatellitesAndRelationships(request):
@@ -68,4 +72,6 @@ def postSatellitesAndRelationships(request):
         json_shortest_path = json.dumps(
             db_connection.shortest_path_json_format(shortest_path))
 
-    return JsonResponse({"json_satellites": json_satellites, "json_relationships": json_relationships, "json_shortest_path": json_shortest_path}, status=200)
+    return JsonResponse({"json_satellites": json_satellites, 
+                        "json_relationships": json_relationships, 
+                        "json_shortest_path": json_shortest_path}, status=200)

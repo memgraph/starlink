@@ -194,7 +194,7 @@ function newDataLoaded() {
     if (firstSatellite == undefined) {
         return true;
     }
-    newFirstSatellite = sat_markers[0].slice(0, 2)
+    newFirstSatellite = sat_markers[0].slice(0, 2);
     if (newFirstSatellite[0] != firstSatellite[0]) {
         return true;
     } else {

@@ -2,17 +2,17 @@ function createDropdowns() {
     firstDropdown = document.getElementById("dropdownOne");
     secondDropdown = document.getElementById("dropdownTwo");
 
-    for (var i = 0; i < cities.length; i++) {
-        var element = document.createElement("option");
-        element.text = cities[i][3];
-        element.value = cities[i][0];
+    for(city of cities){
+        let element = document.createElement("option");
+        element.text = city[3];
+        element.value = city[0];
         firstDropdown.appendChild(element);
     }
-    
-    for (var i = 0; i < cities.length; i++) {
-        var element = document.createElement("option");
-        element.text = cities[i][3];
-        element.value = cities[i][0];
+
+    for(city of cities){
+        let element = document.createElement("option");
+        element.text = city[3];
+        element.value = city[0];
         secondDropdown.appendChild(element);
     }
 

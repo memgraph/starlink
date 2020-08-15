@@ -174,20 +174,20 @@
                         if (data.json_shortest_path.length != 0) {
                             shortestPathLayer.clearLayers();
                             drawShortestPath(JSON.parse(data.json_shortest_path));
-                            document.getElementById("ttime").innerHTML = "Satellite communication: " + transmission_time(JSON.parse(data.json_shortest_path));
+                            document.getElementById("ttime").innerHTML = `Satellite communication: ${transmission_time(JSON.parse(data.json_shortest_path))}`;
                             selectedCities = GetSelectionText();
-                            document.getElementById("optic").innerHTML = "Fiber-optic cable communication: " + optical_time(opticalPaths, selectedCities[0], selectedCities[1]);
+                            document.getElementById("optic").innerHTML = `Fiber-optic cable communication: ${optical_time(opticalPaths, selectedCities[0], selectedCities[1])}`;
                         } else {
                             shortestPathLayer.clearLayers();
-                            document.getElementById("ttime").innerHTML = "No visible satellites.";
+                            document.getElementById("ttime").innerHTML = `No visible satellites.`;
                             selectedCities = GetSelectionText();
-                            document.getElementById("optic").innerHTML = "Fiber-optic cable communication: " + optical_time(opticalPaths, selectedCities[0], selectedCities[1]);
+                            document.getElementById("optic").innerHTML = `Fiber-optic cable communication: ${optical_time(opticalPaths, selectedCities[0], selectedCities[1])}`;
                         }
                     }
                 },
                 error: function (xhr, textStatus, errorThrown) {
                     if (!userAborted(xhr)) {
-                        showError("Somrthing went wrong...");
+                        showError('Something went wrong...');
                     }
                 }
             });
