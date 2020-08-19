@@ -6,7 +6,8 @@ from typing import List, Dict, Any
 
 
 V_LASER_VACUUM = 2.99792458E+8
-EDGE_CONNECTED = bool(os.getenv('EDGE_CONNECTED', 'true'))
+EDGE_ORBITS_CONNECTED = bool(os.getenv('EDGE_ORBITS_CONNECTED', 'false'))
+ORBIT_ENDS_CONNECTED = bool(os.getenv('ORBIT_ENDS_CONNECTED', 'false'))
 SAT_PROCESSING_DELAY = float(os.getenv('SAT_PROCESSING_DELAY', 0))
 
 
@@ -53,7 +54,7 @@ class MovingObject:
         self.eci_z = self.eci_z_positions[self.current_position]
 
     def update_laser_up(self, orbits_dict: Dict[int, Any]) -> None:
-        if(not EDGE_CONNECTED and self.orbit_id == 0):
+        if(not EDGE_ORBITS_CONNECTED and self.orbit_id == 0):
             return
 
         if self.orbit_id == 0:
@@ -77,7 +78,7 @@ class MovingObject:
             self.laser_up_distance/V_LASER_VACUUM + SAT_PROCESSING_DELAY
 
     def update_laser_down(self, orbits_dict: Dict[int, Any]) -> None:
-        if(not EDGE_CONNECTED and self.orbit_id == (self.num_of_orbits - 1)):
+        if(not EDGE_ORBITS_CONNECTED and self.orbit_id == (self.num_of_orbits - 1)):
             return
 
         if self.orbit_id == self.num_of_orbits - 1:
@@ -100,17 +101,18 @@ class MovingObject:
             self.laser_down_distance/V_LASER_VACUUM + SAT_PROCESSING_DELAY
 
     def update_laser_left_right(self, moving_objects_dict_by_id: Dict[id, MovingObject]) -> None:
-        self.laser_left_distance = MovingObject.eci_distance(
-            self, moving_objects_dict_by_id[self.laser_left_id])
+        if(self.laser_left_id != -1):
+            self.laser_left_distance = MovingObject.eci_distance(
+                self, moving_objects_dict_by_id[self.laser_left_id])
 
-        self.laser_left_transmission_time = 1000*self.laser_left_distance / \
-            V_LASER_VACUUM + SAT_PROCESSING_DELAY
+            self.laser_left_transmission_time = 1000*self.laser_left_distance / \
+                V_LASER_VACUUM + SAT_PROCESSING_DELAY
+        if(self.laser_right_id != -1):
+            self.laser_right_distance = MovingObject.eci_distance(
+                self, moving_objects_dict_by_id[self.laser_right_id])
 
-        self.laser_right_distance = MovingObject.eci_distance(
-            self, moving_objects_dict_by_id[self.laser_right_id])
-
-        self.laser_right_transmission_time = 1000*self.laser_right_distance / \
-            V_LASER_VACUUM + SAT_PROCESSING_DELAY
+            self.laser_right_transmission_time = 1000*self.laser_right_distance / \
+                V_LASER_VACUUM + SAT_PROCESSING_DELAY
 
     @staticmethod
     def eci_distance(moving_object_one: MovingObject, moving_object_two: MovingObject) -> float:

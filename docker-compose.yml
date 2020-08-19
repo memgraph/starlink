@@ -17,10 +17,11 @@ services:
     environment:
       MG_HOST: memgraph
       MG_PORT: 7687
-      TLE_FILE_PATH: "imports/tle_1"
+      TLE_FILE_PATH: "imports/tle_3"
       CITIES_FILE_PATH: "imports/cities.csv"
-      DB_UPDATE_TIME: 3
-      EDGE_CONNECTED: 'true'
+      DB_UPDATE_TIME: 0
+      EDGE_ORBITS_CONNECTED: 'false'
+      ORBIT_ENDS_CONNECTED: 'false'
       SAT_PROCESSING_DELAY: 0.004
       RELAY_PROCESSING_DELAY: 0.008 
       VIEW_ANGLE: 70

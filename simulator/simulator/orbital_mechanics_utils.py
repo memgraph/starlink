@@ -1,8 +1,12 @@
 import collections
+import os
 from pathlib import Path
 from simulator.models import City, MovingObject, Orbit
 from skyfield.api import EarthSatellite
 from typing import List, Dict, Any
+
+
+ORBIT_ENDS_CONNECTED = bool(os.getenv('ORBIT_ENDS_CONNECTED', 'false'))
 
 
 OrbitsAndObjects = collections.namedtuple(
@@ -20,11 +24,12 @@ def read_tle(file_path: str) -> None:
     tmp = lines[cnt].strip().split(',')
     num_of_orbits = int(tmp[0].strip().split('=')[1])
     num_objects_in_orbit = int(tmp[1].strip().split('=')[1])
+
+    num_of_all_objects = num_of_orbits * num_objects_in_orbit
     cnt += 1
-    while(cnt < len(lines)):
+    while(cnt < num_of_all_objects * 3 + 1):
         line1 = lines[cnt+1]
         line2 = lines[cnt+2]
-
         satellites.append(EarthSatellite(line1, line2))
         cnt += 3
     return num_of_orbits, num_objects_in_orbit, satellites
@@ -48,8 +53,10 @@ def generate_orbits_and_moving_objects(file_path: str, time: Any) -> OrbitsAndOb
         orbit = Orbit(orbit_id)
         for id_in_orbit in range(num_objects_in_orbit):
             if id_in_orbit == 0:
-                if(object_id == 0):
+                if(object_id == 0 and ORBIT_ENDS_CONNECTED):
                     laser_left_id = num_of_orbits * num_objects_in_orbit - 1
+                elif(object_id == 0 and not ORBIT_ENDS_CONNECTED):
+                    laser_left_id = -1
                 else:
                     laser_left_id = num_objects_in_orbit * orbit_id - 1
                 laser_left_id_in_orbit = num_objects_in_orbit - 1
@@ -58,8 +65,10 @@ def generate_orbits_and_moving_objects(file_path: str, time: Any) -> OrbitsAndOb
             elif id_in_orbit == num_objects_in_orbit - 1:
                 laser_left_id = object_id - 1
                 laser_left_id_in_orbit = id_in_orbit - 1
-                if(object_id == num_of_orbits*num_objects_in_orbit-1):
+                if(object_id == num_of_orbits*num_objects_in_orbit-1 and ORBIT_ENDS_CONNECTED):
                     laser_right_id = 0
+                elif(object_id == num_of_orbits*num_objects_in_orbit-1 and  not ORBIT_ENDS_CONNECTED):
+                    laser_right_id = -1
                 else:
                     laser_right_id = num_objects_in_orbit * orbit_id + num_objects_in_orbit
                 laser_right_id_in_orbit = 0
@@ -88,5 +97,4 @@ def generate_orbits_and_moving_objects(file_path: str, time: Any) -> OrbitsAndOb
             orbit.add_object(imo)
             object_id += 1
         orbits_dict_by_id[orbit_id] = orbit
-
     return OrbitsAndObjects(orbits_dict_by_id, moving_objects_dict_by_id)

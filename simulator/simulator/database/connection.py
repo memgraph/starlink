@@ -1,3 +1,4 @@
+import logging
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Iterator
 from simulator.database.models import Node, Relationship
@@ -15,6 +16,7 @@ _use_mgclient = False
 
 
 __all__ = ('Connection',)
+logger = logging.getLogger('simulator')
 
 
 class Connection(ABC):
@@ -119,9 +121,7 @@ class Neo4jConnection(Connection):
         """Executes Cypher queries without returning any results."""
         with self._connection.session() as session:
             session.write_transaction(func, moving_objects, cities)
-
-        """TODO: remove before deployment"""
-        #print(f"{utils.bcolors.WARNING}Simulator DB update END{utils.bcolors.ENDC}")
+        logger.info('Commited initial DB transaction')
 
     def execute_and_fetch(self, query: str) -> Iterator[Dict[str, Any]]:
         """Executes Cypher query and returns iterator of results."""

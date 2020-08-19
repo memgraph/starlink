@@ -1,6 +1,10 @@
+import logging
 from simulator.database import Memgraph
 from simulator.models import City, MovingObject, Orbit
 from typing import List, Dict, Any
+
+
+logger = logging.getLogger('simulator')
 
 
 def create_laser_command(moving_object_id: int,
@@ -67,8 +71,9 @@ def create_data(tx: Any,
             moving_object.id, moving_object.laser_down_id, moving_object.laser_down_transmission_time)
         tx.run(command)
 
+    logger.info('Commiting initial DB transaction...')
     tx.run("COMMIT")
-
+    
 
 def update_data(tx: Any,
                 moving_objects_dict_by_id: Dict[id, MovingObject],

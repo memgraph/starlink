@@ -63,15 +63,21 @@
                     </div>
                     <hr class="m-0 p-1">
                     <div class="row mt-2">
-                        <div class="col-sm-12 col-md-9">
+                        <div class="col-sm-12 col-md-8">
                             <p>This is a demonstration of how Memgraph DB can be used to calculate the shortest path
                                 for data transmission using a satellite network. For more information, visit our blog
                                 post:
                             </p>
                         </div>
-                        <div class="col-sm-12 col-md-3">
+                        <div class="col-sm-12 col-md-2">
                             <a class="btn btn-danger btn-lg" target="_blank" rel="noopener noreferrer"
                                 href="https://memgraph.com/blog" role="button">Blog Post</a>
+                        </div>
+                        <div class="col-sm-12 col-md-2">
+                            <button type="button" class="btn btn-info btn-lg" data-toggle="modal"
+                                data-target="#disclaimerModal">
+                                Disclaimer
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -132,6 +138,53 @@
                                 <div id="optic"></div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="disclaimerModal" tabindex="-1" role="dialog" aria-labelledby="disclaimerModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="disclaimerModalLabel">Disclaimer</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p> Not all information about the Starlink project is publicly available, therefore we had to
+                            make
+                            some assumptions. There have also been simplifications in the simulation on our part to make
+                            it
+                            better suited for visualization and more understandable for wider audiences.</p>
+
+                        <p>In the first phase, Starlink plans to deploy 1,584 satellites at an altitude of around 550 km
+                            in
+                            72 orbital planes at inclinations of 53.2°, 70.0° and 97.6°. This simulation uses 480
+                            satellites
+                            in 24 orbital planes at an altitude of around 550 km and an inclination of 70.0°.</p>
+
+                        <p> We also approximate the signal processing time for satellites and ground transceivers, which
+                            is
+                            fixed and set to 4 ms. For example, a signal travelling from city A to city B via 4
+                            satellites
+                            will result in 40 ms of processing time in total. The ground transceivers in both cities
+                            will
+                            contribute 4 ms of processing time each while the satellites will contribute 8 ms of
+                            processing
+                            time (4 ms to process the received signal and 4 ms for further transmission processing).</p>
+
+                        <p>Starlink is a massive undertaking led by US-based company SpaceX. We at Memgraph applaud
+                            their ingenuity, dedication and vision for the future. If
+                            you want to find out more about the project itself visit their websites:
+                            <a target="_blank" rel="noopener noreferrer"
+                                href="https://www.starlink.com/">https://www.starlink.com</a> and 
+                            <a target="_blank" rel="noopener noreferrer"
+                                href="https://www.spacex.com/">https://www.spacex.com</a>.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
