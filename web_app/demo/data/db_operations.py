@@ -7,6 +7,11 @@ def import_all_cities(db):
     return db.execute_and_fetch(command)
 
 
+def import_initial_satellites(db):
+    command = "MATCH (s:Satellite) RETURN s;"
+    return db.execute_and_fetch(command)
+
+
 def import_data(tx, city1, city2):
     """TODO: remove before deployment"""
     #print(f"{utils.bcolors.OKGREEN}Web DB update START{utils.bcolors.ENDC}")

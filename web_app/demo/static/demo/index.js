@@ -90,6 +90,7 @@ function simulationStopped() {
     $('#dropdownTwo').prop('disabled', false);
 
     drawCities();
+    drawSatellites();
     map.dragging.enable();
     map.touchZoom.enable();
     map.doubleClickZoom.enable();
