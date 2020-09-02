@@ -100,7 +100,6 @@ function drawSatellites() {
         });
         satellitesLayer.addLayer(circle);
     }
-    if (simStopped) return;
     satellitesLayer.addTo(map);
 }
 

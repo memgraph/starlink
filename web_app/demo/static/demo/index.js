@@ -82,6 +82,7 @@ function simulationStopped() {
     document.getElementById('stats').style.display = 'none';
 
     drawCities();
+    drawSatellites();
     map.dragging.enable();
     map.touchZoom.enable();
     map.doubleClickZoom.enable();

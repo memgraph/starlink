@@ -26,7 +26,13 @@ def index(request):
         cities = db_connection.fetch_cities(db)
     optical_paths = utils.import_optical_paths()
 
+    satellites = []
+    while len(satellites) == 0:
+        time.sleep(1)
+        satellites = db_connection.fetch_satellites(db)
+
     json_cities = json.dumps(db_connection.city_json_format(cities))
+    json_satellites = json.dumps(db_connection.satellite_json_format(satellites))
     json_optical_paths = json.dumps(
         db_connection.optical_paths_json_format(optical_paths))
     

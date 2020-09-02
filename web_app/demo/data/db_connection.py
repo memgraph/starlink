@@ -14,6 +14,11 @@ def fetch_cities(db):
     return city_markers
 
 
+def fetch_satellites(db):
+    satellites = db_operations.import_initial_satellites(db)
+    return transform_satellites(satellites)
+
+
 def transform_satellites(satellites):
     sat_markers = []
     for sat in satellites:
