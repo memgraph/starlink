@@ -71,7 +71,7 @@ def create_data(tx: Any,
             moving_object.id, moving_object.laser_down_id, moving_object.laser_down_transmission_time)
         tx.run(command)
 
-    logger.info('Commiting initial DB transaction...')
+    #logger.info('Commiting initial DB transaction...')
     tx.run("COMMIT")
     
 

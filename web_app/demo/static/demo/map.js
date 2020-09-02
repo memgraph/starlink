@@ -9,8 +9,13 @@ function initMapMollweide() {
         noWrap: true,
         minZoom: 1,
         maxZoom: 3,
-        attributionControl: false
+        attributionControl: false,
+        zoomControl: false
     });
+
+    L.control.zoom({
+        position: 'topright'
+    }).addTo(map);
 }
 
 function initMapMercator() {
@@ -27,12 +32,45 @@ function initMapMercator() {
         minZoom: 1,
     }).addTo(map);
 
-    var bounds = L.latLngBounds([[-70, -180], [80, 180]]);
+    var bounds = L.latLngBounds([
+        [-70, -180],
+        [80, 180]
+    ]);
     map.setMaxBounds(bounds);
 
-    map.on('drag', function () {
+    map.on('drag', function() {
         map.panInsideBounds(bounds, { animate: false });
     });
+}
+
+async function createMap() {
+    initMapMollweide();
+
+    L.geoJson(countries, {
+        style: {
+            color: '#BAB8BB',
+            weight: 0.5,
+            opacity: 1,
+            fillColor: '#FFFFFF',
+            fillOpacity: 1
+        }
+    }).addTo(map);
+
+    map.fitWorld();
+
+    myRenderer = L.canvas({ padding: 0.5 });
+}
+
+function drawCity(city) {
+    for (var i = 0; i < cities.length; i++) {
+        if (cities[i][0] == city[0]) {
+            var obj = cities[i].slice(1, 3);
+            var div_circle = L.divIcon({ iconSize: [16, 16], className: 'circle' })
+            var marker = L.marker(obj, { icon: div_circle }).bindPopup(cities[i][3]);
+            citiesLayer.addLayer(marker);
+        }
+    }
+    citiesLayer.addTo(map);
 }
 
 function drawCities() {
@@ -41,14 +79,8 @@ function drawCities() {
     for (var i = 0; i < cities.length; i++) {
         if (cities[i][0] == sel[0] || cities[i][0] == sel[1]) {
             var obj = cities[i].slice(1, 3);
-            var marker = L.circleMarker(obj,
-                {
-                    renderer: myRenderer,
-                    color: '#7a0099',
-                    fillColor: '#f03',
-                    radius: 7
-                }
-            ).bindPopup(cities[i][3]);
+            var div_circle = L.divIcon({ iconSize: [16, 16], className: 'circle' })
+            var marker = L.marker(obj, { icon: div_circle }).bindPopup(cities[i][3]);
             citiesLayer.addLayer(marker);
         }
     }
@@ -61,8 +93,8 @@ function drawSatellites() {
         var obj = sat_markers[i].slice(0, 2);
         var circle = L.circleMarker(obj, {
             renderer: myRenderer,
-            color: '#FF7F50',
-            fillColor: '#f03',
+            color: '#FFB8AA',
+            fillColor: '#FFB8AA',
             fillOpacity: 0.5,
             radius: 2
         });
@@ -93,29 +125,24 @@ function drawRelationships(rel_markers) {
 
             var intersection = math.intersect(satStart, satEnd, [90, 0], [-90, 0]);
 
-            section1 = [[obj[0], obj[1]], [intersection[0], latlngs[0].lng]];
-            section2 = [[intersection[0], latlngs[1].lng], [obj[2], obj[3]]];
+            section1 = [
+                [obj[0], obj[1]],
+                [intersection[0], latlngs[0].lng]
+            ];
+            section2 = [
+                [intersection[0], latlngs[1].lng],
+                [obj[2], obj[3]]
+            ];
 
-            drawPolyRel(section1, '#bfbfbf', relationshipsLayer);
-            drawPolyRel(section2, '#bfbfbf', relationshipsLayer);
+            drawPolyRel(section1, '#BAB8BB', relationshipsLayer);
+            drawPolyRel(section2, '#BAB8BB', relationshipsLayer);
             continue;
         }
-        drawPolyRel(latlngs, '#bfbfbf', relationshipsLayer);
+        drawPolyRel(latlngs, '#BAB8BB', relationshipsLayer);
 
     }
     if (simStopped) return;
     relationshipsLayer.addTo(map);
-}
-
-function drawPoly(line, colour, layer) {
-    var polyline = L.polyline(line, {
-        renderer: myRenderer,
-        color: colour,
-        opacity: 0.8,
-        weight: 2.5,
-        smoothFactor: 1
-    }).addTo(map);
-    layer.addLayer(polyline);
 }
 
 function drawPolyRel(line, colour, layer) {
@@ -124,6 +151,17 @@ function drawPolyRel(line, colour, layer) {
         color: colour,
         opacity: 0.2,
         weight: 1,
+        smoothFactor: 1
+    }).addTo(map);
+    layer.addLayer(polyline);
+}
+
+function drawPoly(line, colour, layer) {
+    var polyline = L.polyline(line, {
+        renderer: myRenderer,
+        color: colour,
+        opacity: 1,
+        weight: 4,
         smoothFactor: 1
     }).addTo(map);
     layer.addLayer(polyline);
@@ -149,14 +187,20 @@ function drawShortestPath(sp_markers) {
 
             var intersection = math.intersect(satStart, satEnd, [90, 0], [-90, 0]);
 
-            section1 = [[obj[0], obj[1]], [intersection[0], latlngs[0].lng]];
-            section2 = [[intersection[0], latlngs[1].lng], [obj[2], obj[3]]];
+            section1 = [
+                [obj[0], obj[1]],
+                [intersection[0], latlngs[0].lng]
+            ];
+            section2 = [
+                [intersection[0], latlngs[1].lng],
+                [obj[2], obj[3]]
+            ];
 
-            drawPoly(section1, '#7a0099', shortestPathLayer);
-            drawPoly(section2, '#7a0099', shortestPathLayer);
+            drawPoly(section1, '#1EB76D', shortestPathLayer);
+            drawPoly(section2, '#1EB76D', shortestPathLayer);
             continue;
         }
-        drawPoly(latlngs, '#7a0099', shortestPathLayer);
+        drawPoly(latlngs, '#1EB76D', shortestPathLayer);
     }
     if (simStopped) return;
     shortestPathLayer.addTo(map);
@@ -178,11 +222,6 @@ function focusView() {
         zoom = 1;
     }
     map.setView(focus, zoom);
-}
-
-function showMapAlert(message, alertType) {
-    $('#map-alert').html("<div class='alert card-text " + alertType + "'>" + message + "</div>");
-    $('#map-alert').show();
 }
 
 function showTransmissionTimeAlert(message, alertType) {

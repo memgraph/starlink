@@ -22,33 +22,30 @@ var removedItemDropdownOne;
 var removedItemDropdownTwo;
 
 var simStopped = true;
-
+var nextButtonStart = true;
+var dropdownOneSelected = false;
+var dropdownTwoSelected = false;
+var selectedCities;
 var xhr;
 
 
-async function createMap() {
-    initMapMollweide();
-
-    L.geoJson(countries, {
-        style: {
-            color: '#000',
-            weight: 0.5,
-            opacity: 1,
-            fillColor: '#fff',
-            fillOpacity: 1
-        }
-    }).addTo(map);
-
-    map.fitWorld();
-
-    myRenderer = L.canvas({ padding: 0.5 });
+function simulation() {
+    if (nextButtonStart) {
+        document.getElementById("startStopButton").disabled = true;
+        simulationStarted();
+        nextButtonStart = false;
+    } else {
+        document.getElementById("startStopButton").disabled = true;
+        simulationStopped();
+        nextButtonStart = true;
+        document.getElementById("startStopButton").disabled = false;
+    }
 }
 
 async function simulationStarted() {
     simStopped = false;
 
-    $('#startButton').prop('disabled', true);
-    $('#stopButton').prop('disabled', false);
+    document.getElementById("startStopButton").innerHTML = "Stop simulation";
 
     $('#dropdownOne').prop('disabled', true);
     $('#dropdownTwo').prop('disabled', true);
@@ -63,8 +60,6 @@ async function simulationStarted() {
 
     document.getElementById('map').style.cursor = 'default';
 
-    showMapAlert('Simulation is running...', '');
-
     while (!simStopped) {
         ajaxCall();
         await sleep(1000);
@@ -78,16 +73,13 @@ function simulationStopped() {
     satellitesLayer.clearLayers();
     shortestPathLayer.clearLayers();
 
-    showMapAlert('Choose cities and start the simulation!', 'info');
-
-    document.getElementById("ttime").innerHTML = "Satellite communication: -";
-    document.getElementById("optic").innerHTML = "Fiber-optic cable communication: -";
-
-    $('#stopButton').prop('disabled', true);
-    $('#startButton').prop('disabled', false);
+    document.getElementById("startStopButton").innerHTML = "Start simulation";
 
     $('#dropdownOne').prop('disabled', false);
     $('#dropdownTwo').prop('disabled', false);
+
+    document.getElementById('initial-stats').style.display = 'initial';
+    document.getElementById('stats').style.display = 'none';
 
     drawCities();
     map.dragging.enable();

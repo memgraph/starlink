@@ -1,208 +1,149 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Starlink Network Simulator | Memgraph</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> {% load static %}
+    <link rel="shortcut icon" type="image/png" href="{% static 'demo/assets/img/favicon.png' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'demo/css/memgraph-foundation-app.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'demo/assets/libs/fontello/css/fontello.css' %}">
 
-    {% load static %}
-
-    <link href="https://uploads-ssl.webflow.com/5e7ceb09657a69bdab054b3a/5ea9d03561073b122a2bcf58_favicon.png"
-        rel="shortcut icon" type="image/x-icon">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel='stylesheet' href='https://unpkg.com/leaflet@1.6.0/dist/leaflet.css' />
-
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 
     <link rel="stylesheet" type="text/css" href="{% static 'demo/style.css' %}">
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
     <script src='https://unpkg.com/leaflet@1.6.0/dist/leaflet.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.2/proj4.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/proj4leaflet/1.0.2/proj4leaflet.min.js'></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/7.1.0/math.min.js"></script>
 
-    <script src="{% static "demo/countries-110m.js" %}"></script>
-    <script src="{% static "demo/map.js" %}"></script>
-    <script src="{% static "demo/dropdown.js" %}"></script>
-    <script src="{% static "demo/transmission.js" %}"></script>
-
-    <title>Memgraph | Starlink Network Simulator</title>
+    <script src="{% static 'demo/countries-110m.js' %}"></script>
+    <script src="{% static 'demo/map.js' %}"></script>
+    <script src="{% static 'demo/dropdown.js' %}"></script>
+    <script src="{% static 'demo/transmission.js' %}"></script>
 </head>
 
 <body>
-    <div class="container">
-        <div class="row mt-3">
-            <div class="col-md-12">
-                <div class="jumbotron m-0 pt-2 pl-3 pr-3 pb-2">
-                    <div class="row mt-3">
-                        <div class="col-6 col-md-2">
-                            <a class="pr-2" target="_blank" rel="noopener noreferrer" href="https://memgraph.com/">
-                                <img class="img-fluid"
-                                    src="https://uploads-ssl.webflow.com/5e7ceb09657a69bdab054b3a/5e7ceb09657a6937ab054bba_Black_Original%20_Logo.png"
-                                    srcset="https://uploads-ssl.webflow.com/5e7ceb09657a69bdab054b3a/5e7ceb09657a6937ab054bba_Black_Original%2520_Logo-p-800.png 800w, https://uploads-ssl.webflow.com/5e7ceb09657a69bdab054b3a/5e7ceb09657a6937ab054bba_Black_Original%2520_Logo-p-1080.png 1080w, https://uploads-ssl.webflow.com/5e7ceb09657a69bdab054b3a/5e7ceb09657a6937ab054bba_Black_Original%2520_Logo-p-1600.png 1600w, https://uploads-ssl.webflow.com/5e7ceb09657a69bdab054b3a/5e7ceb09657a6937ab054bba_Black_Original%20_Logo.png 1608w"
-                                    alt="Memgraph logo">
+
+    <!-- Main nav -->
+    <nav data-sticky-container>
+        <div data-sticky data-options="marginTop:0;">
+            <div class="title-bar sticky">
+                <div class="top-bar-left">
+                    <ul class="menu">
+                        <li>
+                            <a id="demo-title" href="/" class="top-bar-title">
+                                <img src="{% static 'demo/assets/img/img-logo-mark.svg' %}" width="44" height="44" alt="Memgraph logo">
                             </a>
-                        </div>
-                        <div class="col-sm-12 col-md-10">
-                            <p class="h2 font-weight-bold">Starlink Network Simulator</p>
-                        </div>
-                    </div>
-                    <hr class="m-0 p-1">
-                    <div class="row mt-2">
-                        <div class="col-sm-12 col-md-8">
-                            <p>This is a demonstration of how Memgraph DB can be used to calculate the shortest path
-                                for data transmission using a satellite network. For more information, visit our blog
-                                post:
-                            </p>
-                        </div>
-                        <div class="col-sm-12 col-md-2">
-                            <a class="btn btn-danger btn-lg" target="_blank" rel="noopener noreferrer"
-                                href="https://memgraph.com/blog" role="button">Blog Post</a>
-                        </div>
-                        <div class="col-sm-12 col-md-2">
-                            <button type="button" class="btn btn-info btn-lg" data-toggle="modal"
-                                data-target="#disclaimerModal">
-                                Disclaimer
-                            </button>
-                        </div>
-                    </div>
+                        </li>
+                        <li class="menu-text">
+                            Starlink Network Simulator
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
-        <div class="row mt-3">
-            <div class="col-md-12">
-                <div class="card bg-light" style="width: 100%; height:58vh;">
-                    <div class="card-body" id="map"></div>
-                    <div id='map-alert'></div>
-                </div>
+    </nav>
+
+    <!-- Side nav -->
+    <div class="off-panel is-active card" id="off-panel" data-toggler=".is-active">
+        <div class="card-section">
+            <label class="help-text text-uppercase" style="padding-top: 1em; padding-bottom: 1em;">
+                Simulation settings
+            </label>
+
+            <div class="form-group">
+                <select class="form-control form-control-md" id="dropdownOne" onchange="if (this.selectedIndex!=-1)  dropdownOneSelect();">
+                    <option style="display:none;" selected>Start city</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <select class="form-control form-control-md" id="dropdownTwo" onchange="if (this.selectedIndex!=-1)  dropdownTwoSelect();">
+                    <option style="display:none;" selected>Target city</option>
+                </select>
+            </div>
+            <button class="button secondary" id="startStopButton" onclick="simulation();">Start simulation</button>
+            <hr>
+
+            <label class="help-text text-uppercase">
+                Transmission speed
+            </label>
+
+            <label class="help-text" id="initial-stats" style="padding-top: 1em;">
+                Choose the cities and start the simulation to see the results.
+            </label>
+
+            <div id="stats" style="display:none;">
+                <div id="ttime"></div>
+                <div id="optic"></div>
             </div>
         </div>
-        <div class="row mt-3 ml-0 mr-0">
-            <div class="col-sm-12 col-md-5 mb-3 border rounded">
-                <div class="row mt-3">
-                    <div class="col-6 col-md-5">
-                        <button type="button" class="btn btn-danger mb-3" id="startButton"
-                            onclick="simulationStarted()">Start
-                            simulation</button>
-                    </div>
-                    <div class="col-6 col-md-5">
-                        <button type="button" class="btn btn-warning" id="stopButton" onclick="simulationStopped()">Stop
-                            simulation</button>
-                    </div>
-                </div>
-                <hr class="mt-1">
-                <div class="row mt-3">
-                    <div class="col-6 col-md-5">
-                        <div class="form-group">
-                            <select class="form-control form-control-md" id="dropdownOne"
-                                onchange="if (this.selectedIndex!=-1)  dropdownOneSelect();">Select
-                                starting city</select>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-5">
-                        <div class="form-group">
-                            <select class="form-control form-control-md" id="dropdownTwo"
-                                onchange="if (this.selectedIndex!=-1)  dropdownTwoSelect();">Select
-                                ending
-                                city</select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-7">
-                <div class="card bg-light mb-3">
-                    <div class="row no-gutters">
-                        <div class="col-2 my-auto">
-                            <img class="img-fluid p-2"
-                                src="https://uploads-ssl.webflow.com/5e7ceb09657a69bdab054b3a/5ea135c6c6dcbc51c8d7d510_dashboard-fast.svg"
-                                alt="...">
-                        </div>
-                        <div class="col-10 border-left">
-                            <div id='tt-alert'></div>
-                            <div class="card-body">
-                                <div id="ttime"></div>
-                                <div id="optic"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="disclaimerModal" tabindex="-1" role="dialog" aria-labelledby="disclaimerModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="disclaimerModalLabel">Disclaimer</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p> Not all information about the Starlink project is publicly available, therefore we had to
-                            make
-                            some assumptions. There have also been simplifications in the simulation on our part to make
-                            it
-                            better suited for visualization and more understandable for wider audiences.</p>
 
-                        <p>In the first phase, Starlink plans to deploy 1,584 satellites at an altitude of around 550 km
-                            in
-                            72 orbital planes at inclinations of 53.2°, 70.0° and 97.6°. This simulation uses 480
-                            satellites
-                            in 24 orbital planes at an altitude of around 550 km and an inclination of 70.0°.</p>
+        <div class="card-divider">
 
-                        <p> We also approximate the signal processing time for satellites and ground transceivers, which
-                            is
-                            fixed and set to 4 ms. For example, a signal travelling from city A to city B via 4
-                            satellites
-                            will result in 40 ms of processing time in total. The ground transceivers in both cities
-                            will
-                            contribute 4 ms of processing time each while the satellites will contribute 8 ms of
-                            processing
-                            time (4 ms to process the received signal and 4 ms for further transmission processing).</p>
-
-                        <p>Starlink is a massive undertaking led by US-based company SpaceX. We at Memgraph applaud
-                            their ingenuity, dedication and vision for the future. If
-                            you want to find out more about the project itself visit their websites:
-                            <a target="_blank" rel="noopener noreferrer"
-                                href="https://www.starlink.com/">https://www.starlink.com</a> and 
-                            <a target="_blank" rel="noopener noreferrer"
-                                href="https://www.spacex.com/">https://www.spacex.com</a>.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
+            <div class="footer-copy">
+                <span>Memgraph Ltd. 2020</span>
+                <span class="float-right">
+                    <button class="button clear" data-open="intro-modal">
+                        <span class="icon-ui-info-circled"></span>
+                </button>
+                </span>
             </div>
         </div>
     </div>
-    <script src="{% static "demo/index.js" %}"></script>
+
+    <!-- Content -->
+    <main class="off-panel-main" style="padding-top: 0;">
+
+
+        <div id="map" style="height:90vh;"></div>
+
+        <button class="off-panel-btn" data-toggle="off-panel" style="z-index: 1000;">
+            <span id="panel-close" class="icon-ui-left-open"></span>
+            <span id="panel-open" class="icon-ui-right-open hide"></span>
+        </button>
+    </main>
+
+
+
+    <!-- modal for intro -->
+    <div class="reveal fadein" id="intro-modal" data-reveal>
+        <button class="close-button" data-close aria-label="Close modal" type="button" data-toggle="step1 step2">
+            <span aria-hidden="true">&times;</span>
+        </button>
+
+        <img alt="Starlink Simulator with Memgraph" src="{% static 'demo/assets/img/satellite.svg' %}" class="float-center" width="96" height="96">
+        <br>
+        <h4 class="text-center">Starlink Network Simulator</h4>
+        <p class="text-center">
+            This is a demonstration of how Memgraph DB can be used to calculate the shortest path for data transmission using a satellite network. <br>Read our <a target="_blank" rel="noopener noreferrer" href="https://memgraph.com/blog">blog post</a>            for more information.
+        </p>
+
+        <button class="button secondary float-center" data-close aria-label="Close modal" type="button">Close</button>
+
+    </div>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="{% static 'demo/assets/libs/foundation-sites/dist/js/foundation.min.js' %}"></script>
+    <script src="{% static 'demo/index.js' %}"></script>
+
+
     <script>
+        'use strict';
+
+        // Initialize Foundation
+        $(document).foundation();
+
+        $('.off-panel-btn').click(function() {
+            $(this).children('span').toggleClass('hide');
+        });
+
         createMap();
 
         cities = JSON.parse("{{city_markers|escapejs}}");
         opticalPaths = JSON.parse("{{op_markers|escapejs}}");
 
         createDropdowns();
-        createTransmissionTimeCard();
-
-        $(document).ready(function () {
-            simulationStopped();
-        })
 
         function ajaxCall() {
             xhr = $.ajax({
@@ -216,29 +157,31 @@
                     "json_shortest_path": json_shortest_path
                 },
                 async: true,
-                success: function (data) {
+                success: function(data) {
                     sat_markers = JSON.parse(data.json_satellites);
                     if (!simStopped && newDataLoaded()) {
                         drawCities();
                         firstSatellite = sat_markers[0].slice(0, 2);
                         drawRelationships(JSON.parse(data.json_relationships));
                         drawSatellites();
-
+                        document.getElementById('initial-stats').style.display = 'none';
+                        document.getElementById('stats').style.display = 'initial';
                         if (data.json_shortest_path.length != 0) {
                             shortestPathLayer.clearLayers();
                             drawShortestPath(JSON.parse(data.json_shortest_path));
-                            document.getElementById("ttime").innerHTML = `Satellite communication: ${transmission_time(JSON.parse(data.json_shortest_path))}`;
+                            document.getElementById("ttime").innerHTML = `Satellite latency: <strong class="text-primary">${transmission_time(JSON.parse(data.json_shortest_path))} </strong>`;
                             selectedCities = GetSelectionText();
-                            document.getElementById("optic").innerHTML = `Fiber-optic cable communication: ${optical_time(opticalPaths, selectedCities[0], selectedCities[1])}`;
+                            document.getElementById("optic").innerHTML = `Fiber-optic cable latency: <strong class="text-primary">${optical_time(opticalPaths, selectedCities[0], selectedCities[1])}</strong>`;
                         } else {
                             shortestPathLayer.clearLayers();
                             document.getElementById("ttime").innerHTML = `No visible satellites.`;
                             selectedCities = GetSelectionText();
-                            document.getElementById("optic").innerHTML = `Fiber-optic cable communication: ${optical_time(opticalPaths, selectedCities[0], selectedCities[1])}`;
+                            document.getElementById("optic").innerHTML = `Fiber-optic cable latency: <strong class="text-primary">${optical_time(opticalPaths, selectedCities[0], selectedCities[1])}</strong>`;
                         }
+                        document.getElementById("startStopButton").disabled = false;
                     }
                 },
-                error: function (xhr, textStatus, errorThrown) {
+                error: function(xhr, textStatus, errorThrown) {
                     if (!userAborted(xhr)) {
                         showError('Something went wrong...');
                     }
@@ -246,6 +189,7 @@
             });
         };
     </script>
+
 </body>
 
 </html>
