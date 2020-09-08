@@ -1,36 +1,4 @@
-var map;
-var myRenderer;
-
-var cities = [];
-var opticalPaths;
-
-var citiesLayer = new L.LayerGroup();
-var satellitesLayer = new L.LayerGroup();
-var relationshipsLayer = new L.LayerGroup();
-var shortestPathLayer = new L.LayerGroup();
-
-var json_satellites;
-var json_relationships;
-var json_shortest_path;
-
-var sat_markers;
-var rel_markers;
-var firstSatellite;
-
-
-
-var firstDropdown;
-var secondDropdown;
-var removedItemDropdownOne;
-var removedItemDropdownTwo;
-
-var simStopped = true;
-var nextButtonStart = true;
-var dropdownOneSelected = false;
-var dropdownTwoSelected = false;
-var selectedCities;
-var xhr;
-
+let nextButtonStart = true;
 
 function simulation() {
     if (nextButtonStart) {

@@ -1,5 +1,13 @@
+let map;
+let renderer;
+
+let citiesLayer = new L.LayerGroup();
+let satellitesLayer = new L.LayerGroup();
+let relationshipsLayer = new L.LayerGroup();
+let shortestPathLayer = new L.LayerGroup();
+
 function initMapMollweide() {
-    var crs = new L.Proj.CRS('ESRI:53009', '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs', {
+    let crs = new L.Proj.CRS('ESRI:53009', '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs', {
         resolutions: [65536, 32768, 16384, 8192, 4096, 2048]
     });
 
@@ -32,7 +40,7 @@ function initMapMercator() {
         minZoom: 1,
     }).addTo(map);
 
-    var bounds = L.latLngBounds([
+    let bounds = L.latLngBounds([
         [-70, -180],
         [80, 180]
     ]);
@@ -58,15 +66,15 @@ async function createMap() {
 
     map.fitWorld();
 
-    myRenderer = L.canvas({ padding: 0.5 });
+    renderer = L.canvas({ padding: 0.5 });
 }
 
 function drawCity(city) {
-    for (var i = 0; i < cities.length; i++) {
+    for (let i = 0; i < cities.length; i++) {
         if (cities[i][0] == city[0]) {
-            var obj = cities[i].slice(1, 3);
-            var div_circle = L.divIcon({ iconSize: [16, 16], className: 'circle' })
-            var marker = L.marker(obj, { icon: div_circle }).bindPopup(cities[i][3]);
+            const obj = cities[i].slice(1, 3);
+            const div_circle = L.divIcon({ iconSize: [16, 16], className: 'circle' })
+            const marker = L.marker(obj, { icon: div_circle }).bindPopup(cities[i][3]);
             citiesLayer.addLayer(marker);
         }
     }
@@ -74,13 +82,13 @@ function drawCity(city) {
 }
 
 function drawCities() {
-    var sel = GetSelectionValue();
+    const sel = GetSelectionValue();
     citiesLayer.clearLayers();
-    for (var i = 0; i < cities.length; i++) {
+    for (let i = 0; i < cities.length; i++) {
         if (cities[i][0] == sel[0] || cities[i][0] == sel[1]) {
-            var obj = cities[i].slice(1, 3);
-            var div_circle = L.divIcon({ iconSize: [16, 16], className: 'circle' })
-            var marker = L.marker(obj, { icon: div_circle }).bindPopup(cities[i][3]);
+            const obj = cities[i].slice(1, 3);
+            const div_circle = L.divIcon({ iconSize: [16, 16], className: 'circle' })
+            const marker = L.marker(obj, { icon: div_circle }).bindPopup(cities[i][3]);
             citiesLayer.addLayer(marker);
         }
     }
@@ -89,10 +97,10 @@ function drawCities() {
 
 function drawSatellites() {
     satellitesLayer.clearLayers();
-    for (var i = 0; i < sat_markers.length; i++) {
-        var obj = sat_markers[i].slice(0, 2);
-        var circle = L.circleMarker(obj, {
-            renderer: myRenderer,
+    for (let i = 0; i < sat_markers.length; i++) {
+        const obj = sat_markers[i].slice(0, 2);
+        const circle = L.circleMarker(obj, {
+            renderer: renderer,
             color: '#FFB8AA',
             fillColor: '#FFB8AA',
             fillOpacity: 0.5,
@@ -103,15 +111,15 @@ function drawSatellites() {
     satellitesLayer.addTo(map);
 }
 
-function drawRelationships(rel_markers) {
+function drawRelationships() {
     relationshipsLayer.clearLayers();
-    for (var i = 0; i < rel_markers.length; i++) {
-        var obj = rel_markers[i];
-        var satStart = [obj[0], obj[1]];
-        var satEnd = [obj[2], obj[3]];
+    for (let i = 0; i < rel_markers.length; i++) {
+        const obj = rel_markers[i];
+        const satStart = [obj[0], obj[1]];
+        const satEnd = [obj[2], obj[3]];
         latlngS = { 'lat': obj[0], 'lng': obj[1] };
         latlngE = { 'lat': obj[2], 'lng': obj[3] };
-        var latlngs = [
+        let latlngs = [
             latlngS,
             latlngE
         ];
@@ -122,7 +130,7 @@ function drawRelationships(rel_markers) {
             latlngs[0].lng = flipDirection * -179.9999999;
             latlngs[1].lng = flipDirection * 179.9999999;
 
-            var intersection = math.intersect(satStart, satEnd, [90, 0], [-90, 0]);
+            const intersection = math.intersect(satStart, satEnd, [90, 0], [-90, 0]);
 
             section1 = [
                 [obj[0], obj[1]],
@@ -133,48 +141,35 @@ function drawRelationships(rel_markers) {
                 [obj[2], obj[3]]
             ];
 
-            drawPolyRel(section1, '#BAB8BB', relationshipsLayer);
-            drawPolyRel(section2, '#BAB8BB', relationshipsLayer);
+            drawPolyRel(section1, '#BAB8BB');
+            drawPolyRel(section2, '#BAB8BB');
             continue;
         }
-        drawPolyRel(latlngs, '#BAB8BB', relationshipsLayer);
-
+        drawPolyRel(latlngs, '#BAB8BB');
     }
-    if (simStopped) return;
     relationshipsLayer.addTo(map);
 }
 
-function drawPolyRel(line, colour, layer) {
-    var polyline = L.polyline(line, {
-        renderer: myRenderer,
+function drawPolyRel(line, colour) {
+    const polyline = L.polyline(line, {
+        renderer: renderer,
         color: colour,
         opacity: 0.2,
         weight: 1,
         smoothFactor: 1
     }).addTo(map);
-    layer.addLayer(polyline);
-}
-
-function drawPoly(line, colour, layer) {
-    var polyline = L.polyline(line, {
-        renderer: myRenderer,
-        color: colour,
-        opacity: 1,
-        weight: 4,
-        smoothFactor: 1
-    }).addTo(map);
-    layer.addLayer(polyline);
+    relationshipsLayer.addLayer(polyline);
 }
 
 function drawShortestPath(sp_markers) {
     shortestPathLayer.clearLayers();
-    for (var i = 0; i < sp_markers.length; i++) {
-        var obj = sp_markers[i];
-        var satStart = [obj[0], obj[1]];
-        var satEnd = [obj[2], obj[3]];
+    for (let i = 0; i < sp_markers.length; i++) {
+        const obj = sp_markers[i];
+        const satStart = [obj[0], obj[1]];
+        const satEnd = [obj[2], obj[3]];
         latlngS = { 'lat': obj[0], 'lng': obj[1] };
         latlngE = { 'lat': obj[2], 'lng': obj[3] };
-        var latlngs = [
+        let latlngs = [
             latlngS,
             latlngE
         ];
@@ -184,7 +179,7 @@ function drawShortestPath(sp_markers) {
             latlngs[0].lng = flipDirection * -179.9999999;
             latlngs[1].lng = flipDirection * 179.9999999;
 
-            var intersection = math.intersect(satStart, satEnd, [90, 0], [-90, 0]);
+            const intersection = math.intersect(satStart, satEnd, [90, 0], [-90, 0]);
 
             section1 = [
                 [obj[0], obj[1]],
@@ -195,37 +190,42 @@ function drawShortestPath(sp_markers) {
                 [obj[2], obj[3]]
             ];
 
-            drawPoly(section1, '#1EB76D', shortestPathLayer);
-            drawPoly(section2, '#1EB76D', shortestPathLayer);
+            drawPoly(section1, '#1EB76D');
+            drawPoly(section2, '#1EB76D');
             continue;
         }
-        drawPoly(latlngs, '#1EB76D', shortestPathLayer);
+        drawPoly(latlngs, '#1EB76D');
     }
-    if (simStopped) return;
     shortestPathLayer.addTo(map);
 }
 
+function drawPoly(line, colour) {
+    const polyline = L.polyline(line, {
+        renderer: renderer,
+        color: colour,
+        opacity: 1,
+        weight: 4,
+        smoothFactor: 1
+    }).addTo(map);
+    shortestPathLayer.addLayer(polyline);
+}
+
 function focusView() {
-    var sel = GetSelectionValue();
-    var city1, city2;
-    for (var i = 0; i < cities.length; i++) {
+    const sel = GetSelectionValue();
+    let city1, city2;
+    for (let i = 0; i < cities.length; i++) {
         if (cities[i][0] === sel[0]) {
             city1 = cities[i];
         } else if (cities[i][0] === sel[1]) {
             city2 = cities[i];
         }
     }
-    var focus = [(city1[1] + city2[1]) / 2, (city1[2] + city2[2]) / 2];
-    var zoom = 2;
+    const focus = [(city1[1] + city2[1]) / 2, (city1[2] + city2[2]) / 2];
+    let zoom = 2;
     if ((Math.abs(city1[1] - city2[1]) >= 50) || (Math.abs(city1[2] - city2[2]) >= 80)) {
         zoom = 1;
     }
     map.setView(focus, zoom);
-}
-
-function showTransmissionTimeAlert(message, alertType) {
-    $('#tt-alert').html("<div class='card-header " + alertType + "'>" + message + "</div>");
-    $('#tt-alert').show();
 }
 
 function newDataLoaded() {

@@ -1,16 +1,16 @@
+let firstDropdown;
+let secondDropdown;
+
+let removedItemDropdownOne;
+let removedItemDropdownTwo;
+
+let dropdownOneSelected = false;
+let dropdownTwoSelected = false;
+
 function createDropdowns() {
     document.getElementById("startStopButton").disabled = true;
     firstDropdown = document.getElementById("dropdownOne");
     secondDropdown = document.getElementById("dropdownTwo");
-    /*
-        let elementOne = document.createElement("option");
-        elementOne.text = "Start city"
-        firstDropdown.appendChild(elementOne);
-
-        let elementTwo = document.createElement("option");
-        elementTwo.text = "Target city"
-        secondDropdown.appendChild(elementTwo);
-    */
     for (city of cities) {
         let element = document.createElement("option");
         element.text = city[3];
@@ -24,24 +24,10 @@ function createDropdowns() {
         element.value = city[0];
         secondDropdown.appendChild(element);
     }
-
-    /*
-    firstDropdown.selectedIndex = 0;
-    secondDropdown.selectedIndex = 1;
-
-    var firstSelected = firstDropdown.options[firstDropdown.selectedIndex];
-    var secondSelected = secondDropdown.options[secondDropdown.selectedIndex];
-
-    firstDropdown.options[findElement(firstDropdown.options, secondSelected.value)].remove();
-    secondDropdown.options[findElement(secondDropdown.options, firstSelected.value)].remove();
-
-    removedItemDropdownOne = secondSelected.cloneNode(true);
-    removedItemDropdownTwo = firstSelected.cloneNode(true);
-    */
 }
 
 function findElement(list, value) {
-    for (var i = 0; i < list.length; i++) {
+    for (let i = 0; i < list.length; i++) {
         if (list[i].value == value) {
             return i;
         }
@@ -50,7 +36,7 @@ function findElement(list, value) {
 }
 
 function dropdownOneSelect() {
-    var firstSelected = firstDropdown.options[firstDropdown.selectedIndex];
+    const firstSelected = firstDropdown.options[firstDropdown.selectedIndex];
     if (removedItemDropdownTwo != null) {
         secondDropdown.add(removedItemDropdownTwo);
     }
@@ -68,7 +54,7 @@ function dropdownOneSelect() {
 }
 
 function dropdownTwoSelect() {
-    var secondSelected = secondDropdown.options[secondDropdown.selectedIndex];
+    const secondSelected = secondDropdown.options[secondDropdown.selectedIndex];
     if (removedItemDropdownOne != null) {
         firstDropdown.add(removedItemDropdownOne);
     }
@@ -88,15 +74,15 @@ function dropdownTwoSelect() {
 }
 
 function GetSelectionValue() {
-    var firstSelected = firstDropdown.options[firstDropdown.selectedIndex].value;
-    var secondSelected = secondDropdown.options[secondDropdown.selectedIndex].value;
+    const firstSelected = firstDropdown.options[firstDropdown.selectedIndex].value;
+    const secondSelected = secondDropdown.options[secondDropdown.selectedIndex].value;
 
     return [firstSelected, secondSelected];
 }
 
 function GetSelectionText() {
-    var firstSelected = firstDropdown.options[firstDropdown.selectedIndex].text;
-    var secondSelected = secondDropdown.options[secondDropdown.selectedIndex].text;
+    const firstSelected = firstDropdown.options[firstDropdown.selectedIndex].text;
+    const secondSelected = secondDropdown.options[secondDropdown.selectedIndex].text;
 
     return [firstSelected, secondSelected];
 }

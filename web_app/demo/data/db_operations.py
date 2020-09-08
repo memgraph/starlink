@@ -1,7 +1,3 @@
-"""TODO: remove before deployment"""
-#import demo.utils as utils
-
-
 def import_all_cities(db):
     command = "MATCH (n:City) RETURN n;"
     return db.execute_and_fetch(command)
@@ -18,10 +14,6 @@ def import_initial_relationships(db):
 
 
 def import_data(tx, city1, city2):
-    """TODO: remove before deployment"""
-    #print(f"{utils.bcolors.OKGREEN}Web DB update START{utils.bcolors.ENDC}")
-
-
     results = {}
 
     command = "MATCH (s:Satellite) RETURN s;"

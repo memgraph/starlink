@@ -1,4 +1,3 @@
-
 class Relationship():
     def __init__(self, xS, yS, zS, xE, yE, zE, transmission_time):
         self.xS = xS

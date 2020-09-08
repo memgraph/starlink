@@ -1,4 +1,3 @@
-
 class OpticalPath():
     def __init__(self, city1, city2, transmission_time_ms):
         self.city1 = city1

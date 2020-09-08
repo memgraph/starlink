@@ -119,17 +119,26 @@
             $(this).children('span').toggleClass('hide');
         });
 
+        let simStopped = true;
         createMap();
 
-        cities = JSON.parse("{{city_markers|escapejs}}");
-        sat_markers = JSON.parse("{{sat_markers|escapejs}}");
-        rel_markers = JSON.parse("{{rel_markers|escapejs}}");
-        opticalPaths = JSON.parse("{{op_markers|escapejs}}");
+        const cities = JSON.parse("{{city_markers|escapejs}}");
+        let sat_markers = JSON.parse("{{sat_markers|escapejs}}");
+        let rel_markers = JSON.parse("{{rel_markers|escapejs}}");
+        let opticalPaths = JSON.parse("{{op_markers|escapejs}}");
 
         createDropdowns();
 
         drawSatellites();
-        drawRelationships(rel_markers);
+        drawRelationships();
+
+        let json_satellites;
+        let json_relationships;
+        let json_shortest_path;
+        let firstSatellite;
+
+        let selectedCities;
+        let xhr;
 
         function ajaxCall() {
             xhr = $.ajax({
@@ -149,7 +158,7 @@
                     if (!simStopped && newDataLoaded()) {
                         drawCities();
                         firstSatellite = sat_markers[0].slice(0, 2);
-                        drawRelationships(rel_markers);
+                        drawRelationships();
                         drawSatellites();
                         document.getElementById('initial-stats').style.display = 'none';
                         document.getElementById('stats').style.display = 'initial';

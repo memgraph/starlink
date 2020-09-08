@@ -1,4 +1,3 @@
-
 class City():
     def __init__(self, id, x0, y0, name):
         self.id = id

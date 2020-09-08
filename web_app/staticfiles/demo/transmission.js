@@ -10,8 +10,8 @@ function transmission_time(sp_markers) {
 function optical_time(opticalPaths, city1, city2) {
 
     for (op of opticalPaths) {
-        let city1Found = (city1 == op[0] || city1 == op[1]);
-        let city2Found = (city2 == op[0] || city2 == op[1]);
+        const city1Found = (city1 == op[0] || city1 == op[1]);
+        const city2Found = (city2 == op[0] || city2 == op[1]);
 
         if (city1Found && city2Found) return `${op[2]} ms`;
     }
