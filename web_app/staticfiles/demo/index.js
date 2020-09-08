@@ -14,9 +14,10 @@ var json_relationships;
 var json_shortest_path;
 
 var sat_markers;
+var rel_markers;
 var firstSatellite;
 
-var rel_markers;
+
 
 var firstDropdown;
 var secondDropdown;
