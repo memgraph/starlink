@@ -31,8 +31,16 @@ def index(request):
         time.sleep(1)
         satellites = db_connection.fetch_satellites(db)
 
+    relationships = []
+    while len(relationships) == 0:
+        time.sleep(1)
+        relationships = db_connection.fetch_relationships(db)
+
+    #print(relationships)
+
     json_cities = json.dumps(db_connection.city_json_format(cities))
     json_satellites = json.dumps(db_connection.satellite_json_format(satellites))
+    json_relationships = json.dumps(db_connection.relationship_json_format(relationships))
     json_optical_paths = json.dumps(
         db_connection.optical_paths_json_format(optical_paths))
     

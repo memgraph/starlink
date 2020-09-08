@@ -142,11 +142,13 @@
 
         cities = JSON.parse("{{city_markers|escapejs}}");
         sat_markers = JSON.parse("{{sat_markers|escapejs}}");
+        rel_markers = JSON.parse("{{rel_markers|escapejs}}");
         opticalPaths = JSON.parse("{{op_markers|escapejs}}");
 
         createDropdowns();
 
         drawSatellites();
+        drawRelationships(rel_markers);
 
         function ajaxCall() {
             xhr = $.ajax({

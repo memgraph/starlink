@@ -12,6 +12,11 @@ def import_initial_satellites(db):
     return db.execute_and_fetch(command)
 
 
+def import_initial_relationships(db):
+    command = "MATCH (s1:Satellite)-[r]-(s2:Satellite) RETURN r, s1, s2;"
+    return db.execute_and_fetch(command)
+
+
 def import_data(tx, city1, city2):
     """TODO: remove before deployment"""
     #print(f"{utils.bcolors.OKGREEN}Web DB update START{utils.bcolors.ENDC}")

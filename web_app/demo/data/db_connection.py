@@ -19,6 +19,11 @@ def fetch_satellites(db):
     return transform_satellites(satellites)
 
 
+def fetch_relationships(db):
+    relationships = db_operations.import_initial_relationships(db)
+    return transform_relationships(relationships)
+
+
 def transform_satellites(satellites):
     sat_markers = []
     for sat in satellites:

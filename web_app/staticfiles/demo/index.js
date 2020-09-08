@@ -16,6 +16,8 @@ var json_shortest_path;
 var sat_markers;
 var firstSatellite;
 
+var rel_markers;
+
 var firstDropdown;
 var secondDropdown;
 var removedItemDropdownOne;
@@ -83,6 +85,7 @@ function simulationStopped() {
 
     drawCities();
     drawSatellites();
+    drawRelationships(rel_markers);
     map.dragging.enable();
     map.touchZoom.enable();
     map.doubleClickZoom.enable();
