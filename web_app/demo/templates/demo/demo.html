@@ -164,10 +164,11 @@
                 async: true,
                 success: function(data) {
                     sat_markers = JSON.parse(data.json_satellites);
+                    rel_markers = JSON.parse(data.json_relationships);
                     if (!simStopped && newDataLoaded()) {
                         drawCities();
                         firstSatellite = sat_markers[0].slice(0, 2);
-                        drawRelationships(JSON.parse(data.json_relationships));
+                        drawRelationships(rel_markers);
                         drawSatellites();
                         document.getElementById('initial-stats').style.display = 'none';
                         document.getElementById('stats').style.display = 'initial';
