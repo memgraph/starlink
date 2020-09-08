@@ -39,7 +39,6 @@ services:
       MG_PORT: 7687
       MC_HOST: memcached
       MC_PORT: 11211
-    #command: bash -c "python manage.py collectstatic && python manage.py runserver 0.0.0.0:8000"
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - simulator
