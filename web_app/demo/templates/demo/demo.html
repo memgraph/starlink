@@ -6,18 +6,16 @@
     <title>Starlink Network Simulator | Memgraph</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /> {% load static %}
     <link rel="shortcut icon" type="image/png" href="{% static 'demo/assets/img/favicon.png' %}">
+
     <link rel="stylesheet" type="text/css" href="{% static 'demo/css/memgraph-foundation-app.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'demo/assets/libs/fontello/css/fontello.css' %}">
-
     <link rel='stylesheet' href='https://unpkg.com/leaflet@1.6.0/dist/leaflet.css' />
-
     <link rel="stylesheet" type="text/css" href="{% static 'demo/style.css' %}">
 
     <script src='https://unpkg.com/leaflet@1.6.0/dist/leaflet.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.2/proj4.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/proj4leaflet/1.0.2/proj4leaflet.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/7.1.0/math.min.js"></script>
-
     <script src="{% static 'demo/countries-110m.js' %}"></script>
     <script src="{% static 'demo/map.js' %}"></script>
     <script src="{% static 'demo/dropdown.js' %}"></script>
@@ -25,8 +23,6 @@
 </head>
 
 <body>
-
-    <!-- Main nav -->
     <nav data-sticky-container>
         <div data-sticky data-options="marginTop:0;">
             <div class="title-bar sticky">
@@ -46,7 +42,6 @@
         </div>
     </nav>
 
-    <!-- Side nav -->
     <div class="off-panel is-active card" id="off-panel" data-toggler=".is-active">
         <div class="card-section">
             <label class="help-text text-uppercase" style="padding-top: 1em; padding-bottom: 1em;">
@@ -81,7 +76,6 @@
         </div>
 
         <div class="card-divider">
-
             <div class="footer-copy">
                 <span>Memgraph Ltd. 2020</span>
                 <span class="float-right">
@@ -93,45 +87,32 @@
         </div>
     </div>
 
-    <!-- Content -->
     <main class="off-panel-main" style="padding-top: 0;">
-
-
         <div id="map" style="height:90vh;"></div>
-
         <button class="off-panel-btn" data-toggle="off-panel" style="z-index: 1000;">
             <span id="panel-close" class="icon-ui-left-open"></span>
             <span id="panel-open" class="icon-ui-right-open hide"></span>
         </button>
     </main>
 
-
-
-    <!-- modal for intro -->
     <div class="reveal fadein" id="intro-modal" data-reveal>
         <button class="close-button" data-close aria-label="Close modal" type="button" data-toggle="step1 step2">
             <span aria-hidden="true">&times;</span>
         </button>
-
         <img alt="Starlink Simulator with Memgraph" src="{% static 'demo/assets/img/satellite.svg' %}" class="float-center" width="96" height="96">
         <br>
         <h4 class="text-center">Starlink Network Simulator</h4>
         <p class="text-center">
             This is a demonstration of how Memgraph DB can be used to calculate the shortest path for data transmission using a satellite network. <br>Read our <a target="_blank" rel="noopener noreferrer" href="https://memgraph.com/blog">blog post</a>            for more information.
         </p>
-
         <button class="button secondary float-center" data-close aria-label="Close modal" type="button">Close</button>
-
     </div>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="{% static 'demo/assets/libs/foundation-sites/dist/js/foundation.min.js' %}"></script>
     <script src="{% static 'demo/index.js' %}"></script>
-
-
     <script>
         'use strict';
 
-        // Initialize Foundation
         $(document).foundation();
 
         $('.off-panel-btn').click(function() {
@@ -194,7 +175,6 @@
             });
         };
     </script>
-
 </body>
 
 </html>
