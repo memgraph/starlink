@@ -1,3 +1,19 @@
+let simStopped = true;
+
+let json_satellites;
+let json_relationships;
+let json_shortest_path;
+let firstSatellite;
+
+let selectedCities;
+
+async function postData(url = '') {
+    const response = await fetch(url, {
+        method: 'GET'
+    });
+    return response.json();
+}
+
 let nextButtonStart = true;
 
 function simulation() {
@@ -32,8 +48,35 @@ async function simulationStarted() {
     document.getElementById('map').style.cursor = 'default';
 
     while (!simStopped) {
-        ajaxCall();
-        await sleep(1000);
+        await postData(`${window.origin}/` + 'json_satellites_and_relationships?cityOne=' + firstDropdown.options[firstDropdown.selectedIndex].value +
+                '&cityTwo=' + secondDropdown.options[secondDropdown.selectedIndex].value)
+            .then(data => {
+                sat_markers = JSON.parse(data.json_satellites);
+                rel_markers = JSON.parse(data.json_relationships);
+                if (!simStopped && newDataLoaded()) {
+                    drawCities();
+                    firstSatellite = sat_markers[0].slice(0, 2);
+                    drawRelationships();
+                    drawSatellites();
+                    document.getElementById('initial-stats').style.display = 'none';
+                    document.getElementById('stats').style.display = 'initial';
+                    if (data.json_shortest_path.length != 0) {
+                        shortestPathLayer.clearLayers();
+                        drawShortestPath(JSON.parse(data.json_shortest_path));
+                        document.getElementById("ttime").innerHTML = `Satellite latency: <strong class="text-primary">${transmission_time(JSON.parse(data.json_shortest_path))} </strong>`;
+                        selectedCities = GetSelectionText();
+                        document.getElementById("optic").innerHTML = `Fiber-optic cable latency: <strong class="text-primary">${optical_time(opticalPaths, selectedCities[0], selectedCities[1])}</strong>`;
+                    } else {
+                        shortestPathLayer.clearLayers();
+                        document.getElementById("ttime").innerHTML = `No visible satellites.`;
+                        selectedCities = GetSelectionText();
+                        document.getElementById("optic").innerHTML = `Fiber-optic cable latency: <strong class="text-primary">${optical_time(opticalPaths, selectedCities[0], selectedCities[1])}</strong>`;
+                    }
+                    document.getElementById("startStopButton").disabled = false;
+                }
+            }).catch(err => {
+                console.error('There was an error!', err);
+            });
     }
 }
 
@@ -63,16 +106,4 @@ function simulationStopped() {
     map.keyboard.enable();
     if (map.tap) map.tap.enable();
     document.getElementById('map').style.cursor = 'grab';
-
-    if (xhr != null) {
-        xhr.abort()
-    }
-}
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function userAborted(xhr) {
-    return !xhr.getAllResponseHeaders();
 }

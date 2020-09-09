@@ -3,6 +3,7 @@ from flask_caching import Cache
 from demo.database import Memgraph, connection
 from demo.data import db_operations, db_connection, OpticalPath
 from pathlib import Path
+from typing import Any, List
 import pickle
 import time
 import json
@@ -26,7 +27,7 @@ OPTICAL_FILE_PATH = os.getenv(
 
 
 @app.route('/')
-def index():
+def index() -> Any:
 
     db = Memgraph()
     cache.set('db', db)
@@ -40,7 +41,6 @@ def index():
         cities = db_connection.fetch_cities(db)
 
     optical_path = _here.parent.joinpath(OPTICAL_FILE_PATH)
-    print(optical_path)
     optical_paths = OpticalPath.import_optical_paths(optical_path)
 
     results = db.execute_transaction(
@@ -71,7 +71,7 @@ def index():
 
 
 @app.route('/json_satellites_and_relationships', methods=["GET"])
-def get_data():
+def get_data() -> Any:
 
     db = cache.get('db')
 
@@ -111,5 +111,5 @@ def get_data():
 
 
 @app.route('/check', methods=["GET"])
-def check():
+def check() -> Any:
     return '', 200

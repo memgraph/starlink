@@ -1,12 +1,14 @@
 import collections
+from typing import Any, Dict, List
+from demo.database.memgraph import Memgraph
 
 
-def import_all_cities(db):
+def import_all_cities(db: Memgraph) -> Dict[str, Any]:
     command = "MATCH (n:City) RETURN n;"
     return db.execute_and_fetch(command)
 
 
-def import_sats_and_rels(tx, arguments):
+def import_sats_and_rels(tx: Any, arguments: Dict[str, Any]) -> Dict[str, Any]:
     results = {}
 
     command = "MATCH (s:Satellite) RETURN s;"
@@ -18,7 +20,7 @@ def import_sats_and_rels(tx, arguments):
     return results
 
 
-def import_data(tx, arguments):
+def import_data(tx: Any, arguments: Dict[str, Any]) -> Dict[str, Any]:
     results = {}
 
     command = "MATCH (s:Satellite) RETURN s;"
