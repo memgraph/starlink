@@ -2,6 +2,7 @@ from __future__ import annotations
 import os
 import csv
 import math as m
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 from simulator.models.moving_object import MovingObject
@@ -9,6 +10,8 @@ from simulator.models.stationary_object import StationaryObject
 from skyfield.api import Topos
 from typing import List, Dict, Any
 
+
+logger = logging.getLogger('simulator')
 
 V_RADIO = 2.99792458E+8
 RELAY_PROCESSING_DELAY = float(os.getenv('RELAY_PROCESSING_DELAY', 0))
@@ -48,10 +51,10 @@ class City(StationaryObject):
                 moving_objects_dict_by_id)
 
     @staticmethod
-    def generate_cities(file_path: str, time: Any) -> List[City]:
+    def generate_cities(file_path: Path, time: Any) -> List[City]:
         cities = []
-        path = Path(__file__).parent.parent.parent / file_path
-        with path.open() as f:
+        logger.info(f'Reading cities from file path {file_path}...')
+        with file_path.open() as f:
             reader = csv.DictReader(f, delimiter=',')
             for row in reader:
 
