@@ -4,7 +4,7 @@ description:
 authors: Team Tolkien
 ---
 
-# Low Latency Routing in *Starlink* Satellite Network
+# Low Latency Routing in the *Starlink* Satellite Network
 ## Introduction
 Providing worldwide broadband internet is a popular problem **SpaceX** is currently pursuing with their ***Starlink*** project. The plan is to send thousands of satellites into Earth’s orbit which will provide thorough space coverage, as well as low latency transmission. 
 

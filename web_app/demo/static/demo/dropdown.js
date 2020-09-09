@@ -38,7 +38,7 @@ function createDropdowns() {
 
 function findElement(list, value) {
     for (let i = 0; i < list.length; i++) {
-        if (list[i].value == value) {
+        if (list[i].value === value) {
             return i;
         }
     }
@@ -70,8 +70,6 @@ function dropdownTwoSelect() {
     }
     firstDropdown.options[findElement(firstDropdown.options, secondSelected.value)].remove();
     removedItemDropdownOne = secondSelected.cloneNode(true);
-
-    drawCity(secondSelected.value);
 
     dropdownTwoSelected = true;
     if (dropdownOneSelected) {

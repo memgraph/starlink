@@ -1,10 +1,10 @@
 let map;
 let renderer;
 
-let citiesLayer = new L.LayerGroup();
-let satellitesLayer = new L.LayerGroup();
-let relationshipsLayer = new L.LayerGroup();
-let shortestPathLayer = new L.LayerGroup();
+let relationshipsLayer = new L.featureGroup();
+let shortestPathLayer = new L.featureGroup();
+let citiesLayer = new L.featureGroup();
+let satellitesLayer = new L.featureGroup();
 
 function initMapMollweide() {
     let crs = new L.Proj.CRS('ESRI:53009', '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs', {
@@ -24,31 +24,6 @@ function initMapMollweide() {
     L.control.zoom({
         position: 'topright'
     }).addTo(map);
-}
-
-function initMapMercator() {
-    map = L.map('map', {
-        zoom: 3,
-        center: [15, -5],
-        layers: [citiesLayer],
-        attributionControl: false
-    });
-    L.tileLayer("https://api.maptiler.com/maps/basic/{z}/{x}/{y}.png?key=cYtmZZ4gfz1cXNCBs8r4", {
-        attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-        noWrap: true,
-        maxZoom: 5,
-        minZoom: 1,
-    }).addTo(map);
-
-    let bounds = L.latLngBounds([
-        [-70, -180],
-        [80, 180]
-    ]);
-    map.setMaxBounds(bounds);
-
-    map.on('drag', function() {
-        map.panInsideBounds(bounds, { animate: false });
-    });
 }
 
 async function createMap() {
@@ -71,10 +46,10 @@ async function createMap() {
 
 function drawCity(city) {
     for (let i = 0; i < cities.length; i++) {
-        if (cities[i][0] == city[0]) {
+        if (cities[i][0] === city) {
             const obj = cities[i].slice(1, 3);
-            const div_circle = L.divIcon({ iconSize: [20, 20], className: 'circle' })
-            const marker = L.marker(obj, { icon: div_circle }).bindPopup(cities[i][3]);
+            const div_icon = L.divIcon({ iconSize: [16, 16], className: 'city-icon' })
+            const marker = L.marker(obj, { icon: div_icon }).bindPopup(cities[i][3]);
             citiesLayer.addLayer(marker);
         }
     }
@@ -85,10 +60,10 @@ function drawCities() {
     const sel = GetSelectionValue();
     citiesLayer.clearLayers();
     for (let i = 0; i < cities.length; i++) {
-        if (cities[i][0] == sel[0] || cities[i][0] == sel[1]) {
+        if (cities[i][0] === sel[0] || cities[i][0] === sel[1]) {
             const obj = cities[i].slice(1, 3);
-            const div_circle = L.divIcon({ iconSize: [20, 20], className: 'circle' })
-            const marker = L.marker(obj, { icon: div_circle }).bindPopup(cities[i][3]);
+            const div_icon = L.divIcon({ iconSize: [16, 16], className: 'city-icon' })
+            const marker = L.marker(obj, { icon: div_icon }).bindPopup(cities[i][3]);
             citiesLayer.addLayer(marker);
         }
     }
@@ -99,15 +74,15 @@ function drawSatellites() {
     satellitesLayer.clearLayers();
     for (let i = 0; i < sat_markers.length; i++) {
         const obj = sat_markers[i].slice(0, 2);
-        const circle = L.circleMarker(obj, {
+        const marker = L.circleMarker(obj, {
             renderer: renderer,
             radius: 4,
             weight: 0.5,
             color: '#BAB8BB',
             fillColor: '#FFB8AA',
-            fillOpacity: 1.0
+            fillOpacity: 1.0,
         });
-        satellitesLayer.addLayer(circle);
+        satellitesLayer.addLayer(marker);
     }
     satellitesLayer.addTo(map);
 }
@@ -149,6 +124,7 @@ function drawRelationships() {
         drawPolyRel(latlngs, '#BAB8BB');
     }
     relationshipsLayer.addTo(map);
+    relationshipsLayer.bringToBack();
 }
 
 function drawPolyRel(line, color) {
