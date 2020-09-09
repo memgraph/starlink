@@ -77,3 +77,7 @@ def postSatellitesAndRelationships(request):
     return JsonResponse({"json_satellites": json_satellites, 
                         "json_relationships": json_relationships, 
                         "json_shortest_path": json_shortest_path}, status=200)
+
+
+def check(request):
+    return HttpResponse(status=200)

@@ -22,8 +22,8 @@ services:
       DB_UPDATE_TIME: 0
       EDGE_ORBITS_CONNECTED: 'false'
       ORBIT_ENDS_CONNECTED: 'false'
-      SAT_PROCESSING_DELAY: 0.004
-      RELAY_PROCESSING_DELAY: 0.008 
+      SAT_PROCESSING_DELAY: 0.010
+      RELAY_PROCESSING_DELAY: 0.010 
       VIEW_ANGLE: 70
     command: /wait-for-it.sh memgraph:7687 -- python main.py start
     depends_on:

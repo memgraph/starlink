@@ -1,8 +1,10 @@
 let firstDropdown;
 let secondDropdown;
 
-let removedItemDropdownOne;
-let removedItemDropdownTwo;
+let removedItemDropdownOneValue = -1;
+let removedItemDropdownTwoValue = -1;
+let removedItemDropdownOneText;
+let removedItemDropdownTwoText;
 
 let dropdownOneSelected = false;
 let dropdownTwoSelected = false;
@@ -47,11 +49,13 @@ function findElement(list, value) {
 
 function dropdownOneSelect() {
     const firstSelected = firstDropdown.options[firstDropdown.selectedIndex];
-    if (removedItemDropdownTwo != null) {
-        secondDropdown.add(removedItemDropdownTwo);
+    if (removedItemDropdownTwoValue !== -1) {
+        $("#dropdownTwo").append(`<option value="${removedItemDropdownTwoValue}">${removedItemDropdownTwoText}</option>`);
     }
-    secondDropdown.options[findElement(secondDropdown.options, firstSelected.value)].remove();
-    removedItemDropdownTwo = firstSelected.cloneNode(true);
+    //secondDropdown.options[findElement(secondDropdown.options, firstSelected.value)].remove();
+    removedItemDropdownTwoValue = firstSelected.value;
+    removedItemDropdownTwoText = firstSelected.text;
+    $(`#dropdownTwo option[value=${firstSelected.value}]`).remove();
 
     dropdownOneSelected = true;
     if (dropdownTwoSelected) {
@@ -65,11 +69,14 @@ function dropdownOneSelect() {
 
 function dropdownTwoSelect() {
     const secondSelected = secondDropdown.options[secondDropdown.selectedIndex];
-    if (removedItemDropdownOne != null) {
-        firstDropdown.add(removedItemDropdownOne);
+    if (removedItemDropdownOneValue !== -1) {
+        $("#dropdownOne").append(`<option value="${removedItemDropdownOneValue}">${removedItemDropdownOneText}</option>`);
     }
-    firstDropdown.options[findElement(firstDropdown.options, secondSelected.value)].remove();
-    removedItemDropdownOne = secondSelected.cloneNode(true);
+    //firstDropdown.options[findElement(firstDropdown.options, secondSelected.value)].remove();
+    $(`#dropdownOne option[value=${secondSelected.value}]`).remove();
+
+    removedItemDropdownOneValue = secondSelected.value;
+    removedItemDropdownOneText = secondSelected.text;
 
     dropdownTwoSelected = true;
     if (dropdownOneSelected) {
