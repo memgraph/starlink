@@ -1,16 +1,16 @@
 ---
-title: Low Latency Routing in *Starlink* Satellite Network
+title: Low Latency Routing in the *Starlink* Satellite Network
 description: 
 authors: Team Tolkien
 ---
 
-# Low Latency Routing in *Starlink* Satellite Network
+# Low Latency Routing in the *Starlink* Satellite Network
 ## Introduction
-Providing worldwide broadband internet is a popular problem SpaceX is currently pursuing with their *Starlink* project. The plan is to send thousands of satellites into Earth’s orbit which will provide thorough space coverage, as well as low latency transmission. 
+Providing worldwide broadband internet is a popular problem **SpaceX** is currently pursuing with their ***Starlink*** project. The plan is to send thousands of satellites into Earth’s orbit which will provide thorough space coverage, as well as low latency transmission. 
 
 Low latency transmission is a key factor when trying to deliver high speed internet access. It doesn’t depend solely on satellite laser performances, but also on the transmission route itself, which is supposed to be as short as possible. In other words, the shorter the path the laser beam needs to travel, the faster the internet connection.
 
-Finding the shortest path between locations is a common problem tackled by graph theory, so the ideal approach to the transmission speed problem would be to use graph concepts and algorithms. 
+Finding the **shortest path** between locations is a common problem tackled by graph theory, so the ideal approach to the transmission speed problem would be to use graph concepts and algorithms. 
 
 In this tutorial, we will explore how graph analytics and graph theory can be used to model the *Starlink* constellation and optimize transmission paths to ensure high speed internet access anywhere on the planet. 
 <br />
@@ -21,12 +21,13 @@ In this tutorial, we will explore how graph analytics and graph theory can be us
 
 ## What is *Starlink*?
 
-*Starlink* is a satellite constellation being constructed by SpaceX to provide satellite Internet access. The constellation will consist of thousands of mass-produced small satellites in low Earth orbit (LEO) (altitudes of 2000 km). The goal of *Starlink* project is to provide satellite internet connectivity to underserved areas of the planet. The project started in 2015 and by this date, 597 satellites have been launched into orbit. By the end of the project, SpaceX wants to build a „shell“ around the Earth consisting of over 4,000 communcation satellites which will use phased array antennas for communication with ground relays in combination with laser communication technology to provide global low-latency high bandwidth coverage. In the first phase, 1,584 satellites will be sent to space at the altitude of 550 km and the second phase adds another 2,825 satellites on three different altitudes to increase density and coverage as far as 70° North/South. 
+*Starlink* is a satellite constellation being constructed by SpaceX to provide **satellite Internet access**. The constellation will consist of thousands of mass-produced small satellites in low Earth orbit (LEO) (altitudes of 2000 km). The goal of *Starlink* project is to provide satellite internet connectivity to underserved areas of the planet. The project started in 2015 and by this date, 597 satellites have been launched into orbit. By the end of the project, SpaceX wants to build a „shell“ around the Earth consisting of over 4,000 communcation satellites which will use phased array antennas for communication with ground relays in combination with laser communication technology to provide global low-latency high bandwidth coverage. In the first phase, 1,584 satellites will be sent to space at the altitude of 550 km and the second phase adds another 2,825 satellites on three different altitudes to increase density and coverage as far as 70° North/South. 
 <br />
 <p align="center">
    <img src="https://github.com/g-despot/images/blob/master/spacex_logo.jpg?raw=true" alt="" width="500"/>
 <p/>
 <br />
+
 How does *Starlink* work? Each satellite is connected to 4 more satellites – two neighbours are on the same plane, one ahead and one behind. Another two neighbours come from different orbits, one in the front right and the other one behind left forming a good South-West to North-East and North-West to South-East connection.
 <br />
 <p align="center">
@@ -44,6 +45,7 @@ The exact latency using *Starlink* is still a mystery because there's no publicl
    <img src="https://github.com/g-despot/images/blob/master/starlink_satellite.jpg?raw=true" alt="" width="500"/>
 <p/>
 <br />
+
 Why is low-latency so important? *Starlink* is designed to support near real-time access to rapidly changing data. Primarily, the system is advertised as a way to connect every human on this planet to the internet. Not only that this system will provide better connection in underdeveloped countries, it will be beneficial to the stock market. Currently, privately owned Hibernia Express cable has the lowest latency between New York and London with latency of 58.95 ms which is 39.4% slower than *Starlink* connection. With millions of dollars being moved in fractions of a second, having lower latency would provide massive advantage in capitalizing price swings. The improvements will be even more pronounced for London to Singapour transmission with rapid gains in speed increase with every kilometre data travels.
 
 How to find low-latency routes? This whole model and dataset can be represented as a graph problem. If we tackle the problem as such, we can use methods from graph theory to calculate and find the path with the lowest latency. 
@@ -58,6 +60,7 @@ This simple concept is the basis of graph theory where the main object of intere
    <img src="https://github.com/g-despot/images/blob/master/starlink_model.png?raw=true" alt="" width="400"/>
 <p/>
 <br />
+
 These relationships are what separate the graph database model from the relational database model. They enable flexible data manipulation and are a strong argument against the rigid foreign key assignment that the relational model uses. Here’s the difference: 
 
 If you want to learn more about the advantages of the graph database model, feel free to check out this blog [post]( https://memgraph.com/blog/why-your-business-should-use-a-graph-database). 
@@ -66,7 +69,7 @@ Finally, when the graph structure is implemented, as well as all the rules relat
 
 ## Exploring *Starlink* with Cypher Queries
 
-Let us start by writing a very simple query that returns all the nodes with the same label. In our example, we are going to return all the nodes with the label `City`.<br />
+Let's start by writing a very simple query that returns all the nodes with the same label. In our example, we are going to return all the nodes with the label `City`.<br />
 This is achieved by executing the following query:
 ```
    MATCH (c:City) RETURN c;
@@ -77,6 +80,7 @@ The output should be:
    <img src="https://github.com/g-despot/images/blob/master/cities.png?raw=true" alt="" width="600"/>
 <p/>
 <br />
+
 On the other hand, if you want to return all the nodes with the label `Satellite` you only need to make a small change:
 ```
    MATCH (s:Satellite) RETURN s;
@@ -93,6 +97,7 @@ The output should be:
    <img src="https://github.com/g-despot/images/blob/master/london_visible_from.png?raw=true" alt="" width="600"/>
 <p/>
 <br />
+
 If we wanted to return all the relationships a satellite has, we would need to specify if they are of type `VISIBLE_FROM` or `CONNECTED_TO` because the former represents connections between cities and satellites, while the latter represents connections between satellites. We are just going to omit the relationship type in our query so both of these types are returned. 
 The query looks like this: 
 ```
@@ -105,6 +110,7 @@ The output should be:
    <img src="https://github.com/g-despot/images/blob/master/satellite_id_482.png?raw=true" alt="" width="500"/>
 <p/>
 <br />
+
 If we wanted to return only relationships of type `CONNECTED_TO`, the query would have been:
 ```
    MATCH (s:Satellite {id: "482"})
