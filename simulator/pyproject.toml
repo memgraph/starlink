@@ -11,7 +11,6 @@ neo4j = "^1.7.4"
 
 numpy = "^1.19.1"
 skyfield = "^1.25"
-pymgclient = "^0.1.0"
 [tool.poetry.dev-dependencies]
 
 [build-system]

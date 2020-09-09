@@ -1,11 +1,11 @@
-from simulator.database import Memgraph
+from simulator.database import Memgraph, connection
 from simulator.models import City, Orbit
 from simulator import orbital_mechanics_utils
 from simulator import db_operations
-import time
 from skyfield.api import load as skyfield_load
 from pathlib import Path
 import numpy as np
+import time
 import os
 
 _here = Path(__file__).parent
@@ -37,14 +37,16 @@ def run() -> None:
     Orbit.update_orbits(
         ObjectsAndOrbits.orbits_dict_by_id, ObjectsAndOrbits.moving_objects_dict_by_id)
 
-    db.execute_transaction(db_operations.create_data,
-                           ObjectsAndOrbits.moving_objects_dict_by_id, cities)
+    db.execute_transaction(connection.WRITE_TRANSACTION, db_operations.create_data,
+                           {"moving_objects_dict_by_id": ObjectsAndOrbits.moving_objects_dict_by_id,
+                            "cities": cities})
 
     while(True):
         Orbit.update_orbits(ObjectsAndOrbits.orbits_dict_by_id,
                             ObjectsAndOrbits.moving_objects_dict_by_id)
         City.update_cities(cities, ObjectsAndOrbits.moving_objects_dict_by_id)
 
-        db.execute_transaction(db_operations.update_data,
-                               ObjectsAndOrbits.moving_objects_dict_by_id, cities)
+        db.execute_transaction(connection.WRITE_TRANSACTION, db_operations.update_data,
+                               {"moving_objects_dict_by_id": ObjectsAndOrbits.moving_objects_dict_by_id,
+                                "cities": cities})
         time.sleep(DB_UPDATE_TIME)

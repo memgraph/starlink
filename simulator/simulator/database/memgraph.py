@@ -26,13 +26,6 @@ class Memgraph:
         self._encrypted = encrypted if encrypted is not None else MG_ENCRYPTED
         self._cached_connection = None
 
-    def execute_and_fetch(self,
-                          query: str,
-                          connection: Connection = None) -> Iterator[Dict[str, Any]]:
-        """Executes Cypher query and returns iterator of results."""
-        connection = connection or self._get_cached_connection()
-        return connection.execute_and_fetch(query)
-
     def execute_query(self,
                       query: str,
                       connection: Connection = None) -> None:
@@ -40,14 +33,21 @@ class Memgraph:
         connection = connection or self._get_cached_connection()
         return connection.execute_query(query)
 
-    def execute_transaction(self,
-                        func: Any,
-                        moving_objects: Any,
-                        cities: Any,
-                        connection: Connection = None) -> None:
-        """Executes Cypher query without returning any results."""
+    def execute_and_fetch(self,
+                          query: str,
+                          connection: Connection = None) -> Iterator[Dict[str, Any]]:
+        """Executes Cypher query and returns iterator of results."""
         connection = connection or self._get_cached_connection()
-        return connection.execute_transaction(func, moving_objects, cities)
+        return connection.execute_and_fetch(query)
+
+    def execute_transaction(self,
+                            transaction_type: int,
+                            func: Any,
+                            arguments: Dict[str, Any],
+                            connection: Connection = None) -> None:
+        """Executes Cypher queries as one transaction and returns dictionary of results."""
+        connection = connection or self._get_cached_connection()
+        return connection.execute_transaction(transaction_type, func, arguments)
 
     def _get_cached_connection(self) -> Connection:
         """Returns cached connection if it exists, creates it otherwise"""

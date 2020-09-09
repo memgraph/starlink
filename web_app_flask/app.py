@@ -1,12 +1,14 @@
 from flask import Flask, render_template, request, jsonify, make_response
 from flask_caching import Cache
-from demo.database import Memgraph
-from demo.data import db_operations, db_connection
-from demo import utils
+from demo.database import Memgraph, connection
+from demo.data import db_operations, db_connection, OpticalPath
+from pathlib import Path
 import pickle
 import time
 import json
 import os
+
+_here = Path(__file__)
 
 config = {
     "DEBUG": True,
@@ -19,8 +21,13 @@ app.config.from_mapping(config)
 cache = Cache(app)
 
 
+OPTICAL_FILE_PATH = os.getenv(
+    'OPTICAL_FILE_PATH', 'resources/latencies.csv')
+
+
 @app.route('/')
 def index():
+
     db = Memgraph()
     cache.set('db', db)
 
@@ -31,13 +38,22 @@ def index():
     while len(cities) == 0:
         time.sleep(1)
         cities = db_connection.fetch_cities(db)
-    optical_paths = utils.import_optical_paths()
 
-    results = db.execute_transaction(db_operations.import_sats_and_rels, [])
+    optical_path = _here.parent.joinpath(OPTICAL_FILE_PATH)
+    print(optical_path)
+    optical_paths = OpticalPath.import_optical_paths(optical_path)
+
+    results = db.execute_transaction(
+        transaction_type=connection.READ_TRANSACTION,
+        func=db_operations.import_sats_and_rels,
+        arguments={})
+
     while len(results["satellites"]) == 0:
         time.sleep(1)
         results = db.execute_transaction(
-            db_operations.import_sats_and_rels, [])
+            transaction_type=connection.READ_TRANSACTION,
+            func=db_operations.import_sats_and_rels,
+            arguments={})
 
     satellites = db_connection.transform_satellites(results["satellites"])
     relationships = db_connection.transform_relationships(
@@ -55,7 +71,7 @@ def index():
 
 
 @app.route('/json_satellites_and_relationships', methods=["GET"])
-def postSatellitesAndRelationships():
+def get_data():
 
     db = cache.get('db')
 
@@ -67,8 +83,11 @@ def postSatellitesAndRelationships():
     json_relationships = []
     json_shortest_path = []
 
-    results = db.execute_transaction(db_operations.import_data, [
-                                     request.args.get('cityOne'), request.args.get('cityTwo')])
+    results = db.execute_transaction(
+        transaction_type=connection.READ_TRANSACTION,
+        func=db_operations.import_data,
+        arguments={"city_one": request.args.get('cityOne'),
+                   "city_two": request.args.get('cityTwo')})
 
     satellites = db_connection.transform_satellites(results["satellites"])
     relationships = db_connection.transform_relationships(

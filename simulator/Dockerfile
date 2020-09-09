@@ -6,30 +6,14 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED 1
 
-RUN apt-get update && \
-    apt-get --yes install cmake
-
 # Install poetry
 RUN pip install -U pip \
     && curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 ENV PATH="${PATH}:/root/.poetry/bin"
 
-RUN apt-get install -y dos2unix
-
-# Install mgclient
-RUN apt-get install -y git cmake make gcc g++ libssl-dev && \
-    git clone https://github.com/memgraph/mgclient.git /mgclient && \
-    cd mgclient && \
-    mkdir build && \
-    cd build && \
-    cmake .. && \
-    make && \
-    make install
-
-#RUN git clone https://github.com/memgraph/pymgclient /pymgclient && \
-#    cd pymgclient && \
-#    python3 setup.py build && \
-#    python3 setup.py install
+# Install dos2unix
+RUN apt-get update && \
+    apt-get install -y dos2unix
 
 WORKDIR /app
 COPY poetry.lock pyproject.toml /app/
