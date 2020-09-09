@@ -19,40 +19,20 @@ services:
       EDGE_ORBITS_CONNECTED: 'false'
       ORBIT_ENDS_CONNECTED: 'false'
       SAT_PROCESSING_DELAY: 0.010
-      RELAY_PROCESSING_DELAY: 0.010 
-      VIEW_ANGLE: 70
+      RELAY_PROCESSING_DELAY: 0.012 
+      VIEW_ANGLE: 90
     command: /wait-for-it.sh memgraph:7687 -- python main.py start
     depends_on:
       - memgraph
   web:
-    build: ./web_app_flask
+    build: ./web_app
     volumes:
-      - ./web_app_flask:/app
+      - ./web_app:/app
     ports:
       - "5000:5000"
     environment:
       MG_HOST: memgraph
       MG_PORT: 7687
-      MC_HOST: memcached
-      MC_PORT: 11211
+      OPTICAL_FILE_PATH: "resources/latencies.csv"
     depends_on:
       - simulator
-  #memcached:
-  #  image: memcached:latest
-  #  ports:
-  #    - "11211:11211"
-  #web:
-  #  build: ./web_app
-  #  volumes:
-  #    - ./web_app:/app
-  #  ports:
-  #    - "8000:8000"
-  #  environment:
-  #    MG_HOST: memgraph
-  #    MG_PORT: 7687
-  #    MC_HOST: memcached
-  #   MC_PORT: 11211
-  #  command: bash -c "python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
-  #  depends_on:
-  #    - simulator
-  

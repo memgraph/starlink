@@ -21,7 +21,8 @@ def update_laser_command(moving_object_id: int,
 def create_data(tx: Any, arguments: Dict[str, Any]) -> None:
     moving_objects_dict_by_id = arguments["moving_objects_dict_by_id"]
     cities = arguments["cities"]
-
+    print("11")
+    print(cities)
     tx.run("BEGIN")
 
     for moving_object_id in moving_objects_dict_by_id.keys():
@@ -32,7 +33,7 @@ def create_data(tx: Any, arguments: Dict[str, Any]) -> None:
                                     y: {moving_object.y},\
                                     z: {moving_object.z}}})')
         tx.run(command)
-
+    print("22")
     for city in cities:
         command = (
             f'CREATE(n: City {{id: "{city.id}",\
@@ -68,6 +69,7 @@ def create_data(tx: Any, arguments: Dict[str, Any]) -> None:
         tx.run(command)
 
     tx.run("COMMIT")
+    print("33")
     return {}
 
 

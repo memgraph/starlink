@@ -31,17 +31,18 @@ def run() -> None:
 
     cities_path = _here.parent.joinpath(CITIES_FILE_PATH)
     cities = City.generate_cities(cities_path, time_of_simulation)
-
+    print("1")
     City.update_cities(cities, ObjectsAndOrbits.moving_objects_dict_by_id)
-
+    print("2")
     Orbit.update_orbits(
         ObjectsAndOrbits.orbits_dict_by_id, ObjectsAndOrbits.moving_objects_dict_by_id)
-
+    print("3")
     db.execute_transaction(connection.WRITE_TRANSACTION, db_operations.create_data,
                            {"moving_objects_dict_by_id": ObjectsAndOrbits.moving_objects_dict_by_id,
                             "cities": cities})
 
     while(True):
+        print("4")
         Orbit.update_orbits(ObjectsAndOrbits.orbits_dict_by_id,
                             ObjectsAndOrbits.moving_objects_dict_by_id)
         City.update_cities(cities, ObjectsAndOrbits.moving_objects_dict_by_id)

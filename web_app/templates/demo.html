@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Starlink Network Simulator | Memgraph</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/png" href="/static/assets/img/favicon.png">
+
+
+    <link rel="stylesheet" type="text/css" href="/static/css/memgraph-foundation-app.css">
+    <link rel="stylesheet" type="text/css" href="/static/assets/libs/fontello/css/fontello.css">
+    <link rel='stylesheet' href='https://unpkg.com/leaflet@1.6.0/dist/leaflet.css' />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/static/assets/libs/foundation-sites/dist/js/foundation.min.js"></script>
+    <script src='https://unpkg.com/leaflet@1.6.0/dist/leaflet.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.2/proj4.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/proj4leaflet/1.0.2/proj4leaflet.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/7.1.0/math.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+    <script src="/static/js/countries-110m.js"></script>
+    <script src="/static/js/map.js"></script>
+    <script src="/static/js/dropdown.js"></script>
+    <script src="/static/js/transmission.js"></script>
+</head>
+
+<body>
+    <nav data-sticky-container>
+        <div data-sticky data-options="marginTop:0;">
+            <div class="title-bar sticky">
+                <div class="top-bar-left">
+                    <ul class="menu">
+                        <li>
+                            <a id="demo-title" href="/" class="top-bar-title">
+                                <img src="/static/assets/img/img-logo-mark.svg" width="44" height="44" alt="Memgraph logo">
+                            </a>
+                        </li>
+                        <li class="menu-text">
+                            Starlink Network Simulator
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="off-panel is-active card" id="off-panel" data-toggler=".is-active">
+        <div class="card-section">
+            <label class="help-text text-uppercase" style="padding-top: 1em; padding-bottom: 1em;">
+                Simulation settings
+            </label>
+            <div>
+                <select id="dropdownOne" onchange="if (this.selectedIndex!=-1)  dropdownOneSelect();">
+                    <option></option>
+                </select>
+            </div>
+            <div style="padding-top: 1em;">
+                <select id="dropdownTwo" onchange="if (this.selectedIndex!=-1)  dropdownTwoSelect();">
+                    <option></option>
+                </select>
+            </div>
+            <div style="padding-top: 1em;">
+                <button class="button secondary" id="startStopButton" onclick="simulation();">Start simulation</button>
+            </div>
+            <hr>
+
+            <label class="help-text text-uppercase">
+                Transmission time
+            </label>
+
+            <label class="help-text" id="initial-stats" style="padding-top: 1em;">
+                Choose the cities and start the simulation to see the results.
+            </label>
+
+            <div id="stats" style="display:none;">
+                <div id="ttime"></div>
+                <div id="optic"></div>
+            </div>
+        </div>
+
+        <div class="card-divider">
+            <div class="footer-copy">
+                <span>Memgraph Ltd. 2020</span>
+                <span class="float-right">
+                    <button class="button clear" data-open="intro-modal">
+                        <span class="icon-ui-info-circled"></span>
+                </button>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <main class="off-panel-main" style="padding-top: 0;">
+        <div id="map" style="height:90vh;"></div>
+        <button class="off-panel-btn" data-toggle="off-panel" style="z-index: 1000;">
+            <span id="panel-close" class="icon-ui-left-open"></span>
+            <span id="panel-open" class="icon-ui-right-open hide"></span>
+        </button>
+    </main>
+
+    <div class="reveal fadein" id="intro-modal" data-reveal>
+        <button class="close-button" data-close aria-label="Close modal" type="button" data-toggle="step1 step2">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <img alt="Starlink Simulator with Memgraph" src="/static/assets/img/satellite.svg" class="float-center" width="96" height="96">
+        <br>
+        <h4 class="text-center">Starlink Network Simulator</h4>
+        <p class="text-center">
+            This is a demonstration of how Memgraph DB can be used to calculate the shortest path for data transmission using a satellite network. <br>Read our <a target="_blank" rel="noopener noreferrer" href="https://memgraph.com/blog">blog post</a>            for more information.
+        </p>
+        <button class="button secondary float-center" data-close aria-label="Close modal" type="button">Close</button>
+    </div>
+
+    <script>
+        'use strict';
+
+        $(document).foundation();
+
+        $('.off-panel-btn').click(function() {
+            $(this).children('span').toggleClass('hide');
+        });
+
+        const cities = JSON.parse('{{data.city_markers|tojson}}');
+        let sat_markers = JSON.parse('{{data.sat_markers|tojson}}');
+        let rel_markers = JSON.parse('{{data.rel_markers|tojson}}');
+        let opticalPaths = JSON.parse('{{data.op_markers|tojson}}');
+
+        createMap();
+        createDropdowns();
+        drawSatellites();
+        drawRelationships();
+    </script>
+    <script src="/static/js/index.js"></script>
+</body>
+
+</html>
