@@ -4,10 +4,6 @@ services:
     image: "memgraph"
     ports:
       - "7687:7687"
-  memcached:
-    image: memcached:latest
-    ports:
-      - "11211:11211"
   simulator:
     build: ./simulator
     volumes:
@@ -29,16 +25,34 @@ services:
     depends_on:
       - memgraph
   web:
-    build: ./web_app
+    build: ./web_app_flask
     volumes:
-      - ./web_app:/app
+      - ./web_app_flask:/app
     ports:
-      - "8000:8000"
+      - "5000:5000"
     environment:
       MG_HOST: memgraph
       MG_PORT: 7687
       MC_HOST: memcached
       MC_PORT: 11211
-    command: bash -c "python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - simulator
+  #memcached:
+  #  image: memcached:latest
+  #  ports:
+  #    - "11211:11211"
+  #web:
+  #  build: ./web_app
+  #  volumes:
+  #    - ./web_app:/app
+  #  ports:
+  #    - "8000:8000"
+  #  environment:
+  #    MG_HOST: memgraph
+  #    MG_PORT: 7687
+  #    MC_HOST: memcached
+  #   MC_PORT: 11211
+  #  command: bash -c "python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
+  #  depends_on:
+  #    - simulator
+  
