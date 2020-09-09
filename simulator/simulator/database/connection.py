@@ -78,7 +78,7 @@ class Neo4jConnection(Connection):
                 transaction_results = session.read_transaction(func, arguments)
             else:
                 transaction_results = session.write_transaction(func, arguments)
-        print("111")
+
         output = {}
         for key in transaction_results.keys():
             output[key] = []
@@ -87,7 +87,6 @@ class Neo4jConnection(Connection):
                 output[key].append({
                     column: _convert_neo4j_value(result[column])
                     for column in columns})
-        print("222")
         return output
     
     def is_active(self) -> bool:

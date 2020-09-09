@@ -39,7 +39,6 @@ def index() -> Any:
     while len(cities) == 0:
         time.sleep(1)
         cities = db_connection.fetch_cities(db)
-        print(cities)
 
     optical_path = _here.parent.joinpath(OPTICAL_FILE_PATH)
     optical_paths = OpticalPath.import_optical_paths(optical_path)

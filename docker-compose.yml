@@ -20,7 +20,7 @@ services:
       ORBIT_ENDS_CONNECTED: 'false'
       SAT_PROCESSING_DELAY: 0.010
       RELAY_PROCESSING_DELAY: 0.012 
-      VIEW_ANGLE: 90
+      VIEW_ANGLE: 70
     command: /wait-for-it.sh memgraph:7687 -- python main.py start
     depends_on:
       - memgraph
