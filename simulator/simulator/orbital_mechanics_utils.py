@@ -1,23 +1,25 @@
 import collections
 import os
+import logging
 from pathlib import Path
 from simulator.models import City, MovingObject, Orbit
 from skyfield.api import EarthSatellite
 from typing import List, Dict, Any
 
 
-ORBIT_ENDS_CONNECTED = bool(os.getenv('ORBIT_ENDS_CONNECTED', 'false'))
+logger = logging.getLogger('simulator')
 
+ORBIT_ENDS_CONNECTED = bool(os.getenv('ORBIT_ENDS_CONNECTED', 'false'))
 
 OrbitsAndObjects = collections.namedtuple(
     'ObjectsAndOrbits', ['orbits_dict_by_id',
                          'moving_objects_dict_by_id'])
 
 
-def read_tle(file_path: str) -> None:
+def read_tle(file_path: Path) -> None:
     satellites = []
-    path = Path(__file__).parent.parent / file_path
-    with path.open() as f:
+    logger.info(f'Reading TLE from file path {file_path}...')
+    with file_path.open() as f:
         lines = f.readlines()
 
     cnt = 0
@@ -35,7 +37,7 @@ def read_tle(file_path: str) -> None:
     return num_of_orbits, num_objects_in_orbit, satellites
 
 
-def generate_orbits_and_moving_objects(file_path: str, time: Any) -> OrbitsAndObjects:
+def generate_orbits_and_moving_objects(file_path: Path, time: Any) -> OrbitsAndObjects:
     num_of_orbits, num_objects_in_orbit, satellites = read_tle(file_path)
 
     object_data = []
