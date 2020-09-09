@@ -10,16 +10,22 @@
     <link rel="stylesheet" type="text/css" href="{% static 'demo/css/memgraph-foundation-app.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'demo/assets/libs/fontello/css/fontello.css' %}">
     <link rel='stylesheet' href='https://unpkg.com/leaflet@1.6.0/dist/leaflet.css' />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="{% static 'demo/style.css' %}">
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="{% static 'demo/assets/libs/foundation-sites/dist/js/foundation.min.js' %}"></script>
     <script src='https://unpkg.com/leaflet@1.6.0/dist/leaflet.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.2/proj4.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/proj4leaflet/1.0.2/proj4leaflet.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/7.1.0/math.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
     <script src="{% static 'demo/countries-110m.js' %}"></script>
     <script src="{% static 'demo/map.js' %}"></script>
     <script src="{% static 'demo/dropdown.js' %}"></script>
     <script src="{% static 'demo/transmission.js' %}"></script>
+    <script src="{% static 'demo/index.js' %}"></script>
 </head>
 
 <body>
@@ -47,18 +53,19 @@
             <label class="help-text text-uppercase" style="padding-top: 1em; padding-bottom: 1em;">
                 Simulation settings
             </label>
-
-            <div class="form-group">
-                <select class="form-control form-control-md" id="dropdownOne" onchange="if (this.selectedIndex!=-1)  dropdownOneSelect();">
-                    <option style="display:none;" selected>Start city</option>
+            <div>
+                <select id="dropdownOne" onchange="if (this.selectedIndex!=-1)  dropdownOneSelect();">
+                    <option></option>
                 </select>
             </div>
-            <div class="form-group">
-                <select class="form-control form-control-md" id="dropdownTwo" onchange="if (this.selectedIndex!=-1)  dropdownTwoSelect();">
-                    <option style="display:none;" selected>Target city</option>
+            <div style="padding-top: 1em;">
+                <select id="dropdownTwo" onchange="if (this.selectedIndex!=-1)  dropdownTwoSelect();">
+                    <option></option>
                 </select>
             </div>
-            <button class="button secondary" id="startStopButton" onclick="simulation();">Start simulation</button>
+            <div style="padding-top: 1em;">
+                <button class="button secondary" id="startStopButton" onclick="simulation();">Start simulation</button>
+            </div>
             <hr>
 
             <label class="help-text text-uppercase">
@@ -107,9 +114,7 @@
         </p>
         <button class="button secondary float-center" data-close aria-label="Close modal" type="button">Close</button>
     </div>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="{% static 'demo/assets/libs/foundation-sites/dist/js/foundation.min.js' %}"></script>
-    <script src="{% static 'demo/index.js' %}"></script>
+
     <script>
         'use strict';
 
@@ -119,7 +124,10 @@
             $(this).children('span').toggleClass('hide');
         });
 
+
+
         let simStopped = true;
+
         createMap();
 
         const cities = JSON.parse("{{city_markers|escapejs}}");
