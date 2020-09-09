@@ -28,11 +28,11 @@ function createDropdowns() {
     }
 
     $('#dropdownOne').select2({
-        placeholder: "Select a state"
+        placeholder: "Start city"
     });
 
     $('#dropdownTwo').select2({
-        placeholder: "Select a state"
+        placeholder: "Target city"
     });
 }
 

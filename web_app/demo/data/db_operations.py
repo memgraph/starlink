@@ -20,7 +20,7 @@ def import_sats_and_rels(tx, arguments):
 
 def import_data(tx, arguments):
     results = {}
-
+    print(arguments[0], "  ", arguments[1])
     command = "MATCH (s:Satellite) RETURN s;"
     results["satellites"] = tx.run(command)
 

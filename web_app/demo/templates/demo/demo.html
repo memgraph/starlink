@@ -151,6 +151,8 @@
                 type: 'GET',
                 url: "{% url 'json_satellites_and_relationships' %}",
                 data: {
+                    cityOne: firstDropdown.options[firstDropdown.selectedIndex].value,
+                    cityTwo: secondDropdown.options[secondDropdown.selectedIndex].value,
                     "json_satellites": json_satellites,
                     "json_relationships": json_relationships,
                     "json_shortest_path": json_shortest_path
