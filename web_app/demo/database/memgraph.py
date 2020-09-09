@@ -42,12 +42,11 @@ class Memgraph:
 
     def execute_transaction(self,
                         func: Any,
-                        city1: Any,
-                        city2: Any,
+                        arguments: Any,
                         connection: Connection = None) -> None:
         """Executes Cypher query without returning any results."""
         connection = connection or self._get_cached_connection()
-        return connection.execute_transaction(func, city1, city2)
+        return connection.execute_transaction(func, arguments)
 
     def _get_cached_connection(self) -> Connection:
         """Returns cached connection if it exists, creates it otherwise"""

@@ -73,7 +73,7 @@ function drawCity(city) {
     for (let i = 0; i < cities.length; i++) {
         if (cities[i][0] == city[0]) {
             const obj = cities[i].slice(1, 3);
-            const div_circle = L.divIcon({ iconSize: [16, 16], className: 'circle' })
+            const div_circle = L.divIcon({ iconSize: [20, 20], className: 'circle' })
             const marker = L.marker(obj, { icon: div_circle }).bindPopup(cities[i][3]);
             citiesLayer.addLayer(marker);
         }
@@ -87,7 +87,7 @@ function drawCities() {
     for (let i = 0; i < cities.length; i++) {
         if (cities[i][0] == sel[0] || cities[i][0] == sel[1]) {
             const obj = cities[i].slice(1, 3);
-            const div_circle = L.divIcon({ iconSize: [16, 16], className: 'circle' })
+            const div_circle = L.divIcon({ iconSize: [20, 20], className: 'circle' })
             const marker = L.marker(obj, { icon: div_circle }).bindPopup(cities[i][3]);
             citiesLayer.addLayer(marker);
         }
@@ -101,10 +101,11 @@ function drawSatellites() {
         const obj = sat_markers[i].slice(0, 2);
         const circle = L.circleMarker(obj, {
             renderer: renderer,
-            color: '#FFB8AA',
+            radius: 4,
+            weight: 0.5,
+            color: '#BAB8BB',
             fillColor: '#FFB8AA',
-            fillOpacity: 0.5,
-            radius: 2
+            fillOpacity: 1.0
         });
         satellitesLayer.addLayer(circle);
     }
@@ -150,10 +151,10 @@ function drawRelationships() {
     relationshipsLayer.addTo(map);
 }
 
-function drawPolyRel(line, colour) {
+function drawPolyRel(line, color) {
     const polyline = L.polyline(line, {
         renderer: renderer,
-        color: colour,
+        color: color,
         opacity: 0.2,
         weight: 1,
         smoothFactor: 1
@@ -199,11 +200,11 @@ function drawShortestPath(sp_markers) {
     shortestPathLayer.addTo(map);
 }
 
-function drawPoly(line, colour) {
+function drawPoly(line, color) {
     const polyline = L.polyline(line, {
         renderer: renderer,
-        color: colour,
-        opacity: 1,
+        color: color,
+        opacity: 1.0,
         weight: 4,
         smoothFactor: 1
     }).addTo(map);

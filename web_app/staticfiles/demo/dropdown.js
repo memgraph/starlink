@@ -9,8 +9,10 @@ let dropdownTwoSelected = false;
 
 function createDropdowns() {
     document.getElementById("startStopButton").disabled = true;
+
     firstDropdown = document.getElementById("dropdownOne");
     secondDropdown = document.getElementById("dropdownTwo");
+
     for (city of cities) {
         let element = document.createElement("option");
         element.text = city[3];
@@ -24,6 +26,14 @@ function createDropdowns() {
         element.value = city[0];
         secondDropdown.appendChild(element);
     }
+
+    $('#dropdownOne').select2({
+        placeholder: "Select a state"
+    });
+
+    $('#dropdownTwo').select2({
+        placeholder: "Select a state"
+    });
 }
 
 function findElement(list, value) {

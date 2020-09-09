@@ -18,7 +18,6 @@ def index(request):
 
     json_satellites = []
     json_relationships = []
-    json_shortest_path = []
 
     cities = []
     while len(cities) == 0:
@@ -26,17 +25,13 @@ def index(request):
         cities = db_connection.fetch_cities(db)
     optical_paths = utils.import_optical_paths()
 
-    satellites = []
-    while len(satellites) == 0:
+    results = db.execute_transaction(db_operations.import_sats_and_rels, [])
+    while len(results["satellites"]) == 0:
         time.sleep(1)
-        satellites = db_connection.fetch_satellites(db)
+        results = db.execute_transaction(db_operations.import_sats_and_rels, [])
 
-    relationships = []
-    while len(relationships) == 0:
-        time.sleep(1)
-        relationships = db_connection.fetch_relationships(db)
-
-    #print(relationships)
+    satellites = db_connection.transform_satellites(results["satellites"])
+    relationships = db_connection.transform_relationships(results["relationships"])
 
     json_cities = json.dumps(db_connection.city_json_format(cities))
     json_satellites = json.dumps(db_connection.satellite_json_format(satellites))
@@ -46,8 +41,7 @@ def index(request):
     
     return render(request, "demo/demo.html", {"city_markers": json_cities, 
                                                 "sat_markers": json_satellites, 
-                                                "rel_markers": json_relationships, 
-                                                "sp_markers": json_shortest_path,
+                                                "rel_markers": json_relationships,
                                                 "op_markers": json_optical_paths})
 
 
@@ -63,21 +57,15 @@ def postSatellitesAndRelationships(request):
     json_relationships = []
     json_shortest_path = []
 
-    results = db.execute_transaction(db_operations.import_data, request.GET.get(
-        'cityOne', None), request.GET.get('cityTwo', None))
+    results = db.execute_transaction(db_operations.import_data, [request.GET.get(
+        'cityOne', None), request.GET.get('cityTwo', None)])
 
-    satellites = db_connection.transform_satellites(results[0])
-    relationships = db_connection.transform_relationships(results[1])
-    shortest_path = db_connection.transform_shortest_path(results[2])
+    satellites = db_connection.transform_satellites(results["satellites"])
+    relationships = db_connection.transform_relationships(results["relationships"])
+    shortest_path = db_connection.transform_shortest_path(results["shortest_path"])
 
     json_satellites = json.dumps(
         db_connection.satellite_json_format(satellites))
-
-    """TODO: remove before deployment"""
-    """
-    utils.distance_coordinates(satellites)
-    utils.old_sats = satellites
-    """
 
     json_relationships = json.dumps(
         db_connection.relationship_json_format(relationships))

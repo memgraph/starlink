@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, Iterator
 from demo.database.models import Node, Relationship
 import demo.utils as utils
+import collections
 
 _use_mgclient = True
 try:
@@ -11,9 +12,6 @@ except ImportError:
     from neo4j.types import Relationship as Neo4jRelationship
     from neo4j.types import Node as Neo4jNode
     _use_mgclient = False
-
-
-__all__ = ('Connection',)
 
 
 class Connection(ABC):
@@ -110,46 +108,6 @@ class Neo4jConnection(Connection):
         with self._connection.session() as session:
             session.run(query)
 
-    def execute_transaction(self, func: Any, city1: Any, city2: Any) -> Any:
-        """Executes Cypher queries and returns dictionary of results."""
-
-        with self._connection.session() as session:
-            res = session.read_transaction(func, city1, city2)
-        
-
-        """TODO: remove before deployment"""
-        #print(f"{utils.bcolors.OKGREEN}Web DB update END{utils.bcolors.ENDC}")
-
-
-        output = {}
-        output[0] = []
-        output[1] = []
-        output[2] = []
-        
-        results = res[0]
-        columns = results.keys()
-        for result in results:
-            output[0].append({
-                column: _convert_neo4j_value(result[column])
-                for column in columns})
-        
-        results = res[1]
-        columns = results.keys()
-        for result in results:
-            output[1].append({
-                column: _convert_neo4j_value(result[column])
-                for column in columns})
-
-        results = res[2]
-        columns = results.keys()
-        for result in results:
-            output[2].append({
-                column: _convert_neo4j_value(result[column])
-                for column in columns})
-       
-        return output
-
-
     def execute_and_fetch(self, query: str) -> Iterator[Dict[str, Any]]:
         """Executes Cypher query and returns iterator of results."""
         with self._connection.session() as session:
@@ -169,6 +127,21 @@ class Neo4jConnection(Connection):
             f'bolt://{self.host}:{self.port}',
             auth=basic_auth(self.username, self.password),
             encrypted=self.encrypted)
+
+    def execute_transaction(self, func: Any, arguments: Any) -> Any:
+        """Executes Cypher queries and returns dictionary of results."""
+        with self._connection.session() as session:
+            transaction_results = session.read_transaction(func, arguments)
+
+        output = {}
+        for key in transaction_results.keys():
+            output[key] = []
+            columns = transaction_results[key].keys()
+            for result in transaction_results[key]:
+                output[key].append({
+                    column: _convert_neo4j_value(result[column])
+                    for column in columns})
+        return output
 
 
 def _convert_memgraph_value(value: Any) -> Any:
