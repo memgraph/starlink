@@ -8,7 +8,7 @@ import pickle
 import time
 import json
 import os
-print("sdfsdf")
+
 _here = Path(__file__)
 
 config = {

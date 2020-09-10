@@ -26,7 +26,7 @@ EXPOSE 5000
 
 ADD start.sh /
 RUN chmod +x /start.sh
-RUN dos2unix /wait-for-it.sh
+RUN dos2unix /start.sh
 
 ENTRYPOINT [ "poetry", "run" ]
 CMD ["/start.sh"]
