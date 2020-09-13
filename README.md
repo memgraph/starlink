@@ -1,27 +1,12 @@
-Starlink simulator and web app
+Starlink Demo
 ===
+This demo application simulates and visualizes the Starlink internet constellation. It also demonstrates how **Memgraph DB** can be used to find the shortest routing path in such networks.<br />
+To find out more, read the accompanying [blog post](https://github.com/memgraph/starlink/blob/develop_web/blog-post/blog-post.md).
 
-
-## Docker
-
-### 1. Build
-
-Build docker images with the following command:
-
+## How to start the application
+Build the Docker image and run the container with the following commands:
 ```
 docker-compose build
-```
-
-### 2. Run
-
-Run docker containers with the following command:
-
-```
 docker-compose up
 ```
-
-# The web app will be listening on port 8000
-
-```
-curl http://localhost:8000
-```
+The app will be listening on: http://localhost:5000/.
