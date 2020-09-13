@@ -10,7 +10,10 @@ let selectedCities;
 async function postData(url = '') {
     const response = await fetch(url, {
         method: 'GET'
-    });
+    })
+    if (!response.ok) {
+        return Error(`Request rejected with status ${res.status}`);
+    }
     return response.json();
 }
 
@@ -76,6 +79,7 @@ async function simulationStarted() {
                 }
             }).catch(err => {
                 console.error('There was an error!', err);
+                simulationStopped();
             });
     }
 }
@@ -97,7 +101,7 @@ function simulationStopped() {
 
     drawCities();
     drawSatellites();
-    drawRelationships(rel_markers);
+    drawRelationships();
     map.dragging.enable();
     map.touchZoom.enable();
     map.doubleClickZoom.enable();

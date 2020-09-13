@@ -1,26 +1,31 @@
+import pickle
+import time
+import json
+import os
+import logging
 from flask import Flask, render_template, request, jsonify, make_response
 from flask_caching import Cache
 from demo.database import Memgraph, connection
 from demo.data import db_operations, db_connection, OpticalPath
 from pathlib import Path
 from typing import Any, List
-import pickle
-import time
-import json
-import os
+
+
+logging.basicConfig(format='%(asctime)-15s [%(levelname)s]: %(message)s')
+logger = logging.getLogger('web')
+logger.setLevel(logging.INFO)
 
 _here = Path(__file__)
 
-config = {
-    "DEBUG": True,
-    "CACHE_TYPE": "simple",
-    "CACHE_DEFAULT_TIMEOUT": 300
-}
-
 app = Flask(__name__)
-app.config.from_mapping(config)
-cache = Cache(app)
+app.config.update(
 
+    SECRET_KEY=os.urandom(24),
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_NAME='StarlinkDemo-WebSession'
+)
+
+db = Memgraph()
 
 OPTICAL_FILE_PATH = os.getenv(
     'OPTICAL_FILE_PATH', 'resources/latencies.csv')
@@ -28,9 +33,6 @@ OPTICAL_FILE_PATH = os.getenv(
 
 @app.route('/')
 def index() -> Any:
-
-    db = Memgraph()
-    cache.set('db', db)
 
     json_satellites = []
     json_relationships = []
@@ -73,8 +75,6 @@ def index() -> Any:
 @app.route('/json_satellites_and_relationships', methods=["GET"])
 def get_data() -> Any:
 
-    db = cache.get('db')
-
     satellites = []
     relationships = []
     shortest_path = []
@@ -82,6 +82,8 @@ def get_data() -> Any:
     json_satellites = []
     json_relationships = []
     json_shortest_path = []
+
+    results = {}
 
     results = db.execute_transaction(
         transaction_type=connection.READ_TRANSACTION,
@@ -112,4 +114,5 @@ def get_data() -> Any:
 
 @app.route('/check', methods=["GET"])
 def check() -> Any:
+    """Route for AWS to check the status of the app"""
     return '', 200

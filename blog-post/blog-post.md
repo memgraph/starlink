@@ -12,7 +12,7 @@ Low latency transmission is a key factor when trying to deliver high-speed inter
 
 Finding the shortest path between locations is a common problem tackled by graph theory, so the ideal approach to the transmission speed problem would be to use graph concepts and algorithms. 
 
-In this post, we will explore how graph analytics and graph theory can be used to model the Starlink constellation and optimize transmission paths to ensure high-speed internet access almost anywhere on the planet. 
+In this post, we will explore how graph analytics and graph theory can be used to model the Starlink constellation and optimize transmission paths to ensure high-speed internet access almost anywhere on the planet. You can also visit our [**Starlink Simulator**](http://starlink.memgraph.com/) and see the results for yourself.
 <br /><br />
 <p align="center">
    <img src="https://raw.githubusercontent.com/g-despot/images/699ee65713223a90af3f5b180f331893b2c469be/demo_screenshot.png" alt="" width="800"/>
@@ -21,14 +21,8 @@ In this post, we will explore how graph analytics and graph theory can be used t
 
 ## What is *Starlink*?
 
-Starlink is a satellite constellation being built by SpaceX to provide satellite Internet access. The constellation will consist of thousands of mass-produced small satellites in low Earth orbit (LEO) (altitudes of 2000 km). The goal of the Starlink project is to provide satellite internet connectivity to underserved areas of the planet. The project started in 2015 and 597 satellites have been launched into orbit so far. By the end of the project, SpaceX wants to build a “shell“ around the Earth consisting of over 4,000 communication satellites which will use phased array antennas for communication with ground relays in combination with laser communication technology to provide global low-latency high bandwidth coverage. In the first phase, 1,584 satellites will be deployed at an altitude of 550 km and 2,825 satellites will be added in the second phase at three different altitudes to increase density and coverage to as far as 70° North/South. For our simulation, we used 480 satellites in 24 orbital planes at an altitude of around 550 km and an inclination of 70.0°. These numbers make our simulation much more understandable visually.
-<br /><br />
-<p align="center">
-   <img src="https://github.com/g-despot/images/blob/master/spacex_logo.jpg?raw=true" alt="" width="500"/>
-<p/>
-<br />
-
-How does Starlink work? Each satellite is connected to 4 more satellites – two neighbours are on the same plane, one ahead and one behind. Another two neighbours come from different orbits, one in the front right and the other one behind left forming a good South-West to North-East and North-West to South-East connection.
+Starlink is a satellite constellation being built by SpaceX to provide satellite Internet access. The constellation will consist of thousands of mass-produced small satellites in low Earth orbit (LEO) (altitudes below 2000 km). The goal of the Starlink project is to provide satellite internet connectivity to underserved areas of the planet. The project started in 2015 and 597 satellites have been launched into orbit so far. By the end of the project, SpaceX wants to build a “shell“ around the Earth consisting of over 4,000 communication satellites which will use phased array antennas for communication with ground relays in combination with laser communication technology to provide **global low-latency high bandwidth coverage**.<br /><br />
+In the first phase, 1,584 satellites will be deployed at an altitude of 550 km and 2,825 satellites will be added in the second phase at three different altitudes to increase density and coverage to as far as 70° North/South. For our simulation, we used 480 satellites in 24 orbital planes at an altitude of around 550 km and an inclination of 70.0°. These parameters make our simulation much more visually understandable but also sometimes result with a lack of visible satellites above cities. In our simulation each satellite is connected to 4 more satellites. Two of them are in the same orbit and they are its closest neighbours. The other two satellites are located in neighbouring orbits and they are also its closest neighbours in the those orbits.
 <br /><br />
 <p align="center">
    <img src="https://github.com/g-despot/images/blob/master/satellite_connection.png?raw=true" alt="" width="500"/>
@@ -37,19 +31,19 @@ How does Starlink work? Each satellite is connected to 4 more satellites – two
 
 ## Satellites vs Fiber Optics
 
-Compared to optical fibre, transmission speed in space is around 1.47 times higher than in glass optical cables. With the increased transmission speed, free-space laser link speeds could reach rates of 100 Gb/s or even higher. Even though it's hard to predict the network capacity, the most important aspect of transmission is latency. Latency doesn't seem as big of a problem on small distances, but it increases the further we travel through an optic cable. In theory, internet traffic via geostationary satellites has a latency of at least 477 ms. In practice, that number is closer to 600 ms. Being in lower orbits, Starlink satellites will offer more practical latencies of around 25 to 35 ms. The latency of light travelling through a cable is 49 ms per kilometre, compared to 33.3 ms per kilometre when it’s travelling through a vacuum. For example, the latency between New York and London via fiber optic is around 59 ms, while, in theory, it should be around 40 ms using Starlink.
+Compared to optical fibre, the transmission speed in space is around **1.47 times higher** than in glass optical cables. With the increased transmission speed, free-space laser link speeds could reach rates of 100 Gb/s or even higher. Even though it's hard to predict the network capacity, the most important aspect of transmission is latency. Latency doesn't seem as big of a problem on small distances, but it increases the further we travel through an optic cable. In theory, internet traffic via geostationary satellites has a latency of at least 477 ms. In practice, that number is closer to 600 ms. Being in lower orbits, Starlink satellites will offer more practical latencies of around 25 to 35 ms. The latency of light travelling through a cable is 49 ms per kilometre, compared to 33.3 ms per kilometre when it’s travelling through a vacuum. For example, the latency between New York and London via fiber optic is around 59 ms, while, in theory, it should be around 40 ms using Starlink.
 
 The exact latency using Starlink is still a mystery because it’s not publicly available information. We had to make some assumptions on our part to make the simulation more realistic. 
-We also approximate the signal processing time for satellites and ground transceivers, which is fixed and set to 4 ms. For example, a signal travelling from city A to city B via 4 satellites will result in 40 ms of processing time in total. The ground transceivers in both cities will contribute 4 ms of processing time each while the satellites will contribute 8 ms of processing time (4 ms to process the received signal and 4 ms for further transmission processing).
+We also approximate the signal processing time for satellites and ground transceivers, which are fixed and set to 10 and 12 ms respectivly. For example, a signal travelling from city A to city B via 2 satellites will result in 64 ms of processing time in total. The ground transceivers in both cities will contribute 12 ms of processing time each while the satellites will contribute 20 ms of processing time (10 ms to process the received signal and 10 ms for further transmission processing).
 <br /><br />
 <p align="center">
    <img src="https://github.com/g-despot/images/blob/master/starlink_satellite.jpg?raw=true" alt="" width="500"/>
 <p/>
 <br />
 
-Why is low-latency so important? Starlink is designed to support near real-time access to rapidly changing data. Primarily, the system is advertised as a way to offer global internet coverage. Not only will this system provide better connections in underdeveloped countries, but it will also target other areas like the financial market. Currently, the privately-owned Hibernia Express cable offers the lowest latency transmission between New York and London with up to 58.95 ms which is 39.4% slower than a potential Starlink connection. The benefits of a Starlink connection would be even more pronounced for longer routes like London to Singapour. With millions of dollars being moved in fractions of a second, having lower latencies would provide a massive advantage in capitalizing on these price swings.
+Why is low-latency so important? Starlink is designed to support near real-time access to rapidly changing data. Primarily, the system is advertised as a way to offer global internet coverage. Not only will this system provide better connections in underdeveloped countries, but it will also target other areas like the financial market. Currently, the privately-owned *Hibernia Express* cable offers the lowest latency transmission between New York and London with up to 58.95 ms which is 39.4% slower than a potential Starlink connection. The benefits of a Starlink connection would be even more pronounced for longer routes like London to Singapour. With millions of dollars being moved in fractions of a second, having lower latencies would provide a massive advantage in capitalizing on these price swings.
 
-How to find low-latency routes? This whole model and dataset can be represented as a graph problem. If we tackle the problem as such, we can use methods from graph theory to calculate and find the path with the lowest latency.
+How to find low-latency routes? This whole model and dataset can be represented as a **graph problem**. If we tackle the problem as such, we can use methods from **graph theory** to calculate and find the path with the lowest latency.
 
 ## Graph Databases in Satellite Networks
 
@@ -70,6 +64,13 @@ Finally, when the graph structure is implemented, as well as all the rules relat
 
 ## Exploring *Starlink* with Cypher Queries
 
+To play around with our dataset just visit [**Memgraph Lab**](https://lab.memgraph.com/) and login with the following credentials:
+* **Username:**  userReadonly
+* **Password:**  starlinkreadit
+* **Host:** 34.248.115.177
+* **Port:** 9000<br />
+
+This account only has *read permissions* so don't worry about messing anything up. We are going to show you how to use **openCypher** queries to retrieve interesting results from our data.
 Let's start by writing a very simple query that returns all the nodes with the same label. In our example, we are going to return all the nodes with the label `City`.<br />
 This is achieved by executing the following query:
 ```
@@ -86,8 +87,8 @@ On the other hand, if you want to return all the nodes with the label `Satellite
 ```
    MATCH (s:Satellite) RETURN s;
 ```
-Now we can try out something more interesting. Let us return all the satellites that are visible from London. To be more specific, we are returning all the relationships of type `VISIBLE_FROM` that a node with the label `City` and with the property name equal to London has.<br /> 
-The Cypher query looks like this:
+Now we can try out something more interesting. Let's return all the satellites that are visible from *London*. To be more specific, we are returning all the relationships of type `VISIBLE_FROM` that a node with the label `City` and with the property `name` equal to *London* has.<br /> 
+The query looks like this:
 ```
    MATCH (c:City {name: "London"})
    -[r:VISIBLE_FROM]-(n) RETURN c, r, n;
@@ -99,7 +100,7 @@ The output should be:
 <p/>
 <br />
 
-If we wanted to return all the relationships a satellite has, we would need to specify if they are of type `VISIBLE_FROM` or `CONNECTED_TO` because the former represents connections between cities and satellites, while the latter represents connections between satellites. We are just going to omit the relationship type in our query so both of these types are returned.<br /> 
+If we wanted to return all the relationships a satellite has, we would need to specify if they are of type `VISIBLE_FROM` or `CONNECTED_TO` because the former represents connections between cities and satellites, while the latter only represents connections between satellites. We are just going to omit the relationship type in our query so both of these types are returned.<br /> 
 The query looks like this: 
 ```
    MATCH (s:Satellite {id: "482"})
@@ -131,9 +132,9 @@ Both queries have the same output:
 
 ## Using Dijkstra’s Algorithm to Find the Shortest Transmission Path
 
-The most important aspect of a satellite network is the transmission time from one point to another. Given that the satellites are in constant movement, their visibility from cities is therefore changing. The network needs to be able to calculate the shortest path exceedingly fast and efficiently in real-time with these changes in mind. This is where Memgraph comes in handy. 
+The most important aspect of a satellite network is the transmission time from one point to another. Given that the satellites are in constant movement, their visibility from cities is therefore changing. The network needs to be able to calculate the shortest path exceedingly fast and efficiently in real-time with these changes in mind. This is where **Memgraph DB** comes in handy. 
 
-One way to find such a path would be to run the following Cypher query:
+One way to find such a path would be to run the following query:
 
 ```
    MATCH p=(:City { name: "New York"})
@@ -159,7 +160,7 @@ The final query would look like this:
    RETURN nodes(p) as path, total_transmission_time;
 ```
 
-To get a visual representation of the path in Memgraph Lab, you would need to return the found path and exclude the variable `total_transmission_time`. The query should be:
+To get a visual representation of the path in **Memgraph Lab**, you would need to return the found path and exclude the variable `total_transmission_time`. The query should be:
 ```
    MATCH p=(:City { name: "New York"})
        -[*wShortest (e, n | e.transmission_time) total_transmission_time]-
@@ -176,4 +177,5 @@ The resulting graph should look like this:
 
 ## Memgraph and other Real-World Applications
 
-As we have shown in this example, Memgraph DB can be used to solve a complicated problem relatively easily and many other problems can be tackled similarly. Routing packets across mesh networks, supply chain analysis and [optimal route planning](https://memgraph.com/blog/how-to-build-a-route-planning-application-with-breadth-first-search-and-dijkstras-algorithm) are only a few of the numerous examples that are waiting to be explored with this technology. If you want to learn more about how Memgraph can help your business, please visit our website or feel free to contact us directly. 
+As we have shown in this example, **Memgraph DB** can be used to solve a complicated problem relatively easily and many other problems can be tackled similarly. Routing packets across mesh networks, supply chain analysis and [optimal route planning](https://memgraph.com/blog/how-to-build-a-route-planning-application-with-breadth-first-search-and-dijkstras-algorithm) are only a few of the numerous examples that are waiting to be explored with this technology. You can also try out [**Memgraph Cloud**](https://cloud.memgraph.com/login) for free and see if a graph database would be a good fit for your specific personal or business requirements.<br />
+Don't forget to visit the [**Starlink Simulator**](http://starlink.memgraph.com/) if you want to see the satellite network in action or [**Memgraph Lab**](https://lab.memgraph.com/) to play around with the live simulation data.
