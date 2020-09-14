@@ -1,16 +1,16 @@
 ---
-title: Low Latency Routing in the Starlink Satellite Network
-description: 
+title: Using Graph Databases for Low Latency Routing in the Starlink Satellite Network
+description: Using Memgraph DB to find optimal routes in satellite networks
 authors: Team Tolkien
 ---
 
-# Low Latency Routing in the Starlink Satellite Network
+# Using Graph Databases for Low Latency Routing in the Starlink Satellite Network
 ## Introduction
 Providing worldwide broadband internet is a popular problem **SpaceX** is currently pursuing with their **Starlink** project. The plan is to send thousands of satellites into Earth’s orbit which will provide thorough space coverage, as well as low latency transmission. 
 
-Low latency transmission is a key factor when trying to deliver high-speed internet access. It doesn’t depend solely on satellite laser performances, but also on the transmission route itself, which is supposed to be as short as possible. In other words, the shorter the path the laser beam needs to travel, the faster the internet connection.
+Low latency transmission is a key factor when trying to deliver high-speed internet access. It doesn’t depend solely on the data transfer rate, but also on the transmission route itself, which is supposed to be as short as possible. In other words, the shorter the path the data needs to travel, the faster the internet connection.
 
-Finding the shortest path between locations is a common problem tackled by graph theory, so the ideal approach to the transmission speed problem would be to use graph concepts and algorithms. 
+Finding the shortest path between locations is a common problem tackled by graph theory, so the ideal approach to the transmission routing problem would be to use graph concepts and algorithms. 
 
 In this post, we will explore how graph analytics and graph theory can be used to model the Starlink constellation and optimize transmission paths to ensure high-speed internet access almost anywhere on the planet. You can also visit our [**Starlink Simulator**](http://starlink.memgraph.com/) and see the results for yourself.
 <br /><br />
@@ -22,7 +22,7 @@ In this post, we will explore how graph analytics and graph theory can be used t
 ## What is *Starlink*?
 
 Starlink is a satellite constellation being built by SpaceX to provide satellite Internet access. The constellation will consist of thousands of mass-produced small satellites in low Earth orbit (LEO) (altitudes below 2000 km). The goal of the Starlink project is to provide satellite internet connectivity to underserved areas of the planet. The project started in 2015 and 597 satellites have been launched into orbit so far. By the end of the project, SpaceX wants to build a “shell“ around the Earth consisting of over 4,000 communication satellites which will use phased array antennas for communication with ground relays in combination with laser communication technology to provide **global low-latency high bandwidth coverage**.<br /><br />
-In the first phase, 1,584 satellites will be deployed at an altitude of 550 km and 2,825 satellites will be added in the second phase at three different altitudes to increase density and coverage to as far as 70° North/South. For our simulation, we used 480 satellites in 24 orbital planes at an altitude of around 550 km and an inclination of 70.0°. These parameters make our simulation much more visually understandable but also sometimes result with a lack of visible satellites above cities. In our simulation each satellite is connected to 4 more satellites. Two of them are in the same orbit and they are its closest neighbours. The other two satellites are located in neighbouring orbits and they are also its closest neighbours in the those orbits.
+In the first phase, 1,584 satellites will be deployed at an altitude of 550 km and 2,825 satellites will be added in the second phase at three different altitudes to increase density and coverage to as far as 70° North/South. For our simulation, we used 480 satellites in 24 orbital planes at an altitude of around 550 km and an inclination of 70.0°. These parameters make our simulation much more visually understandable but also result in a lack of visible satellites from time to time. In our simulation, each satellite is connected to 4 more satellites. Two of them are in the same orbit while the other two satellites are located in neighbouring orbits.
 <br /><br />
 <p align="center">
    <img src="https://github.com/g-despot/images/blob/master/satellite_connection.png?raw=true" alt="" width="500"/>
@@ -34,7 +34,7 @@ In the first phase, 1,584 satellites will be deployed at an altitude of 550 km a
 Compared to optical fibre, the transmission speed in space is around **1.47 times higher** than in glass optical cables. With the increased transmission speed, free-space laser link speeds could reach rates of 100 Gb/s or even higher. Even though it's hard to predict the network capacity, the most important aspect of transmission is latency. Latency doesn't seem as big of a problem on small distances, but it increases the further we travel through an optic cable. In theory, internet traffic via geostationary satellites has a latency of at least 477 ms. In practice, that number is closer to 600 ms. Being in lower orbits, Starlink satellites will offer more practical latencies of around 25 to 35 ms. The latency of light travelling through a cable is 49 ms per kilometre, compared to 33.3 ms per kilometre when it’s travelling through a vacuum. For example, the latency between New York and London via fiber optic is around 59 ms, while, in theory, it should be around 40 ms using Starlink.
 
 The exact latency using Starlink is still a mystery because it’s not publicly available information. We had to make some assumptions on our part to make the simulation more realistic. 
-We also approximate the signal processing time for satellites and ground transceivers, which are fixed and set to 10 and 12 ms respectivly. For example, a signal travelling from city A to city B via 2 satellites will result in 64 ms of processing time in total. The ground transceivers in both cities will contribute 12 ms of processing time each while the satellites will contribute 20 ms of processing time (10 ms to process the received signal and 10 ms for further transmission processing).
+We also approximate the signal processing time for satellites and ground transceivers, which are fixed and set to 10 and 12 ms respectively. For example, a signal travelling from city A to city B via 2 satellites will result in 64 ms of processing time in total. The ground transceivers in both cities will contribute 12 ms of processing time each while the satellites will contribute 20 ms of processing time (10 ms to process the received signal and 10 ms for further transmission processing).
 <br /><br />
 <p align="center">
    <img src="https://github.com/g-despot/images/blob/master/starlink_satellite.jpg?raw=true" alt="" width="500"/>
