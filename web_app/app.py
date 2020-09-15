@@ -3,6 +3,7 @@ import time
 import json
 import os
 import logging
+import sys
 from flask import Flask, render_template, request, jsonify, make_response
 from demo.database import Memgraph, connection
 from demo.data import db_operations, db_connection, OpticalPath
@@ -26,10 +27,15 @@ db = Memgraph()
 OPTICAL_FILE_PATH = os.getenv(
     'OPTICAL_FILE_PATH', 'resources/latencies.csv')
 
+def my_handler(type, value, tb):
+    logger.exception("Uncaught exception: {0}".format(str(value)))
+
 
 @app.route('/')
 def index() -> Any:
 
+    sys.excepthook = my_handler
+    
     json_satellites = []
     json_relationships = []
 
