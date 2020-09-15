@@ -4,7 +4,6 @@ import json
 import os
 import logging
 from flask import Flask, render_template, request, jsonify, make_response
-from flask_caching import Cache
 from demo.database import Memgraph, connection
 from demo.data import db_operations, db_connection, OpticalPath
 from pathlib import Path
@@ -15,15 +14,12 @@ logging.basicConfig(format='%(asctime)-15s [%(levelname)s]: %(message)s')
 logger = logging.getLogger('web')
 logger.setLevel(logging.INFO)
 
+werkzeug_logger = logging.getLogger('werkzeug')
+werkzeug_logger.setLevel(logging.ERROR)
+
 _here = Path(__file__)
 
 app = Flask(__name__)
-app.config.update(
-
-    SECRET_KEY=os.urandom(24),
-    SESSION_COOKIE_SECURE=True,
-    SESSION_COOKIE_NAME='StarlinkDemo-WebSession'
-)
 
 db = Memgraph()
 
