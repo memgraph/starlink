@@ -1,0 +1,159 @@
+#!/bin/bash
+set -euo pipefail
+
+AWS_ACCOUNT=314751168214
+AWS_REGION=eu-west-1
+AWS_ECR_URL="$AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com"
+
+AWS_ECS_SERVICE=demo-starlink
+
+AWS_WEB_ECR=memgraph/demo-starlink-web
+AWS_WEB_DOCKERFILE=web_app
+
+AWS_SIMULATOR_ECR=memgraph/demo-starlink-simulator
+AWS_SIMULATOR_DOCKERFILE=simulator
+
+AWS_ECS_SERVICE_TAG_PRODUCTION=master
+AWS_ECS_CLUSTER_PRODUCTION=production
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+function print_help () {
+  echo "Usage: $0 ENVIRONMENT"
+  echo -e "Build and Deploy Starlink demo application.\n"
+  echo "Required argument ENVIRONMENT:"
+  echo -e "  production\tDeploy on production"
+  echo -e "  staging   \tDeploy on staging"
+  echo "Optional arguments:"
+  echo -e "  -h\t\tDisplay this help and exit"
+  echo ""
+}
+
+function build () {
+  IMAGE_NAME=$1
+  DOCKERFILE_PATH=$2
+
+  echo "[Docker]: Building project $IMAGE_NAME..."
+  docker build -t "${IMAGE_NAME}" "${DOCKERFILE_PATH}"
+}
+
+function aws_login () {
+  if [ -z ${AWS_PROFILE:-} ]; then 
+    AWS_PROFILE=default
+    echo "[Config]: AWS_PROFILE not set. Setting to value 'default'"
+  fi
+
+  echo "[Config]: Set AWS_REGION=$AWS_REGION"
+  aws configure set region $AWS_REGION
+
+  echo "[AWS]: Logging in to ECR Repository with profile $AWS_PROFILE..."
+  $(aws ecr get-login --no-include-email --profile $AWS_PROFILE)
+}
+
+function aws_push () {
+  IMAGE_NAME=$1
+
+  AWS_ECR_IMAGE_BRANCH="$AWS_ECR_URL/$IMAGE_NAME:$GIT_BRANCH"
+  AWS_ECR_IMAGE_COMMIT="$AWS_ECR_URL/$IMAGE_NAME:$GIT_COMMIT"
+
+  echo "[Docker]: Tagging image $IMAGE_NAME with remote tag $AWS_ECR_IMAGE_BRANCH"
+  docker tag $IMAGE_NAME $AWS_ECR_IMAGE_BRANCH
+  echo "[AWS]: Pushing image $AWS_ECR_IMAGE_BRANCH to ECR Repository"
+  docker push $AWS_ECR_IMAGE_BRANCH
+
+  echo "[Docker]: Tagging image $IMAGE_NAME with remote tag $AWS_ECR_IMAGE_COMMIT"
+  docker tag $IMAGE_NAME $AWS_ECR_IMAGE_COMMIT
+  echo "[AWS]: Pushing image $AWS_ECR_IMAGE_COMMIT to ECR Repository"
+  docker push $AWS_ECR_IMAGE_COMMIT
+
+  while true; do
+    echo "[AWS]: Waiting for docker image confirmation from ECR..."
+    sleep 2
+    JSON_RES=$(aws ecr describe-images \
+      --repository-name ${IMAGE_NAME} \
+      --image-ids imageTag=${GIT_BRANCH} || echo '{}')
+    if [[ $JSON_RES == *${GIT_BRANCH}* ]]; then
+      echo "[AWS]: Docker image is available on ECR!"
+      break
+    fi
+  done
+}
+
+function git_check () {
+  EXPECTED_GIT_BRANCH=$1
+
+  if [ -z ${GIT_BRANCH:-} ]; then 
+    GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    echo "[Config]: GIT_BRANCH not set. Setting to value '${GIT_BRANCH}'"
+  else
+    echo "[Config]: GIT_BRANCH already set to value '${GIT_BRANCH}'"
+  fi
+
+  GIT_COMMIT=$(git rev-parse HEAD)
+  echo "[Config]: GIT_BRANCH=$GIT_BRANCH"
+  echo "[Config]: GIT_COMMIT=$GIT_COMMIT"
+
+  if [ ${GIT_BRANCH} != ${EXPECTED_GIT_BRANCH} ]; then
+    echo -e "\n[AWS] Warning: Deploy is skipped because branch '${GIT_BRANCH}' is not equal to branch '${EXPECTED_GIT_BRANCH}'"
+    echo "               Run deploy in two ways:"
+    echo "               1) Apply changes to branch '${EXPECTED_GIT_BRANCH}' and deploy from it"
+    echo "               1) Set env var GIT_BRANCH=${EXPECTED_GIT_BRANCH} and run deploy script from custom branch"
+    echo ""
+    exit 1
+  fi
+}
+
+function aws_deploy () {
+  AWS_ECS_CLUSTER=$1
+
+  echo "[AWS]: Deploying service $AWS_ECS_SERVICE in cluster $AWS_ECS_CLUSTER..."
+  JSON_RES=$(aws ecs update-service \
+    --cluster $AWS_ECS_CLUSTER \
+    --service $AWS_ECS_SERVICE \
+    --force-new-deployment)
+
+  CONT_STABLE_EVENT_COUNT=0
+
+  for _ in {1..150}; do
+    sleep 2
+    LAST_LIVE_EVENT=$(aws ecs describe-services --services $AWS_ECS_SERVICE --cluster $AWS_ECS_CLUSTER | jq .services[].events[0].message -r)
+    echo "[AWS]: ECS event: $LAST_LIVE_EVENT"
+    if [[ $LAST_LIVE_EVENT == *'has reached a steady state'* ]]; then
+      echo "[AWS]: Service ${AWS_ECS_SERVICE} is stable and running"
+      CONT_STABLE_EVENT_COUNT=$(( $CONT_STABLE_EVENT_COUNT + 1 ))
+      if [[ $CONT_STABLE_EVENT_COUNT -gt 4 ]]; then
+        break
+      fi
+    else
+      CONT_STABLE_EVENT_COUNT=0
+    fi
+  done
+}
+
+if test "$#" -ne 1; then
+    # Illegal number of parameters
+    print_help
+    exit 1
+else
+    case "$1" in
+      -h)
+          print_help
+          exit 0
+      ;;
+      production)
+          git_check "${AWS_ECS_SERVICE_TAG_PRODUCTION}"
+          build "${AWS_WEB_ECR}" "${AWS_WEB_DOCKERFILE}"
+          build "${AWS_SIMULATOR_ECR}" "${AWS_SIMULATOR_DOCKERFILE}"
+          aws_login
+          aws_push "${AWS_WEB_ECR}"
+          aws_push "${AWS_SIMULATOR_ECR}"
+          aws_deploy "${AWS_ECS_CLUSTER_PRODUCTION}"
+          exit 0
+      ;;
+      *)
+          # Unknown option
+          print_help
+          exit 1
+      ;;
+    esac
+fi
