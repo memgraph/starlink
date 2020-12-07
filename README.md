@@ -25,13 +25,13 @@ First, position yourself in the root folder of the project. Build the Docker ima
 docker-compose build
 docker-compose up
 ```
-If everything was succesful you can open it in you browser. The app will be listening on: http://localhost:5000/. 
+If everything was successful you can open it in your browser. The app will be listening on: http://localhost:5000/. 
 
 ## Project structure
 
 The app is divided into three separate modules:
 * **memgraph** - the database where all the positions of satellites and cities are stored and updated. 
-* **simulator** - a Python programm that utilizes the Skyfield package to calculate satellite positions in orbit. Those positins are then stored in the Memgraph database.
+* **simulator** - a Python program that utilizes the Skyfield package to calculate satellite positions in orbit. Those positions are then stored in the Memgraph database.
 * **web_app** - a client-server app that fetches data from the database and renders it.
 
 ## Technologies used
