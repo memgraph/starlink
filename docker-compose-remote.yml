@@ -1,11 +1,11 @@
-#For running and connectiong to a local Memgraph DB instance
+#For connectiong to a remote Memgraph DB instance
 
 version: '3'
 services:
-  memgraph:
-    image: "memgraph"
-    ports:
-      - "7687:7687"
+#  memgraph:
+#    image: "memgraph"
+#    ports:
+#      - "7687:7687"
   simulator:
     build: ./simulator
     volumes:
@@ -13,8 +13,10 @@ services:
     ports:
       - "3000:3000"
     environment:
-      MG_HOST: memgraph
-      MG_PORT: 7687
+      MG_HOST: "34.248.115.177"
+      MG_PORT: 9000
+      MG_USERNAME: "userWrite"
+      MG_PASSWORD: "starwriteitlink91$$2"
       TLE_FILE_PATH: "imports/tle_3"
       CITIES_FILE_PATH: "imports/cities.csv"
       DB_UPDATE_TIME: 0
@@ -24,9 +26,9 @@ services:
       RELAY_PROCESSING_DELAY: 0.012 
       VIEW_ANGLE: 70
     command: python main.py start
-    command: /wait-for-it.sh memgraph:7687 -- python main.py start
-    depends_on:
-      - memgraph
+#    command: /wait-for-it.sh memgraph:7687 -- python main.py start
+#    depends_on:
+#      - memgraph
   web:
     build: ./web_app
     volumes:
@@ -34,8 +36,10 @@ services:
     ports:
       - "5000:5000"
     environment:
-      MG_HOST: memgraph
-      MG_PORT: 7687
+      MG_HOST: "34.248.115.177"
+      MG_PORT: 9000
+      MG_USERNAME: "userReadonly"
+      MG_PASSWORD: "starlinkreadit"
       OPTICAL_FILE_PATH: "resources/latencies.csv"
     depends_on:
       - simulator

@@ -96,6 +96,7 @@ def get_data() -> Any:
     satellites = db_connection.transform_satellites(results["satellites"])
     relationships = db_connection.transform_relationships(
         results["relationships"])
+
     shortest_path = db_connection.transform_shortest_path(
         results["shortest_path"])
 

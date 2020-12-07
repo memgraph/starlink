@@ -191,6 +191,14 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "1.9.0"
 
 [[package]]
+category = "main"
+description = "Memgraph database adapter for Python language"
+name = "pymgclient"
+optional = false
+python-versions = ">=3.5"
+version = "0.1.0"
+
+[[package]]
 category = "dev"
 description = "Python parsing module"
 name = "pyparsing"
@@ -274,7 +282,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "93a77480a4e46bef1bbc6ac2550e0c950a3d1420cd8c9561901459bd4f72a293"
+content-hash = "e4f3d003b4d1ae710d1ad6eaf8171fd27774711423a5487f6c2caf4f55e4f1df"
 lock-version = "1.0"
 python-versions = "^3.7"
 
@@ -374,6 +382,9 @@ pluggy = [
 py = [
     {file = "py-1.9.0-py2.py3-none-any.whl", hash = "sha256:366389d1db726cd2fcfc79732e75410e5fe4d31db13692115529d34069a043c2"},
     {file = "py-1.9.0.tar.gz", hash = "sha256:9ca6883ce56b4e8da7e79ac18787889fa5206c79dcc67fb065376cd2fe03f342"},
+]
+pymgclient = [
+    {file = "pymgclient-0.1.0.tar.gz", hash = "sha256:b881252d76c82329421a19bc3140016fb4bf4ce13740b68eae98e53c4598535e"},
 ]
 pyparsing = [
     {file = "pyparsing-2.4.7-py2.py3-none-any.whl", hash = "sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b"},

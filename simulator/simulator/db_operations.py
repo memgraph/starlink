@@ -2,6 +2,11 @@ from simulator.database import Memgraph
 from typing import List, Dict, Any
 
 
+def clear(db: Memgraph) -> None:
+    command = "MATCH (node) DETACH DELETE node"
+    db.execute_query(command)
+
+
 def create_laser_command(moving_object_id: int,
                          laser_id: int,
                          laser_transmission_time: float):
@@ -18,11 +23,11 @@ def update_laser_command(moving_object_id: int,
     return command
 
 
-def create_data(tx: Any, arguments: Dict[str, Any]) -> None:
+def create_data(cursor: Any, arguments: Dict[str, Any]) -> None:
     moving_objects_dict_by_id = arguments["moving_objects_dict_by_id"]
     cities = arguments["cities"]
 
-    tx.run("BEGIN")
+    execute_transaction_query(cursor, "BEGIN")
 
     for moving_object_id in moving_objects_dict_by_id.keys():
         moving_object = moving_objects_dict_by_id[moving_object_id]
@@ -31,62 +36,62 @@ def create_data(tx: Any, arguments: Dict[str, Any]) -> None:
                                     x: {moving_object.x},\
                                     y: {moving_object.y},\
                                     z: {moving_object.z}}})')
-        tx.run(command)
+        execute_transaction_query(cursor, command)
 
     for city in cities:
         command = (
             f'CREATE(n: City {{id: "{city.id}",\
-                               name: " {city.name}",\
+                               name: "{city.name}",\
                                x: {city.x},\
                                y: {city.y}}})')
-        tx.run(command)
+        execute_transaction_query(cursor, command)
 
     for city in cities:
         for key in city.moving_objects_tt_dict:
             command = (
                 f'MATCH (a:City {{ id:" {city.id} "}}), (b:Satellite) WHERE b.id = "{key}" \
                   CREATE (b)-[r:VISIBLE_FROM {{ transmission_time: {city.moving_objects_tt_dict[key]} }}]->(a)')
-            tx.run(command)
+            execute_transaction_query(cursor, command)
 
     for moving_object_id in moving_objects_dict_by_id.keys():
         moving_object = moving_objects_dict_by_id[moving_object_id]
 
         command = create_laser_command(
             moving_object.id, moving_object.laser_left_id, moving_object.laser_left_transmission_time)
-        tx.run(command)
+        execute_transaction_query(cursor, command)
 
         command = create_laser_command(
             moving_object.id, moving_object.laser_right_id, moving_object.laser_right_transmission_time)
-        tx.run(command)
+        execute_transaction_query(cursor, command)
 
         command = create_laser_command(
             moving_object.id, moving_object.laser_up_id, moving_object.laser_up_transmission_time)
-        tx.run(command)
+        execute_transaction_query(cursor, command)
 
         command = create_laser_command(
             moving_object.id, moving_object.laser_down_id, moving_object.laser_down_transmission_time)
-        tx.run(command)
+        execute_transaction_query(cursor, command)
 
-    tx.run("COMMIT")
+    execute_transaction_query(cursor, "COMMIT")
     return {}
 
 
-def update_data(tx: Any, arguments: Dict[str, Any]) -> None:
+def update_data(cursor: Any, arguments: Dict[str, Any]) -> None:
     moving_objects_dict_by_id = arguments["moving_objects_dict_by_id"]
     cities = arguments["cities"]
 
-    tx.run("BEGIN")
-
+    execute_transaction_query(cursor, "BEGIN")
+    
     for city in cities:
         command = (
             f'MATCH (b:Satellite)-[r]->(a:City {{id: "{city.id}"}}) DELETE r')
-        tx.run(command)
+        execute_transaction_query(cursor, command)
 
         for key in city.moving_objects_tt_dict:
             command = (
                 f'MATCH (a:City {{ id: "{city.id}"}}),(b:Satellite) WHERE b.id = "{key}" \
                   CREATE (b)-[r:VISIBLE_FROM {{ transmission_time: {city.moving_objects_tt_dict[key]} }}]->(a)')
-            tx.run(command)
+            execute_transaction_query(cursor, command)
 
     for moving_object_id in moving_objects_dict_by_id.keys():
         moving_object = moving_objects_dict_by_id[moving_object_id]
@@ -95,28 +100,28 @@ def update_data(tx: Any, arguments: Dict[str, Any]) -> None:
               SET a.x = {moving_object.x},\
                   a.y = {moving_object.y},\
                   a.z = {moving_object.z}')
-        tx.run(command)
+        execute_transaction_query(cursor, command)
 
         command = update_laser_command(
             moving_object.id, moving_object.laser_left_id, moving_object.laser_left_transmission_time)
-        tx.run(command)
+        execute_transaction_query(cursor, command)
 
         command = update_laser_command(
             moving_object.id, moving_object.laser_right_id, moving_object.laser_right_transmission_time)
-        tx.run(command)
+        execute_transaction_query(cursor, command)
 
         command = update_laser_command(
             moving_object.id, moving_object.laser_up_id, moving_object.laser_up_transmission_time)
-        tx.run(command)
+        execute_transaction_query(cursor, command)
 
         command = update_laser_command(
             moving_object.id, moving_object.laser_down_id, moving_object.laser_down_transmission_time)
-        tx.run(command)
+        execute_transaction_query(cursor, command)
 
-    tx.run("COMMIT")
+    execute_transaction_query(cursor, "COMMIT")
     return {}
 
 
-def clear(db: Memgraph) -> None:
-    command = "MATCH (node) DETACH DELETE node"
-    db.execute_query(command)
+def execute_transaction_query(cursor: Any, query: str) -> None:
+    cursor.execute(query)
+    cursor.fetchall()

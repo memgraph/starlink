@@ -31,8 +31,8 @@ def transform_relationships(relationships: Any) -> List[Relationship]:
         r = rel['r']
         s1 = rel['s1']
         s2 = rel['s2']
-        rel_obj = Relationship(s1.properties['x'], s1.properties['y'], s1.properties['z'],
-                               s2.properties['x'], s2.properties['y'], s2.properties['z'],
+        rel_obj = Relationship(s1.properties['x'], s1.properties['y'],
+                               s2.properties['x'], s2.properties['y'],
                                r.properties['transmission_time'])
         relations.append(rel_obj)
     return relations
@@ -43,11 +43,14 @@ def transform_shortest_path(shortest_path: Any) -> List[Relationship]:
     sp_list = list(shortest_path)
     if(sp_list == []):
         return 0
+
     sp_relationships = sp_list[0]['rs']
-    for r in sp_relationships:
-        sp_rel = Relationship(r.nodes[0]['x'], r.nodes[0]['y'], r.nodes[0]['z'],
-                              r.nodes[1]['x'], r.nodes[1]['y'], r.nodes[1]['z'],
-                              r['transmission_time'])
+    sp_nodes = sp_list[0]['nodes(p)']
+
+    for i in range(0, len(sp_nodes)-1):
+        sp_rel = Relationship(sp_nodes[i].properties['x'], sp_nodes[i].properties['y'],
+                              sp_nodes[i+1].properties['x'], sp_nodes[i+1].properties['y'],
+                              sp_relationships[i].properties['transmission_time'])
         shortest_path_list.append(sp_rel)
     return shortest_path_list
 
