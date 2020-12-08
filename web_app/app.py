@@ -49,6 +49,8 @@ def my_handler(type, value, tb):
 
 @app.route('/')
 def index() -> Any:
+    start_time = time.time()
+
     cities = []
     satellites = []
     relationships = []
@@ -88,6 +90,8 @@ def index() -> Any:
     json_relationships = db_connection.relationship_json_format(relationships)
     json_optical_paths = db_connection.optical_paths_json_format(optical_paths)
 
+    logger.info(f'Initial HTTP Request processed in {time.time() - start_time} seconds.')
+
     return render_template("demo.html", data={"city_markers": json_cities,
                                               "sat_markers": json_satellites,
                                               "rel_markers": json_relationships,
@@ -96,6 +100,8 @@ def index() -> Any:
 
 @app.route('/json_satellites_and_relationships', methods=["GET"])
 def get_data() -> Any:
+    start_time = time.time()
+
     satellites = []
     relationships = []
     shortest_path = []
@@ -129,6 +135,8 @@ def get_data() -> Any:
             db_connection.shortest_path_json_format(shortest_path))
 
     #json_relationships = r.get('relationships')
+
+    logger.info(f'HTTP Request processed in {time.time() - start_time} seconds.')
 
     return {"json_satellites": json_satellites,
             "json_relationships": json_relationships,

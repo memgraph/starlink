@@ -1,4 +1,4 @@
-from simulator.database import Memgraph, connection
+from simulator.database import Memgraph
 from simulator.models import City, Orbit
 from simulator import orbital_mechanics_utils
 from simulator import db_operations
@@ -24,7 +24,7 @@ def run() -> None:
 
     db = Memgraph()
     db_operations.clear(db)
-    
+
     db.execute_query("CREATE INDEX ON :City (id)")
     db.execute_query("CREATE INDEX ON :Satellite (id)")
 
@@ -40,7 +40,7 @@ def run() -> None:
     Orbit.update_orbits(
         ObjectsAndOrbits.orbits_dict_by_id, ObjectsAndOrbits.moving_objects_dict_by_id)
 
-    db.execute_transaction(connection.WRITE_TRANSACTION, db_operations.create_data,
+    db.execute_transaction(db_operations.create_data,
                            {"moving_objects_dict_by_id": ObjectsAndOrbits.moving_objects_dict_by_id,
                             "cities": cities})
 
@@ -49,7 +49,7 @@ def run() -> None:
                             ObjectsAndOrbits.moving_objects_dict_by_id)
         City.update_cities(cities, ObjectsAndOrbits.moving_objects_dict_by_id)
 
-        db.execute_transaction(connection.WRITE_TRANSACTION, db_operations.update_data,
+        db.execute_transaction(db_operations.update_data,
                                {"moving_objects_dict_by_id": ObjectsAndOrbits.moving_objects_dict_by_id,
                                 "cities": cities})
         time.sleep(DB_UPDATE_TIME)
