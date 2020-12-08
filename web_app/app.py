@@ -3,10 +3,10 @@ import json
 import os
 import logging
 import sys
-import redis
+#import redis
 from flask import Flask, render_template, request, jsonify, make_response
 from flask_compress import Compress
-from demo.database import Memgraph, connection
+from demo.database import Memgraph
 from demo.data import db_operations, db_connection, OpticalPath
 from pathlib import Path
 from typing import Any, List
@@ -40,11 +40,11 @@ def my_handler(type, value, tb):
     logger.exception("Uncaught exception: {0}".format(str(value)))
 
 
-REDIS_HOST = os.getenv('REDIS_HOST', '172.18.0.2')
-REDIS_PORT = int(os.getenv('REDIS_PORT', '6379'))
+#REDIS_HOST = os.getenv('REDIS_HOST', '172.18.0.2')
+#REDIS_PORT = int(os.getenv('REDIS_PORT', '6379'))
 
-r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT,
-                      charset="utf-8", decode_responses=True)
+# r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT,
+#                      charset="utf-8", decode_responses=True)
 
 
 @app.route('/')
@@ -70,14 +70,12 @@ def index() -> Any:
     optical_paths = OpticalPath.import_optical_paths(optical_path)
 
     results = db.execute_transaction(
-        transaction_type=connection.READ_TRANSACTION,
         func=db_operations.import_sats_and_rels,
         arguments={})
 
     while len(results["satellites"]) == 0 or len(results["relationships"]) == 0:
         time.sleep(1)
         results = db.execute_transaction(
-            transaction_type=connection.READ_TRANSACTION,
             func=db_operations.import_sats_and_rels,
             arguments={})
 
@@ -99,33 +97,39 @@ def index() -> Any:
 @app.route('/json_satellites_and_relationships', methods=["GET"])
 def get_data() -> Any:
     satellites = []
+    relationships = []
     shortest_path = []
-    json_relationships = []
+
     json_satellites = []
+    json_relationships = []
+    json_shortest_path = []
 
     results = {"satellites": [], "relationships": [], "shortest_path": []}
 
-    while len(results["satellites"]) == 0 or len(results["shortest_path"]) == 0:
+    while len(results["satellites"]) == 0 or len(results["shortest_path"]) == 0 or len(results["relationships"]) == 0:
         results = db.execute_transaction(
-            transaction_type=connection.READ_TRANSACTION,
             func=db_operations.import_data,
             arguments={"city_one": request.args.get('cityOne'),
                        "city_two": request.args.get('cityTwo')})
-    
-    satellites = db_connection.transform_satellites(results["satellites"])
 
+    satellites = db_connection.transform_satellites(results["satellites"])
+    relationships = db_connection.transform_relationships(
+        results["relationships"])
     shortest_path = db_connection.transform_shortest_path(
         results["shortest_path"])
 
     json_satellites = json.dumps(
         db_connection.satellite_json_format(satellites))
 
+    json_relationships = json.dumps(
+        db_connection.relationship_json_format(relationships))
+
     if (shortest_path != 0):
         json_shortest_path = json.dumps(
             db_connection.shortest_path_json_format(shortest_path))
 
-    json_relationships = r.get('relationships')
-    
+    #json_relationships = r.get('relationships')
+
     return {"json_satellites": json_satellites,
             "json_relationships": json_relationships,
             "json_shortest_path": json_shortest_path}

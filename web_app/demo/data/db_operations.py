@@ -37,6 +37,9 @@ def import_data(cursor: Any, arguments: Dict[str, Any]) -> Dict[str, Any]:
         arguments["city_two"]) + "'}) WHERE ALL(x IN nodes(p)[1..-1] WHERE (x:Satellite))  RETURN p, nodes(p), rs;"
     results["shortest_path"] = execute_transaction_query_and_fetch(cursor, command)
     
+    command = "MATCH (s1:Satellite)-[r]-(s2:Satellite) RETURN r, s1, s2;"
+    results["relationships"] = execute_transaction_query_and_fetch(cursor, command)
+    
     execute_transaction_query(cursor, "COMMIT")
     return results
 
