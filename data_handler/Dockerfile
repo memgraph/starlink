@@ -14,6 +14,8 @@ RUN pip install -U pip \
     && curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 ENV PATH="${PATH}:/root/.poetry/bin"
 
+RUN pip install pympler
+
 # Install mgclient
 RUN git clone https://github.com/memgraph/mgclient.git /mgclient && \
     cd mgclient && \
@@ -24,24 +26,8 @@ RUN git clone https://github.com/memgraph/mgclient.git /mgclient && \
     make && \
     make install
 
-# Install dos2unix
-RUN apt-get update && \
-    apt-get install -y dos2unix
-
-RUN pip install --user flask-compress
-
 WORKDIR /app
 COPY poetry.lock pyproject.toml /app/
 
 RUN poetry config virtualenvs.create false && \
     poetry install --no-interaction --no-ansi
-
-COPY . /app
-EXPOSE 5000
-
-ADD start.sh /
-RUN chmod +x /start.sh
-RUN dos2unix /start.sh
-
-ENTRYPOINT [ "poetry", "run" ]
-CMD ["/start.sh"]

@@ -24,6 +24,9 @@ def run() -> None:
 
     db = Memgraph()
     db_operations.clear(db)
+    
+    db.execute_query("CREATE INDEX ON :City (id)")
+    db.execute_query("CREATE INDEX ON :Satellite (id)")
 
     tle_path = _here.parent.joinpath(TLE_FILE_PATH)
     ObjectsAndOrbits = orbital_mechanics_utils.generate_orbits_and_moving_objects(

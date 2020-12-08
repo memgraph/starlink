@@ -1,14 +1,11 @@
 [tool.poetry]
-name = "web_app"
+name = "data_handler"
 version = "0.1.0"
 description = ""
-authors = [""]
+authors = []
 
 [tool.poetry.dependencies]
 python = "^3.7"
-neo4j = "^1.7.4"
-flask = "^1.1.2"
-Flask-Caching = "^1.9.0"
 pymgclient = "^0.1.0"
 redis = "^3.5.3"
 

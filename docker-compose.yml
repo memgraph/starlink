@@ -5,13 +5,36 @@ services:
   memgraph:
     image: "memgraph"
     ports:
-      - "7687:7687"
+      - '7687:7687'
+  redis:
+    image: "redis"
+    ports:
+        - 6379:6379
+    volumes:
+        - ./redis/redis.conf:/redis.conf
+    command: [ "redis-server", "/redis.conf" ]
+  data_handler:
+    build:
+      context: ./data_handler
+    volumes: 
+      - ./data_handler:/app
+    environment:
+      MG_HOST: memgraph
+      MG_PORT: 7687
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_PASSWORD: ""
+      DB_FETCH_TIME: "0.1"
+    command: python data_handler.py
+    depends_on:
+      - redis
+      - memgraph
   simulator:
     build: ./simulator
     volumes:
       - ./simulator:/app
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       MG_HOST: memgraph
       MG_PORT: 7687
@@ -32,10 +55,14 @@ services:
     volumes:
       - ./web_app:/app
     ports:
-      - "5000:5000"
+      - '5000:5000'
     environment:
       MG_HOST: memgraph
       MG_PORT: 7687
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_PASSWORD: ""
       OPTICAL_FILE_PATH: "resources/latencies.csv"
     depends_on:
+      - redis
       - simulator

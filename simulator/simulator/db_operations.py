@@ -1,5 +1,6 @@
 from simulator.database import Memgraph
-from typing import List, Dict, Any
+from simulator.database.connection import _convert_memgraph_value 
+from typing import List, Dict, Any, Iterator
 
 
 def clear(db: Memgraph) -> None:
@@ -123,5 +124,24 @@ def update_data(cursor: Any, arguments: Dict[str, Any]) -> None:
 
 
 def execute_transaction_query(cursor: Any, query: str) -> None:
-    cursor.execute(query)
-    cursor.fetchall()
+    try:
+        cursor.execute(query)
+        cursor.fetchall()
+    except:
+        print("Something went wrong with the transaction read query")
+
+
+def execute_transaction_query_and_fetch(cursor: Any, query: str) -> Iterator[Dict[str, Any]]:
+        output = []
+        try:
+            cursor.execute(query)
+            while True:
+                row = cursor.fetchone()
+                if row is None:
+                    break
+                output.append({
+                            dsc.name: _convert_memgraph_value(row[index])
+                            for index, dsc in enumerate(cursor.description)})
+        except:
+            print("Something went wrong with the transaction write query")
+        return output
