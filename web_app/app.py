@@ -15,7 +15,7 @@ from typing import Any, List
 COMPRESS_MIMETYPES = ['text/html', 'text/css', 'text/xml',
                       'application/json', 'application/javascript']
 COMPRESS_LEVEL = 6
-COMPRESS_MIN_SIZE = 500
+COMPRESS_MIN_SIZE = 300
 
 logging.basicConfig(format='%(asctime)-15s [%(levelname)s]: %(message)s')
 logger = logging.getLogger('web')
@@ -40,20 +40,11 @@ def my_handler(type, value, tb):
     logger.exception("Uncaught exception: {0}".format(str(value)))
 
 
-#REDIS_HOST = os.getenv('REDIS_HOST', '172.18.0.2')
-#REDIS_PORT = int(os.getenv('REDIS_PORT', '6379'))
-
-# r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT,
-#                      charset="utf-8", decode_responses=True)
-
-
 @app.route('/')
 def index() -> Any:
     start_time = time.time()
 
     cities = []
-    satellites = []
-    relationships = []
     optical_paths = []
 
     json_cities = []
@@ -61,7 +52,7 @@ def index() -> Any:
     json_relationships = []
     json_optical_paths = []
 
-    results = {"satellites": [], "relationships": [], "shortest_path": []}
+    results = {"relationships": [], "shortest_path": []}
 
     sys.excepthook = my_handler
 
@@ -75,22 +66,18 @@ def index() -> Any:
         func=db_operations.import_sats_and_rels,
         arguments={})
 
-    while len(results["satellites"]) == 0 or len(results["relationships"]) == 0:
-        time.sleep(1)
+    while len(results["relationships"]) == 0:
+        time.sleep(0.1)
         results = db.execute_transaction(
             func=db_operations.import_sats_and_rels,
             arguments={})
 
-    satellites = db_connection.transform_satellites(results["satellites"])
-    relationships = db_connection.transform_relationships(
-        results["relationships"])
-
     json_cities = db_connection.city_json_format(cities)
-    json_satellites = db_connection.satellite_json_format(satellites)
-    json_relationships = db_connection.relationship_json_format(relationships)
     json_optical_paths = db_connection.optical_paths_json_format(optical_paths)
+    json_relationships, json_satellites = db_connection.json_relationships_satellites(results["relationships"])
 
-    logger.info(f'Initial HTTP Request processed in {time.time() - start_time} seconds.')
+    logger.info(
+        f'Initial HTTP Request processed in {time.time() - start_time} seconds.')
 
     return render_template("demo.html", data={"city_markers": json_cities,
                                               "sat_markers": json_satellites,
@@ -102,41 +89,24 @@ def index() -> Any:
 def get_data() -> Any:
     start_time = time.time()
 
-    satellites = []
-    relationships = []
-    shortest_path = []
-
     json_satellites = []
     json_relationships = []
     json_shortest_path = []
 
-    results = {"satellites": [], "relationships": [], "shortest_path": []}
+    results = {"relationships": [], "shortest_path": []}
 
-    while len(results["satellites"]) == 0 or len(results["shortest_path"]) == 0 or len(results["relationships"]) == 0:
+    while len(results["shortest_path"]) == 0 or len(results["relationships"]) == 0:
+        time.sleep(0.1)
         results = db.execute_transaction(
             func=db_operations.import_data,
             arguments={"city_one": request.args.get('cityOne'),
                        "city_two": request.args.get('cityTwo')})
 
-    satellites = db_connection.transform_satellites(results["satellites"])
-    relationships = db_connection.transform_relationships(
-        results["relationships"])
-    shortest_path = db_connection.transform_shortest_path(
-        results["shortest_path"])
-
-    json_satellites = json.dumps(
-        db_connection.satellite_json_format(satellites))
-
-    json_relationships = json.dumps(
-        db_connection.relationship_json_format(relationships))
-
-    if (shortest_path != 0):
-        json_shortest_path = json.dumps(
-            db_connection.shortest_path_json_format(shortest_path))
-
-    #json_relationships = r.get('relationships')
-
-    logger.info(f'HTTP Request processed in {time.time() - start_time} seconds.')
+    json_relationships, json_satellites = db_connection.json_relationships_satellites(results["relationships"])
+    json_shortest_path = db_connection.json_shortest_path(results["shortest_path"])
+    
+    logger.info(
+        f'HTTP Request processed in {time.time() - start_time} seconds.')
 
     return {"json_satellites": json_satellites,
             "json_relationships": json_relationships,

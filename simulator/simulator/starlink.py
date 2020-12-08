@@ -17,7 +17,7 @@ time_of_simulation = ts.utc(2020, 7, 29, 0, minutes)
 
 TLE_FILE_PATH = os.getenv('TLE_FILE_PATH', 'imports/tle_1')
 CITIES_FILE_PATH = os.getenv('CITIES_FILE_PATH', 'imports/cities.csv')
-DB_UPDATE_TIME = int(os.getenv('DB_UPDATE_TIME', 0))
+DB_UPDATE_TIME = float(os.getenv('DB_UPDATE_TIME', 0.1))
 
 
 def run() -> None:

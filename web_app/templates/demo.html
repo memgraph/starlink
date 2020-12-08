@@ -125,8 +125,8 @@
         });
 
         const cities = JSON.parse('{{data.city_markers|tojson}}');
-        let sat_markers = JSON.parse('{{data.sat_markers|tojson}}');
-        let rel_markers = JSON.parse('{{data.rel_markers|tojson}}');
+        let sat_markers = JSON.parse('{{data.sat_markers}}');
+        let rel_markers = JSON.parse('{{data.rel_markers}}');
         let opticalPaths = JSON.parse('{{data.op_markers|tojson}}');
 
         createMap();

@@ -19,7 +19,7 @@ services:
       MG_PASSWORD: "starwriteitlink91$$2"
       TLE_FILE_PATH: "imports/tle_3"
       CITIES_FILE_PATH: "imports/cities.csv"
-      DB_UPDATE_TIME: 0
+      DB_UPDATE_TIME: 0.2
       EDGE_ORBITS_CONNECTED: 'false'
       ORBIT_ENDS_CONNECTED: 'false'
       SAT_PROCESSING_DELAY: 0.010
