@@ -3,7 +3,7 @@ import json
 import os
 import logging
 import sys
-#import redis
+import redis
 from flask import Flask, render_template, request, jsonify, make_response
 from flask_compress import Compress
 from demo.database import Memgraph
@@ -39,6 +39,11 @@ optical_path = _here.parent.joinpath(OPTICAL_FILE_PATH)
 def my_handler(type, value, tb):
     logger.exception("Uncaught exception: {0}".format(str(value)))
 
+REDIS_HOST = os.getenv('REDIS_HOST', '172.18.0.2')
+REDIS_PORT = int(os.getenv('REDIS_PORT', '6379'))
+
+r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT,
+                      charset="utf-8", decode_responses=True)
 
 @app.route('/')
 def index() -> Any:
@@ -102,7 +107,9 @@ def get_data() -> Any:
             arguments={"city_one": request.args.get('cityOne'),
                        "city_two": request.args.get('cityTwo')})
 
-    json_relationships, json_satellites = db_connection.json_relationships_satellites(results["relationships"])
+    #json_relationships, json_satellites = db_connection.json_relationships_satellites(results["relationships"])
+    json_relationships = r.get('json_relationships')
+    json_satellites = r.get('json_satellites')
     json_shortest_path = db_connection.json_shortest_path(results["shortest_path"])
     
     logger.info(

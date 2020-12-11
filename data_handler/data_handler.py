@@ -1,3 +1,5 @@
+from typing import Dict, Any
+import logging
 import os
 import json
 import time
@@ -10,8 +12,6 @@ DB_FETCH_TIME = float(os.getenv('DB_FETCH_TIME', '0.5'))
 REDIS_HOST = os.getenv('REDIS_HOST', '172.18.0.2')
 REDIS_PORT = int(os.getenv('REDIS_PORT', '6379'))
 
-import logging
-from typing import Dict, Any
 
 logging.basicConfig(format='%(asctime)-15s [%(levelname)s]: %(message)s')
 logger = logging.getLogger('data_handler')
@@ -35,13 +35,12 @@ while(True):
             arguments={})
         time.sleep(1)
 
-    relationships = db_connection.transform_relationships(
+    json_relationships, json_satellites = db_connection.json_relationships_satellites(
         results["relationships"])
 
-    json_relationships = json.dumps(
-        db_connection.relationship_json_format(relationships))
+    r.set('json_relationships', json_relationships)
+    r.set('json_satellites', json_satellites)
 
-    r.set('relationships', json_relationships)
     results = {"relationships": []}
 
     logger.info(f'Saving to cache...')

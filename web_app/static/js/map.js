@@ -73,7 +73,7 @@ function drawCities() {
 function drawSatellites() {
     satellitesLayer.clearLayers();
     for (let i = 0; i < sat_markers.length; i++) {
-        const obj = sat_markers[i].slice(0, 2);
+        const obj = sat_markers[i].slice(1, 3);
         const marker = L.circleMarker(obj, {
             renderer: renderer,
             radius: 4,
@@ -138,19 +138,47 @@ function drawPolyRel(line, color) {
     relationshipsLayer.addLayer(polyline);
 }
 
+function findSatellite(sat_id) {
+    for (let i = 0; i < sat_markers.length; i++) {
+        if (sat_id == sat_markers[i][0]) {
+            return sat_markers[i].slice(1, 3);
+        }
+    }
+}
+
+function findCity(city_id) {
+    for (let i = 0; i < cities.length; i++) {
+        if (city_id == cities[i][0]) {
+            return cities[i].slice(1, 3);
+        }
+    }
+}
+
 function drawShortestPath(sp_markers) {
     shortestPathLayer.clearLayers();
     for (let i = 0; i < sp_markers.length; i++) {
         const obj = sp_markers[i];
-        const satStart = [obj[0], obj[1]];
-        const satEnd = [obj[2], obj[3]];
-        latlngS = { 'lat': obj[0], 'lng': obj[1] };
-        latlngE = { 'lat': obj[2], 'lng': obj[3] };
+        let sat_one;
+        let sat_two;
+        if (i === 0) {
+            sat_one = findCity(obj[0]);
+            sat_two = findSatellite(obj[1]);
+        } else if (i === sp_markers.length - 1) {
+            sat_one = findSatellite(obj[0]);
+            sat_two = findCity(obj[1]);
+        } else {
+            sat_one = findSatellite(obj[0]);
+            sat_two = findSatellite(obj[1]);
+        }
+        const satStart = [sat_one[0], sat_one[1]];
+        const satEnd = [sat_two[0], sat_two[1]];
+        latlngS = { 'lat': sat_one[0], 'lng': sat_one[1] };
+        latlngE = { 'lat': sat_two[0], 'lng': sat_two[1] };
         let latlngs = [
             latlngS,
             latlngE
         ];
-        if (Math.abs(obj[3] - obj[1]) > 180) {
+        if (Math.abs(sat_two[1] - sat_one[1]) > 180) {
             flipDirection = latlngs[1].lng < 0 ? -1 : 1;
 
             latlngs[0].lng = flipDirection * -179.9999999;
@@ -159,12 +187,12 @@ function drawShortestPath(sp_markers) {
             const intersection = math.intersect(satStart, satEnd, [90, 0], [-90, 0]);
 
             section1 = [
-                [obj[0], obj[1]],
+                [sat_one[0], sat_one[1]],
                 [intersection[0], latlngs[0].lng]
             ];
             section2 = [
                 [intersection[0], latlngs[1].lng],
-                [obj[2], obj[3]]
+                [sat_two[0], sat_two[1]]
             ];
 
             drawPoly(section1, '#1EB76D');

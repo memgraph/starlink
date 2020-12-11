@@ -1,13 +1,10 @@
+import mgclient
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Iterator
 from database.models import Node, Relationship
-import mgclient
+
 
 __all__ = ("Connection",)
-
-
-READ_TRANSACTION = 0
-WRITE_TRANSACTION = 1
 
 
 class Connection(ABC):
@@ -42,6 +39,7 @@ class Connection(ABC):
     def create(**kwargs) -> "Connection":
         return MemgraphConnection(**kwargs)
 
+
 class MemgraphConnection(Connection):
     def __init__(self, host: str, port: int, username: str, password: str, encrypted: bool, lazy: bool = True):
         super().__init__(host, port, username, password, encrypted)
@@ -70,7 +68,7 @@ class MemgraphConnection(Connection):
         """Executes Cypher queries as one transaction and returns dictionary of results."""
         cursor = self._connection.cursor()
         return func(cursor, arguments)
-            
+
     def is_active(self) -> bool:
         """Returns True if connection is active and can be used"""
         return self._connection is not None and self._connection.status == mgclient.CONN_STATUS_READY

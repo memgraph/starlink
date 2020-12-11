@@ -1,9 +1,13 @@
+import logging
 import collections
 from typing import Any, Dict, List, Iterator
 from database.memgraph import Memgraph
 from database.connection import _convert_memgraph_value 
 
 
+logger = logging.getLogger('data')
+
+ 
 def import_rels(cursor: Any, arguments: Dict[str, Any]) -> Dict[str, Any]:
     results = {}
 
@@ -21,7 +25,7 @@ def execute_transaction_query(cursor: Any, query: str) -> None:
         cursor.execute(query)
         cursor.fetchall()
     except:
-        print("Something went wrong with the transaction read query")
+        logger.exception(f'Something went wrong with the transaction read query')
 
 
 def execute_transaction_query_and_fetch(cursor: Any, query: str) -> Iterator[Dict[str, Any]]:
@@ -36,5 +40,5 @@ def execute_transaction_query_and_fetch(cursor: Any, query: str) -> Iterator[Dic
                             dsc.name: _convert_memgraph_value(row[index])
                             for index, dsc in enumerate(cursor.description)})
         except:
-            print("Something went wrong with the transaction write query")
+            logger.exception(f'Something went wrong with the transaction write query')
         return output

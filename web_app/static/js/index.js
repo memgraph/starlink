@@ -58,7 +58,7 @@ async function simulationStarted() {
                 rel_markers = JSON.parse(data.json_relationships);
                 if (!simStopped && newDataLoaded()) {
                     drawCities();
-                    firstSatellite = sat_markers[0].slice(0, 2);
+                    firstSatellite = sat_markers[0].slice(1, 3);
                     drawRelationships();
                     drawSatellites();
                     document.getElementById('initial-stats').style.display = 'none';
