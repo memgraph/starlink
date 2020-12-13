@@ -5,8 +5,8 @@ import json
 import redis
 import logging
 from pathlib import Path
-from demo.database import Memgraph
 from flask_compress import Compress
+from demo.database import Memgraph, connection
 from demo import db_operations, data_translator
 from flask import Flask, render_template, request, jsonify, make_response
 
@@ -59,12 +59,14 @@ def index():
     sys.excepthook = my_handler
 
     results = db.execute_transaction(
+        transaction_type=connection.READ_TRANSACTION,
         func=db_operations.import_satellites_and_relationships,
         arguments={})
 
     while len(results["relationships"]) == 0:
         time.sleep(0.1)
         results = db.execute_transaction(
+            transaction_type=connection.READ_TRANSACTION,
             func=db_operations.import_satellites_and_relationships,
             arguments={})
 
@@ -95,6 +97,7 @@ def get_data():
     while len(results["shortest_path"]) == 0 or len(results["relationships"]) == 0:
         time.sleep(0.1)
         results = db.execute_transaction(
+            transaction_type=connection.READ_TRANSACTION,
             func=db_operations.import_data,
             arguments={"city_one": request.args.get('cityOne'),
                        "city_two": request.args.get('cityTwo')})

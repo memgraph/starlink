@@ -2,7 +2,7 @@ function transmission_time(sp_markers) {
     let total_transmission_time = 0;
 
     for (sp of sp_markers) {
-        total_transmission_time += sp[2];
+        total_transmission_time += sp[3];
     }
     return `${Math.round((total_transmission_time * 1000 + Number.EPSILON) * 100) / 100} ms`;
 }

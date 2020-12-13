@@ -52,13 +52,15 @@ class Memgraph:
         return result
 
     def execute_transaction(self,
+                            transaction_type: int,
                             func: Any,
                             arguments: Dict[str, Any],
                             connection: Connection = None) -> None:
         """Executes Cypher queries as one transaction and returns dictionary of results."""
         connection = connection or self._get_cached_connection()
         start_time = time.time()
-        result = connection.execute_transaction(func, arguments)
+        result = connection.execute_transaction(
+            transaction_type, func, arguments)
         logger.info(f'Transaction executed in {time.time() - start_time} seconds.')
         return result
 

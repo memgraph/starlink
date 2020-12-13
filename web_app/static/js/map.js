@@ -161,13 +161,24 @@ function drawShortestPath(sp_markers) {
         let sat_one;
         let sat_two;
         if (i === 0) {
-            sat_one = findCity(obj[0]);
-            sat_two = findSatellite(obj[1]);
+            if (obj[2] === 0) {
+                sat_one = findCity(obj[1]);
+                sat_two = findSatellite(obj[0]);
+            } else {
+                sat_one = findCity(obj[0]);
+                sat_two = findSatellite(obj[1]);
+            }
         } else if (i === sp_markers.length - 1) {
-            sat_one = findSatellite(obj[0]);
-            sat_two = findCity(obj[1]);
+            if (obj[2] === 0) {
+                sat_one = findCity(obj[1]);
+                sat_two = findSatellite(obj[0]);
+            } else {
+                sat_one = findCity(obj[0]);
+                sat_two = findSatellite(obj[1]);
+            }
         } else {
-            sat_one = findSatellite(obj[0]);
+            sat_one = findSatsat_one = findSatellite(obj[0]);
+            sat_two = findCity(obj[1]);
             sat_two = findSatellite(obj[1]);
         }
         const satStart = [sat_one[0], sat_one[1]];

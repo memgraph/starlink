@@ -83,12 +83,15 @@ def json_shortest_path(shortest_path: Any) -> "JSON":
         return 0
 
     sp_relationships = sp_list[0]['rs']
-    sp_nodes = sp_list[0]['nodes(p)']
 
-    for i in range(0, len(sp_nodes)-1):
-        json_shortest_path.append([int(sp_nodes[i].properties['id']),
-                                   int(sp_nodes[i+1].properties['id']),
-                                   sp_relationships[i].properties['transmission_time']])
+    for r in sp_relationships:
+        first_label = 0
+        if "City" in r.nodes[0]._labels:
+            first_label = 1
+        json_shortest_path.append([int(r.nodes[0]['id']),
+                                   int(r.nodes[1]['id']),
+                                   first_label,
+                                   r['transmission_time']])
 
     logger.info(
         f'Shortest path JSON created in {time.time() - start_time} seconds.')

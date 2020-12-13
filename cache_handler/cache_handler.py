@@ -1,5 +1,4 @@
 import os
-import gc
 import json
 import time
 import redis
@@ -7,9 +6,6 @@ import logging
 import data_translator
 from typing import Dict, Any
 from database import Memgraph
-import tracemalloc
-import memory
-import gc
 
 
 DB_FETCH_TIME = float(os.getenv('DB_FETCH_TIME', '0.5'))
@@ -26,14 +22,11 @@ time.sleep(5)
 r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT,
                       charset="utf-8", decode_responses=True)
 db = Memgraph()
-
-json_relationships = []
-json_satellites = []
 results = {}
 
 while(True):
-    tracemalloc.start()
-
+    start_time = time.time()
+        
     results["relationships"] = list(db.execute_and_fetch(
         "MATCH (s1:Satellite)-[r]-(s2:Satellite) RETURN r, s1, s2;"))
     while len(results["relationships"]) == 0:
@@ -47,8 +40,5 @@ while(True):
     r.set('json_relationships', json_relationships)
     r.set('json_satellites', json_satellites)
 
-    logger.info(f'Saving to cache...')
-
-    snapshot = tracemalloc.take_snapshot()
-    memory.display_top(snapshot)
+    logger.info(f'Saved to cache in {time.time() - start_time} seconds.')
     time.sleep(DB_FETCH_TIME)
