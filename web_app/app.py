@@ -1,15 +1,14 @@
+import os
+import sys
 import time
 import json
-import os
-import logging
-import sys
 import redis
-from flask import Flask, render_template, request, jsonify, make_response
-from flask_compress import Compress
-from demo.database import Memgraph
-from demo.data import db_operations, db_connection, OpticalPath
+import logging
 from pathlib import Path
-from typing import Any, List
+from demo.database import Memgraph
+from flask_compress import Compress
+from demo import db_operations, data_translator
+from flask import Flask, render_template, request, jsonify, make_response
 
 
 COMPRESS_MIMETYPES = ['text/html', 'text/css', 'text/xml',
@@ -31,13 +30,13 @@ Compress(app)
 
 db = Memgraph()
 
-OPTICAL_FILE_PATH = os.getenv(
-    'OPTICAL_FILE_PATH', 'resources/latencies.csv')
-optical_path = _here.parent.joinpath(OPTICAL_FILE_PATH)
+OPTICAL_FILE_PATH = _here.parent.joinpath(os.getenv(
+    'OPTICAL_FILE_PATH', 'resources/latencies.csv'))
 
 
 def my_handler(type, value, tb):
     logger.exception("Uncaught exception: {0}".format(str(value)))
+
 
 REDIS_HOST = os.getenv('REDIS_HOST', '172.18.0.2')
 REDIS_PORT = int(os.getenv('REDIS_PORT', '6379'))
@@ -45,12 +44,10 @@ REDIS_PORT = int(os.getenv('REDIS_PORT', '6379'))
 r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT,
                       charset="utf-8", decode_responses=True)
 
-@app.route('/')
-def index() -> Any:
-    start_time = time.time()
 
-    cities = []
-    optical_paths = []
+@app.route('/')
+def index():
+    start_time = time.time()
 
     json_cities = []
     json_satellites = []
@@ -61,25 +58,20 @@ def index() -> Any:
 
     sys.excepthook = my_handler
 
-    while len(cities) == 0:
-        time.sleep(1)
-        cities = db_connection.fetch_cities(db)
-
-    optical_paths = OpticalPath.import_optical_paths(optical_path)
-
     results = db.execute_transaction(
-        func=db_operations.import_sats_and_rels,
+        func=db_operations.import_satellites_and_relationships,
         arguments={})
 
     while len(results["relationships"]) == 0:
         time.sleep(0.1)
         results = db.execute_transaction(
-            func=db_operations.import_sats_and_rels,
+            func=db_operations.import_satellites_and_relationships,
             arguments={})
 
-    json_cities = db_connection.city_json_format(cities)
-    json_optical_paths = db_connection.optical_paths_json_format(optical_paths)
-    json_relationships, json_satellites = db_connection.json_relationships_satellites(results["relationships"])
+    json_cities = data_translator.json_cities(db)
+    json_optical_paths = data_translator.json_optical_paths(OPTICAL_FILE_PATH)
+    json_relationships, json_satellites = data_translator.json_relationships_satellites(
+        results["relationships"])
 
     logger.info(
         f'Initial HTTP Request processed in {time.time() - start_time} seconds.')
@@ -91,7 +83,7 @@ def index() -> Any:
 
 
 @app.route('/json_satellites_and_relationships', methods=["GET"])
-def get_data() -> Any:
+def get_data():
     start_time = time.time()
 
     json_satellites = []
@@ -107,11 +99,11 @@ def get_data() -> Any:
             arguments={"city_one": request.args.get('cityOne'),
                        "city_two": request.args.get('cityTwo')})
 
-    #json_relationships, json_satellites = db_connection.json_relationships_satellites(results["relationships"])
     json_relationships = r.get('json_relationships')
     json_satellites = r.get('json_satellites')
-    json_shortest_path = db_connection.json_shortest_path(results["shortest_path"])
-    
+    json_shortest_path = data_translator.json_shortest_path(
+        results["shortest_path"])
+
     logger.info(
         f'HTTP Request processed in {time.time() - start_time} seconds.')
 
@@ -121,6 +113,6 @@ def get_data() -> Any:
 
 
 @app.route('/check', methods=["GET"])
-def check() -> Any:
+def check():
     """Route for AWS to check the status of the app"""
     return '', 200

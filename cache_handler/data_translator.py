@@ -1,16 +1,13 @@
 import time
 import json
 import logging
-import data.db_operations as db_operations
-from database import Memgraph
-from data.model import Relationship
-from typing import Any, List
+from typing import Any, Dict, Iterator
 
 
-logger = logging.getLogger('data')
+logger = logging.getLogger('cache')
 
 
-def json_relationships_satellites(relationships: Any) -> Any:
+def json_relationships_satellites(relationships: Iterator[Dict[str, Any]]) -> "JSON":
     start_time = time.time()
 
     json_relationships = []
@@ -25,10 +22,12 @@ def json_relationships_satellites(relationships: Any) -> Any:
                                    s2.properties['x'], s2.properties['y'], r.properties['transmission_time']])
 
         if(not s1.properties['id'] in sat_ids):
-            json_satellites.append([s1.properties['id'], s1.properties['x'], s1.properties['y']])
+            json_satellites.append(
+                [s1.properties['id'], s1.properties['x'], s1.properties['y']])
             sat_ids.add(s1.properties['id'])
         if(not s2.properties['id'] in sat_ids):
-            json_satellites.append([s2.properties['id'], s2.properties['x'], s2.properties['y']])
+            json_satellites.append(
+                [s2.properties['id'], s2.properties['x'], s2.properties['y']])
             sat_ids.add(s2.properties['id'])
 
     logger.info(

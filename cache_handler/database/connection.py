@@ -41,7 +41,7 @@ class Connection(ABC):
 
 
 class MemgraphConnection(Connection):
-    def __init__(self, host: str, port: int, username: str, password: str, encrypted: bool, lazy: bool = True):
+    def __init__(self, host: str, port: int, username: str, password: str, encrypted: bool, lazy: bool = False):
         super().__init__(host, port, username, password, encrypted)
         self.lazy = lazy
         self._connection = self._create_connection()

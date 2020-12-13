@@ -5,7 +5,7 @@ from typing import Any, Dict, Iterator
 from database.connection import Connection
 
 
-logger = logging.getLogger('data')
+logger = logging.getLogger('cache')
 
 __all__ = ('Memgraph',)
 

@@ -124,10 +124,10 @@
             $(this).children('span').toggleClass('hide');
         });
 
-        const cities = JSON.parse('{{data.city_markers|tojson}}');
+        let cities = JSON.parse('{{data.city_markers}}'.replace(/&#34;/g, "\""));
         let sat_markers = JSON.parse('{{data.sat_markers}}');
         let rel_markers = JSON.parse('{{data.rel_markers}}');
-        let opticalPaths = JSON.parse('{{data.op_markers|tojson}}');
+        let opticalPaths = JSON.parse('{{data.op_markers}}'.replace(/&#34;/g, "\""));
 
         createMap();
         createDropdowns();

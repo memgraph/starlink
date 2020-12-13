@@ -1,55 +1,52 @@
+import csv
 import time
 import json
 import logging
-import demo.data.db_operations as db_operations
-from demo.database import Memgraph
-from demo.data.model import City, OpticalPath
+from pathlib import Path
 from typing import Any, List
+from demo.database import Memgraph
+from demo.db_operations import import_all_cities
 
 
 logger = logging.getLogger('web')
 
 
-def fetch_cities(db: Memgraph) -> List[City]:
-    start_time = time.time()
-
-    city_markers = []
-    cities = db_operations.import_all_cities(db)
-    for cit in cities:
-        c = cit['n']
-        city_obj = City(
-            c.properties['id'], c.properties['x'], c.properties['y'], c.properties['name'])
-        city_markers.append(city_obj)
-
-    logger.info(f'City objects created in {time.time() - start_time} seconds.')
-    return city_markers
-
-
-def city_json_format(cities: List[City]) -> List[Any]:
+def json_cities(db: Memgraph) -> "JSON":
     start_time = time.time()
 
     json_cities = []
+    cities = list(import_all_cities(db))
+    while len(cities) == 0:
+        time.sleep(1)
+        cities = list(import_all_cities(db))
+
     for city in cities:
-        json_cities.append([city.id, city.x, city.y, city.name])
+        c = city['n']
+        json_cities.append([
+            c.properties['id'], c.properties['x'], c.properties['y'], c.properties['name']])
 
-    logger.info(f'Cities JSON created in {time.time() - start_time} seconds.')
-    return json_cities
+    logger.info(f'City JSON created in {time.time() - start_time} seconds.')
+    return json.dumps(json_cities)
 
 
-def optical_paths_json_format(optical_paths: List[OpticalPath]) -> List[Any]:
+def json_optical_paths(file_path: str) -> "JSON":
     start_time = time.time()
 
     json_optical_paths = []
-    for op in optical_paths:
-        json_optical_paths.append(
-            [op.city1, op.city2, op.transmission_time_ms])
+    with file_path.open() as f:
+        reader = csv.DictReader(f, delimiter=',')
+        for row in reader:
+            json_optical_paths.append([
+                row["Source"],
+                row["Destination"],
+                row["Latency"]])
 
     logger.info(
         f'Optical path JSON created in {time.time() - start_time} seconds.')
-    return json_optical_paths
+    return json.dumps(json_optical_paths)
 
 
-def json_relationships_satellites(relationships: Any) -> Any:
+def json_relationships_satellites(relationships: Any) -> "JSON":
     start_time = time.time()
 
     json_relationships = []
@@ -64,10 +61,12 @@ def json_relationships_satellites(relationships: Any) -> Any:
                                    s2.properties['x'], s2.properties['y'], r.properties['transmission_time']])
 
         if(not s1.properties['id'] in sat_ids):
-            json_satellites.append([int(s1.properties['id']), s1.properties['x'], s1.properties['y']])
+            json_satellites.append(
+                [int(s1.properties['id']), s1.properties['x'], s1.properties['y']])
             sat_ids.add(s1.properties['id'])
         if(not s2.properties['id'] in sat_ids):
-            json_satellites.append([int(s2.properties['id']), s2.properties['x'], s2.properties['y']])
+            json_satellites.append(
+                [int(s2.properties['id']), s2.properties['x'], s2.properties['y']])
             sat_ids.add(s2.properties['id'])
 
     logger.info(
@@ -75,7 +74,7 @@ def json_relationships_satellites(relationships: Any) -> Any:
     return json.dumps(json_relationships), json.dumps(json_satellites)
 
 
-def json_shortest_path(shortest_path: Any) -> List[str]:
+def json_shortest_path(shortest_path: Any) -> "JSON":
     start_time = time.time()
 
     json_shortest_path = []

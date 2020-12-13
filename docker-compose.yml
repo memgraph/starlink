@@ -13,11 +13,11 @@ services:
     volumes:
         - ./redis/redis.conf:/redis.conf
     command: [ "redis-server", "/redis.conf" ]
-  data_handler:
+  cache_handler:
     build:
-      context: ./data_handler
+      context: ./cache_handler
     volumes: 
-      - ./data_handler:/app
+      - ./cache_handler:/app
     environment:
       MG_HOST: memgraph
       MG_PORT: 7687
@@ -25,7 +25,7 @@ services:
       REDIS_PORT: "6379"
       REDIS_PASSWORD: ""
       DB_FETCH_TIME: "0.1"
-    command: python data_handler.py
+    command: python cache_handler.py
     depends_on:
       - redis
       - memgraph
