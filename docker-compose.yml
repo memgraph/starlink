@@ -10,9 +10,6 @@ services:
     image: "redis"
     ports:
         - 6379:6379
-    volumes:
-        - ./redis/redis.conf:/redis.conf
-    command: [ "redis-server", "/redis.conf" ]
   cache_handler:
     build:
       context: ./cache_handler

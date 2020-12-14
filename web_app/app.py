@@ -92,9 +92,9 @@ def get_data():
     json_relationships = []
     json_shortest_path = []
 
-    results = {"relationships": [], "shortest_path": []}
+    results = {"shortest_path": []}
 
-    while len(results["shortest_path"]) == 0 or len(results["relationships"]) == 0:
+    while len(results["shortest_path"]) == 0:
         time.sleep(0.1)
         results = db.execute_transaction(
             transaction_type=connection.READ_TRANSACTION,

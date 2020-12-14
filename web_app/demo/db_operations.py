@@ -25,7 +25,4 @@ def import_data(tx: Any, arguments: Dict[str, Any]) -> Dict[str, Any]:
         arguments["city_two"]) + "'}) WHERE ALL(x IN nodes(p)[1..-1] WHERE (x:Satellite))  RETURN nodes(p), rs;"
     results["shortest_path"] = tx.run(command)
 
-    command = "MATCH (s1:Satellite)-[r]-(s2:Satellite) RETURN r, s1, s2;"
-    results["relationships"] = tx.run(command)
-
     return results

@@ -43,3 +43,23 @@ services:
       OPTICAL_FILE_PATH: "resources/latencies.csv"
     depends_on:
       - simulator
+  redis:
+    image: "redis"
+    ports:
+        - 6379:6379
+  cache_handler:
+    build:
+      context: ./cache_handler
+    volumes: 
+      - ./cache_handler:/app
+    environment:
+      MG_HOST: memgraph
+      MG_PORT: 7687
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_PASSWORD: ""
+      DB_FETCH_TIME: "0.1"
+    command: python cache_handler.py
+    depends_on:
+      - redis
+      - memgraph
