@@ -15,17 +15,17 @@ function createDropdowns() {
     firstDropdown = document.getElementById("dropdownOne");
     secondDropdown = document.getElementById("dropdownTwo");
 
-    for (city of cities) {
+    for (let id in city_names) {
         let element = document.createElement("option");
-        element.text = city[3];
-        element.value = city[0];
+        element.text = city_names[id];
+        element.value = id;
         firstDropdown.appendChild(element);
     }
 
-    for (city of cities) {
+    for (let id in city_names) {
         let element = document.createElement("option");
-        element.text = city[3];
-        element.value = city[0];
+        element.text = city_names[id];
+        element.value = id;
         secondDropdown.appendChild(element);
     }
 

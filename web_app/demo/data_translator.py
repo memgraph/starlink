@@ -14,7 +14,7 @@ logger = logging.getLogger('web')
 def json_cities(db: Memgraph) -> "JSON":
     start_time = time.time()
 
-    json_cities = []
+    json_cities = {}
     cities = list(import_all_cities(db))
     while len(cities) == 0:
         time.sleep(1)
@@ -22,8 +22,8 @@ def json_cities(db: Memgraph) -> "JSON":
 
     for city in cities:
         c = city['n']
-        json_cities.append([
-            c.properties['id'], c.properties['x'], c.properties['y'], c.properties['name']])
+        json_cities[c.properties['id']] = [
+            c.properties['x'], c.properties['y'], c.properties['name']]
 
     logger.info(f'City JSON created in {time.time() - start_time} seconds.')
     return json.dumps(json_cities)
@@ -44,34 +44,6 @@ def json_optical_paths(file_path: str) -> "JSON":
     logger.info(
         f'Optical path JSON created in {time.time() - start_time} seconds.')
     return json.dumps(json_optical_paths)
-
-
-def json_relationships_satellites(relationships: Any) -> "JSON":
-    start_time = time.time()
-
-    json_relationships = []
-    json_satellites = []
-    sat_ids = set()
-    for rel in relationships:
-        r = rel['r']
-        s1 = rel['s1']
-        s2 = rel['s2']
-
-        json_relationships.append([s1.properties['x'], s1.properties['y'],
-                                   s2.properties['x'], s2.properties['y'], r.properties['transmission_time']])
-
-        if(not s1.properties['id'] in sat_ids):
-            json_satellites.append(
-                [int(s1.properties['id']), s1.properties['x'], s1.properties['y']])
-            sat_ids.add(s1.properties['id'])
-        if(not s2.properties['id'] in sat_ids):
-            json_satellites.append(
-                [int(s2.properties['id']), s2.properties['x'], s2.properties['y']])
-            sat_ids.add(s2.properties['id'])
-
-    logger.info(
-        f'Relationship and Satellite JSON created in {time.time() - start_time} seconds.')
-    return json.dumps(json_relationships), json.dumps(json_satellites)
 
 
 def json_shortest_path(shortest_path: Any) -> "JSON":

@@ -11,7 +11,7 @@ def json_relationships_satellites(relationships: Iterator[Dict[str, Any]]) -> "J
     start_time = time.time()
 
     json_relationships = []
-    json_satellites = []
+    json_satellites = {}
     sat_ids = set()
     for rel in relationships:
         r = rel['r']
@@ -22,12 +22,12 @@ def json_relationships_satellites(relationships: Iterator[Dict[str, Any]]) -> "J
                                    s2.properties['x'], s2.properties['y'], r.properties['transmission_time']])
 
         if(not s1.properties['id'] in sat_ids):
-            json_satellites.append(
-                [s1.properties['id'], s1.properties['x'], s1.properties['y']])
+            json_satellites[s1.properties['id']] = [
+                s1.properties['x'], s1.properties['y']]
             sat_ids.add(s1.properties['id'])
         if(not s2.properties['id'] in sat_ids):
-            json_satellites.append(
-                [s2.properties['id'], s2.properties['x'], s2.properties['y']])
+            json_satellites[s2.properties['id']] = [
+                s2.properties['x'], s2.properties['y']]
             sat_ids.add(s2.properties['id'])
 
     logger.info(

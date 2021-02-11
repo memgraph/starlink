@@ -116,23 +116,34 @@
     </div>
 
     <script>
-        'use strict';
+      "use strict";
 
-        $(document).foundation();
+      $(document).foundation();
 
-        $('.off-panel-btn').click(function() {
-            $(this).children('span').toggleClass('hide');
-        });
+      $(".off-panel-btn").click(function () {
+        $(this).children("span").toggleClass("hide");
+      });
 
-        let cities = JSON.parse('{{data.city_markers}}'.replace(/&#34;/g, "\""));
-        let sat_markers = JSON.parse('{{data.sat_markers}}');
-        let rel_markers = JSON.parse('{{data.rel_markers}}');
-        let opticalPaths = JSON.parse('{{data.op_markers}}'.replace(/&#34;/g, "\""));
+      let cities = JSON.parse("{{data.city_markers}}".replace(/&#34;/g, '"'));
+      let sat_markers = JSON.parse(
+        "{{data.sat_markers}}".replace(/&#34;/g, '"')
+      );
+      let rel_markers = JSON.parse("{{data.rel_markers}}");
+      let opticalPaths = JSON.parse(
+        "{{data.op_markers}}".replace(/&#34;/g, '"')
+      );
 
-        createMap();
-        createDropdowns();
-        drawSatellites();
-        drawRelationships();
+      var city_markers = new Object();
+      var city_names = new Object();
+      for (let id in cities) {
+        city_markers[id] = cities[id].slice(0, 2);
+        city_names[id] = cities[id][2];
+      }
+
+      createMap();
+      createDropdowns();
+      drawSatellites();
+      drawRelationships();
     </script>
     <script src="/static/js/index.js"></script>
 </body>

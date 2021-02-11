@@ -52,13 +52,13 @@ async function simulationStarted() {
 
     while (!simStopped) {
         await postData(`${window.origin}/` + 'json_satellites_and_relationships?cityOne=' + firstDropdown.options[firstDropdown.selectedIndex].value +
-                '&cityTwo=' + secondDropdown.options[secondDropdown.selectedIndex].value)
+            '&cityTwo=' + secondDropdown.options[secondDropdown.selectedIndex].value)
             .then(data => {
                 sat_markers = JSON.parse(data.json_satellites);
                 rel_markers = JSON.parse(data.json_relationships);
                 if (!simStopped && newDataLoaded()) {
                     drawCities();
-                    firstSatellite = sat_markers[0].slice(1, 3);
+                    firstSatellite = sat_markers[Object.keys(sat_markers)[0]];
                     drawRelationships();
                     drawSatellites();
                     document.getElementById('initial-stats').style.display = 'none';

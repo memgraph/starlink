@@ -49,31 +49,17 @@ r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT,
 def index():
     start_time = time.time()
 
+    sys.excepthook = my_handler
+
     json_cities = []
     json_satellites = []
     json_relationships = []
     json_optical_paths = []
 
-    results = {"relationships": [], "shortest_path": []}
-
-    sys.excepthook = my_handler
-
-    results = db.execute_transaction(
-        transaction_type=connection.READ_TRANSACTION,
-        func=db_operations.import_satellites_and_relationships,
-        arguments={})
-
-    while len(results["relationships"]) == 0:
-        time.sleep(0.1)
-        results = db.execute_transaction(
-            transaction_type=connection.READ_TRANSACTION,
-            func=db_operations.import_satellites_and_relationships,
-            arguments={})
-
     json_cities = data_translator.json_cities(db)
+    json_satellites = r.get('json_satellites')
+    json_relationships = r.get('json_relationships')
     json_optical_paths = data_translator.json_optical_paths(OPTICAL_FILE_PATH)
-    json_relationships, json_satellites = data_translator.json_relationships_satellites(
-        results["relationships"])
 
     logger.info(
         f'Initial HTTP Request processed in {time.time() - start_time} seconds.')
