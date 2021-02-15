@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Iterator
-from demo.database.models import Node, Relationship
+from database.models import Node, Relationship
 from neo4j import GraphDatabase, basic_auth
 from neo4j.types import Relationship as Neo4jRelationship
 from neo4j.types import Node as Neo4jNode

@@ -44,36 +44,25 @@ async function createMap() {
     renderer = L.canvas({ padding: 0.5 });
 }
 
-function drawCity(city) {
-    for (let i = 0; i < cities.length; i++) {
-        if (cities[i][0] === city) {
-            const obj = cities[i].slice(1, 3);
-            const div_icon = L.divIcon({ iconSize: [16, 16], className: 'city-icon' })
-            const marker = L.marker(obj, { icon: div_icon }).bindPopup(cities[i][3]);
-            citiesLayer.addLayer(marker);
-        }
-    }
+function drawCity(id) {
+    const obj = city_markers[id];
+    const div_icon = L.divIcon({ iconSize: [16, 16], className: 'city-icon' })
+    const marker = L.marker(obj, { icon: div_icon }).bindPopup(city_names[id]);
+    citiesLayer.addLayer(marker);
     citiesLayer.addTo(map);
 }
 
 function drawCities() {
     const sel = GetSelectionValue();
     citiesLayer.clearLayers();
-    for (let i = 0; i < cities.length; i++) {
-        if (cities[i][0] === sel[0] || cities[i][0] === sel[1]) {
-            const obj = cities[i].slice(1, 3);
-            const div_icon = L.divIcon({ iconSize: [16, 16], className: 'city-icon' })
-            const marker = L.marker(obj, { icon: div_icon }).bindPopup(cities[i][3]);
-            citiesLayer.addLayer(marker);
-        }
-    }
-    citiesLayer.addTo(map);
+    drawCity(sel[0]);
+    drawCity(sel[1]);
 }
 
 function drawSatellites() {
     satellitesLayer.clearLayers();
-    for (let i = 0; i < sat_markers.length; i++) {
-        const obj = sat_markers[i].slice(0, 2);
+    for (let id in sat_markers) {
+        const obj = sat_markers[id];
         const marker = L.circleMarker(obj, {
             renderer: renderer,
             radius: 4,
@@ -142,15 +131,29 @@ function drawShortestPath(sp_markers) {
     shortestPathLayer.clearLayers();
     for (let i = 0; i < sp_markers.length; i++) {
         const obj = sp_markers[i];
-        const satStart = [obj[0], obj[1]];
-        const satEnd = [obj[2], obj[3]];
-        latlngS = { 'lat': obj[0], 'lng': obj[1] };
-        latlngE = { 'lat': obj[2], 'lng': obj[3] };
+        let sat_one;
+        let sat_two;
+        if (i === 0 || i === sp_markers.length - 1) {
+            if (obj[2] === 0) {
+                sat_one = city_markers[obj[1]];
+                sat_two = sat_markers[obj[0]];
+            } else {
+                sat_one = city_markers[obj[0]];
+                sat_two = sat_markers[obj[1]];
+            }
+        } else {
+            sat_one = sat_markers[obj[0]];
+            sat_two = sat_markers[obj[1]];
+        }
+        const satStart = [sat_one[0], sat_one[1]];
+        const satEnd = [sat_two[0], sat_two[1]];
+        latlngS = { 'lat': sat_one[0], 'lng': sat_one[1] };
+        latlngE = { 'lat': sat_two[0], 'lng': sat_two[1] };
         let latlngs = [
             latlngS,
             latlngE
         ];
-        if (Math.abs(obj[3] - obj[1]) > 180) {
+        if (Math.abs(sat_two[1] - sat_one[1]) > 180) {
             flipDirection = latlngs[1].lng < 0 ? -1 : 1;
 
             latlngs[0].lng = flipDirection * -179.9999999;
@@ -159,12 +162,12 @@ function drawShortestPath(sp_markers) {
             const intersection = math.intersect(satStart, satEnd, [90, 0], [-90, 0]);
 
             section1 = [
-                [obj[0], obj[1]],
+                [sat_one[0], sat_one[1]],
                 [intersection[0], latlngs[0].lng]
             ];
             section2 = [
                 [intersection[0], latlngs[1].lng],
-                [obj[2], obj[3]]
+                [sat_two[0], sat_two[1]]
             ];
 
             drawPoly(section1, '#1EB76D');
@@ -189,17 +192,12 @@ function drawPoly(line, color) {
 
 function focusView() {
     const sel = GetSelectionValue();
-    let city1, city2;
-    for (let i = 0; i < cities.length; i++) {
-        if (cities[i][0] === sel[0]) {
-            city1 = cities[i];
-        } else if (cities[i][0] === sel[1]) {
-            city2 = cities[i];
-        }
-    }
-    const focus = [(city1[1] + city2[1]) / 2, (city1[2] + city2[2]) / 2];
+    let city1 = city_markers[sel[0]];
+    let city2 = city_markers[sel[1]];
+
+    const focus = [(city1[0] + city2[0]) / 2, (city1[1] + city2[1]) / 2];
     let zoom = 2;
-    if ((Math.abs(city1[1] - city2[1]) >= 50) || (Math.abs(city1[2] - city2[2]) >= 80)) {
+    if ((Math.abs(city1[0] - city2[0]) >= 50) || (Math.abs(city1[1] - city2[1]) >= 80)) {
         zoom = 1;
     }
     map.setView(focus, zoom);
@@ -209,7 +207,7 @@ function newDataLoaded() {
     if (firstSatellite == undefined) {
         return true;
     }
-    newFirstSatellite = sat_markers[0].slice(0, 2);
+    newFirstSatellite = sat_markers[Object.keys(sat_markers)[0]];
     if (newFirstSatellite[0] != firstSatellite[0]) {
         return true;
     } else {
