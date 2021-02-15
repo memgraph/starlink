@@ -13,6 +13,9 @@ AWS_WEB_DOCKERFILE=web_app
 AWS_SIMULATOR_ECR=memgraph/demo-starlink-simulator
 AWS_SIMULATOR_DOCKERFILE=simulator
 
+AWS_CACHE_HANDLER_ECR=memgraph/demo-starlink-cache-handler
+AWS_CACHE_HANDLER_DOCKERFILE=cache_handler
+
 AWS_ECS_SERVICE_TAG_PRODUCTION=master
 AWS_ECS_CLUSTER_PRODUCTION=production
 
@@ -144,9 +147,11 @@ else
           git_check "${AWS_ECS_SERVICE_TAG_PRODUCTION}"
           build "${AWS_WEB_ECR}" "${AWS_WEB_DOCKERFILE}"
           build "${AWS_SIMULATOR_ECR}" "${AWS_SIMULATOR_DOCKERFILE}"
+          build "${AWS_CACHE_HANDLER_ECR}" "${AWS_CACHE_HANDLER_DOCKERFILE}"
           aws_login
           aws_push "${AWS_WEB_ECR}"
           aws_push "${AWS_SIMULATOR_ECR}"
+          aws_push "${AWS_CACHE_HANDLER_ECR}"
           aws_deploy "${AWS_ECS_CLUSTER_PRODUCTION}"
           exit 0
       ;;
