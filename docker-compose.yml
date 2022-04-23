@@ -10,7 +10,7 @@ services:
   zookeeper:
     image: 'bitnami/zookeeper:3.7'
     ports:
-      - '2181:2181'
+      - '2182:2181'
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
     networks:
@@ -23,7 +23,7 @@ services:
     logging:
       driver: none
     ports:
-      - '9093:9093'
+      - '9094:9093'
     environment:
       - KAFKA_BROKER_ID=1
       - ALLOW_PLAINTEXT_LISTENER=yes
@@ -40,7 +40,7 @@ services:
   memgraph:
     build: ./memgraph
     ports:
-      - '7687:7687'
+      - '7688:7687'
     environment:
       KAFKA_IP: kafka
       KAFKA_PORT: '9092'
@@ -73,8 +73,8 @@ services:
     volumes: 
       - ./cache_handler:/app
     environment:
-      MG_HOST: memgraph
-      MG_PORT: 7687
+      MEMGRAPH_IP: memgraph
+      MEMGRAPH_PORT: 7687
       REDIS_HOST: redis
       REDIS_PORT: "6379"
       REDIS_PASSWORD: ""
@@ -91,7 +91,7 @@ services:
     volumes:
       - ./simulator:/app
     ports:
-      - '3000:3000'
+      - '3001:3000'
     environment:
       KAFKA_IP: kafka
       KAFKA_PORT: '9092'
@@ -117,7 +117,7 @@ services:
     volumes:
       - ./web_app:/app
     ports:
-      - '5000:5000'
+      - '5001:5000'
     environment:
       MG_HOST: memgraph
       MG_PORT: 7687

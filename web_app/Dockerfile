@@ -37,7 +37,7 @@ RUN poetry config virtualenvs.create false && \
     poetry install --no-interaction --no-ansi
 
 COPY . /app
-EXPOSE 5000
+EXPOSE 5001
 
 ADD start.sh /
 RUN chmod +x /start.sh

@@ -32,6 +32,6 @@ RUN dos2unix /wait-for-it.sh
 
 COPY . /app
 
-EXPOSE 3000
+EXPOSE 3001
 
 ENTRYPOINT [ "poetry", "run" ]

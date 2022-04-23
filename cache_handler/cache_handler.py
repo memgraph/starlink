@@ -4,12 +4,15 @@ import time
 import redis
 import logging
 import data_translator
+from time import sleep
 from typing import Dict, Any
-from database import Memgraph
+from gqlalchemy import Memgraph
 
 
 DB_FETCH_TIME = float(os.getenv('DB_FETCH_TIME', '0.5'))
-REDIS_HOST = os.getenv('REDIS_HOST', '172.18.0.2')
+MEMGRAPH_IP = os.getenv('MEMGRAPH_IP', 'memgraph')
+MEMGRAPH_PORT = os.getenv('MEMGRAPH_PORT', '7687')
+REDIS_HOST = os.getenv('REDIS_HOST', 'redis')
 REDIS_PORT = int(os.getenv('REDIS_PORT', '6379'))
 
 logging.basicConfig(format='%(asctime)-15s [%(levelname)s]: %(message)s')
@@ -21,9 +24,21 @@ time.sleep(5)
 
 r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT,
                       charset="utf-8", decode_responses=True)
-db = Memgraph()
+
+def connect_to_memgraph(memgraph_ip, memgraph_port):
+    memgraph = Memgraph(host=memgraph_ip, port=int(memgraph_port))
+    while(True):
+        try:
+            if (memgraph._get_cached_connection().is_active()):
+                return memgraph
+        except:
+            logger.info("Memgraph probably isn't running.")
+            sleep(1)
+
+db = connect_to_memgraph(MEMGRAPH_IP, MEMGRAPH_PORT)
 results = {}
 
+            
 while(True):
     start_time = time.time()
         

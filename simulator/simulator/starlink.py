@@ -23,7 +23,7 @@ CITIES_FILE_PATH = os.getenv('CITIES_FILE_PATH', 'imports/cities.csv')
 DB_UPDATE_TIME = float(os.getenv('DB_UPDATE_TIME', 0.1))
 KAFKA_IP = os.getenv('KAFKA_IP', 'kafka')
 KAFKA_PORT = os.getenv('KAFKA_PORT', '9092')
-MEMGRAPH_IP = os.getenv('MEMGRAPH_IP', 'memgraph-mage')
+MEMGRAPH_IP = os.getenv('MEMGRAPH_IP', 'memgraph')
 MEMGRAPH_PORT = os.getenv('MEMGRAPH_PORT', '7687')
 
 
