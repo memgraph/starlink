@@ -1,4 +1,4 @@
-FROM memgraph/memgraph
+FROM memgraph/memgraph:2.2.1
 
 USER root
 

@@ -71,19 +71,19 @@ def run(memgraph, kafka_ip, kafka_port):
         memgraph.drop_database()
         log.info("Creating stream connections on Memgraph")
         memgraph.execute(
-            "CREATE STREAM satellite_stream TOPICS satellite TRANSFORM starlink.satellite")
+            "CREATE KAFKA STREAM satellite_stream TOPICS satellite TRANSFORM starlink.satellite")
         memgraph.execute("START STREAM satellite_stream")
         memgraph.execute(
-            "CREATE STREAM city_stream TOPICS city TRANSFORM starlink.city")
+            "CREATE KAFKA STREAM city_stream TOPICS city TRANSFORM starlink.city")
         memgraph.execute("START STREAM city_stream")
         memgraph.execute(
-            "CREATE STREAM visible_from_stream TOPICS visible_from TRANSFORM starlink.visible_from")
+            "CREATE KAFKA STREAM visible_from_stream TOPICS visible_from TRANSFORM starlink.visible_from")
         memgraph.execute("START STREAM visible_from_stream")
         memgraph.execute(
-            "CREATE STREAM delete_visible_from_stream TOPICS delete_visible_from TRANSFORM starlink.delete_visible_from")
+            "CREATE KAFKA STREAM delete_visible_from_stream TOPICS delete_visible_from TRANSFORM starlink.delete_visible_from")
         memgraph.execute("START STREAM delete_visible_from_stream")
         memgraph.execute(
-            "CREATE STREAM laser_link_stream TOPICS laser_link TRANSFORM starlink.laser_link")
+            "CREATE KAFKA STREAM laser_link_stream TOPICS laser_link TRANSFORM starlink.laser_link")
         memgraph.execute("START STREAM laser_link_stream")
     except Exception as e:
         log.info(f"Error on stream creation: {e}")

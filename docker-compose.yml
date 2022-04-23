@@ -105,7 +105,7 @@ services:
       SAT_PROCESSING_DELAY: 0.010
       RELAY_PROCESSING_DELAY: 0.012 
       VIEW_ANGLE: 70
-    command: python main.py start
+    #command: python main.py start
     command: /wait-for-it.sh memgraph:7687 -- python main.py start
     depends_on:
       - core
