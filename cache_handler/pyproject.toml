@@ -6,9 +6,9 @@ authors = []
 
 [tool.poetry.dependencies]
 python = "^3.7"
-pymgclient = "^0.1.0"
 redis = "^3.5.3"
 neo4j = "^1.7.4"
+gqlalchemy = "^1.2.0"
 
 [build-system]
 requires = ["poetry>=0.12"]

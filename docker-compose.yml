@@ -1,23 +1,80 @@
 #For running and connectiong to a local Memgraph DB instance
 
 version: '3'
+
+networks:
+  app-tier:
+    driver: bridge
+
 services:
-  memgraph:
-    image: "memgraph"
+  zookeeper:
+    image: 'bitnami/zookeeper:3.7'
     ports:
-      - '7687:7687'
+      - '2182:2181'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - app-tier
+    logging:
+      driver: none
+
+  kafka:
+    image: 'bitnami/kafka:2'
+    logging:
+      driver: none
+    ports:
+      - '9094:9093'
+    environment:
+      - KAFKA_BROKER_ID=1
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
+      - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
+    depends_on:
+      - zookeeper
+    networks:
+      - app-tier
+
+  memgraph:
+    build: ./memgraph
+    ports:
+      - '7688:7687'
+    environment:
+      KAFKA_IP: kafka
+      KAFKA_PORT: '9092'
+    entrypoint: [
+      "/usr/lib/memgraph/memgraph",
+      "--telemetry-enabled=false",
+      "--kafka-bootstrap-servers=kafka:9092",
+      "--query-modules-directory=/transformations,/usr/lib/memgraph/query_modules",
+      "--log-level=WARNING"]
+    networks:
+      - app-tier
+
+  core:
+    image: tianon/true
+    restart: "no"
+    depends_on:
+      - kafka
+      - memgraph
+      
   redis:
     image: "redis"
     ports:
         - 6379:6379
+    networks:
+      - app-tier
+
   cache_handler:
     build:
       context: ./cache_handler
     volumes: 
       - ./cache_handler:/app
     environment:
-      MG_HOST: memgraph
-      MG_PORT: 7687
+      MEMGRAPH_IP: memgraph
+      MEMGRAPH_PORT: 7687
       REDIS_HOST: redis
       REDIS_PORT: "6379"
       REDIS_PASSWORD: ""
@@ -26,15 +83,20 @@ services:
     depends_on:
       - redis
       - memgraph
+    networks:
+      - app-tier
+
   simulator:
     build: ./simulator
     volumes:
       - ./simulator:/app
     ports:
-      - '3000:3000'
+      - '3001:3000'
     environment:
-      MG_HOST: memgraph
-      MG_PORT: 7687
+      KAFKA_IP: kafka
+      KAFKA_PORT: '9092'
+      MEMGRAPH_IP: memgraph
+      MEMGRAPH_PORT: '7687'
       TLE_FILE_PATH: "imports/tle_3"
       CITIES_FILE_PATH: "imports/cities.csv"
       DB_UPDATE_TIME: 0.4
@@ -43,16 +105,19 @@ services:
       SAT_PROCESSING_DELAY: 0.010
       RELAY_PROCESSING_DELAY: 0.012 
       VIEW_ANGLE: 70
-    command: python main.py start
+    #command: python main.py start
     command: /wait-for-it.sh memgraph:7687 -- python main.py start
     depends_on:
-      - memgraph
+      - core
+    networks:
+      - app-tier
+
   web:
     build: ./web_app
     volumes:
       - ./web_app:/app
     ports:
-      - '5000:5000'
+      - '5001:5000'
     environment:
       MG_HOST: memgraph
       MG_PORT: 7687
@@ -63,3 +128,5 @@ services:
     depends_on:
       #- redis
       - simulator
+    networks:
+      - app-tier

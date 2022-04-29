@@ -1,109 +1,147 @@
 [[package]]
-category = "main"
-description = "Python package for providing Mozilla's CA Bundle."
 name = "certifi"
-optional = false
-python-versions = "*"
 version = "2020.6.20"
+description = "Python package for providing Mozilla's CA Bundle."
+category = "main"
+optional = false
+python-versions = "*"
 
 [[package]]
-category = "main"
-description = "Pythonic argument parser, that will make you smile"
 name = "docopt"
+version = "0.6.2"
+description = "Pythonic argument parser, that will make you smile"
+category = "main"
 optional = false
 python-versions = "*"
-version = "0.6.2"
 
 [[package]]
+name = "gqlalchemy"
+version = "1.0.6"
+description = "GQLAlchemy is library developed with purpose of assisting writing and running queries on Memgraph."
 category = "main"
-description = "Use a JPL ephemeris to predict planet positions."
+optional = false
+python-versions = ">=3.7,<4.0"
+
+[package.dependencies]
+networkx = ">=2.5.1,<3.0.0"
+pymgclient = ">=1.0.0,<2.0.0"
+
+[[package]]
 name = "jplephem"
+version = "2.14"
+description = "Use a JPL ephemeris to predict planet positions."
+category = "main"
 optional = false
 python-versions = "*"
-version = "2.14"
 
 [package.dependencies]
 numpy = "*"
 
 [[package]]
+name = "kafka-python"
+version = "2.0.2"
+description = "Pure Python client for Apache Kafka"
 category = "main"
-description = "Neo4j Bolt driver for Python"
-name = "neo4j"
 optional = false
 python-versions = "*"
+
+[package.extras]
+crc32c = ["crc32c"]
+
+[[package]]
+name = "neo4j"
 version = "1.7.6"
+description = "Neo4j Bolt driver for Python"
+category = "main"
+optional = false
+python-versions = "*"
 
 [package.dependencies]
 neobolt = ">=1.7.15,<1.8.0"
 neotime = ">=1.7.1,<1.8.0"
 
 [[package]]
-category = "main"
-description = "Neo4j Bolt connector for Python"
 name = "neobolt"
+version = "1.7.17"
+description = "Neo4j Bolt connector for Python"
+category = "main"
 optional = false
 python-versions = "*"
-version = "1.7.17"
 
 [[package]]
-category = "main"
-description = "Nanosecond resolution temporal types"
 name = "neotime"
+version = "1.7.4"
+description = "Nanosecond resolution temporal types"
+category = "main"
 optional = false
 python-versions = "*"
-version = "1.7.4"
 
 [package.dependencies]
 pytz = "*"
 six = "*"
 
 [[package]]
+name = "networkx"
+version = "2.6.3"
+description = "Python package for creating and manipulating graphs and networks"
 category = "main"
-description = "NumPy is the fundamental package for array computing with Python."
+optional = false
+python-versions = ">=3.7"
+
+[package.extras]
+default = ["numpy (>=1.19)", "scipy (>=1.5,!=1.6.1)", "matplotlib (>=3.3)", "pandas (>=1.1)"]
+developer = ["black (==21.5b1)", "pre-commit (>=2.12)"]
+doc = ["sphinx (>=4.0,<5.0)", "pydata-sphinx-theme (>=0.6,<1.0)", "sphinx-gallery (>=0.9,<1.0)", "numpydoc (>=1.1)", "pillow (>=8.2)", "nb2plots (>=0.6)", "texext (>=0.6.6)"]
+extra = ["lxml (>=4.5)", "pygraphviz (>=1.7)", "pydot (>=1.4.1)"]
+test = ["pytest (>=6.2)", "pytest-cov (>=2.12)", "codecov (>=2.1)"]
+
+[[package]]
 name = "numpy"
+version = "1.19.1"
+description = "NumPy is the fundamental package for array computing with Python."
+category = "main"
 optional = false
 python-versions = ">=3.6"
-version = "1.19.1"
 
 [[package]]
-category = "main"
-description = "Memgraph database adapter for Python language"
 name = "pymgclient"
+version = "1.1.0"
+description = "Memgraph database adapter for Python language"
+category = "main"
 optional = false
 python-versions = ">=3.5"
-version = "0.1.0"
 
 [[package]]
-category = "main"
-description = "World timezone definitions, modern and historical"
 name = "pytz"
-optional = false
-python-versions = "*"
 version = "2020.1"
-
-[[package]]
+description = "World timezone definitions, modern and historical"
 category = "main"
-description = "Track earth satellite TLE orbits using up-to-date 2010 version of SGP4"
-name = "sgp4"
 optional = false
 python-versions = "*"
-version = "2.12"
 
 [[package]]
+name = "sgp4"
+version = "2.12"
+description = "Track earth satellite TLE orbits using up-to-date 2010 version of SGP4"
 category = "main"
-description = "Python 2 and 3 compatibility utilities"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "six"
+version = "1.15.0"
+description = "Python 2 and 3 compatibility utilities"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
-version = "1.15.0"
 
 [[package]]
-category = "main"
-description = "Elegant astronomy for Python"
 name = "skyfield"
+version = "1.25"
+description = "Elegant astronomy for Python"
+category = "main"
 optional = false
 python-versions = "*"
-version = "1.25"
 
 [package.dependencies]
 certifi = ">=2017.4.17"
@@ -115,9 +153,9 @@ sgp4 = ">=2.2"
 tests = ["pytz"]
 
 [metadata]
-content-hash = "ec4f03ee5c18f3e8f26e0887b234b61bab082df3647065d25d9aa54c7db63b72"
-lock-version = "1.0"
+lock-version = "1.1"
 python-versions = "^3.7"
+content-hash = "b2b51b1d7f9ec025f447afb1c9b8522c4047cbba6ea96dbb2e711db61cdad67d"
 
 [metadata.files]
 certifi = [
@@ -127,8 +165,16 @@ certifi = [
 docopt = [
     {file = "docopt-0.6.2.tar.gz", hash = "sha256:49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"},
 ]
+gqlalchemy = [
+    {file = "GQLAlchemy-1.0.6-py3-none-any.whl", hash = "sha256:b6fbc644e680f45df6a84c41bd1a38a4d2622f59b2d13e768a4169aa85670672"},
+    {file = "GQLAlchemy-1.0.6.tar.gz", hash = "sha256:0c8444b4df442b8130f5d609b7fea193086cc7c366ed9223713d4b05fa52a266"},
+]
 jplephem = [
     {file = "jplephem-2.14.tar.gz", hash = "sha256:316aa8ebb6d13fd2158c06b2709bcde382d04bf63bb1e48d0bce89937088c6e3"},
+]
+kafka-python = [
+    {file = "kafka-python-2.0.2.tar.gz", hash = "sha256:04dfe7fea2b63726cd6f3e79a2d86e709d608d74406638c5da33a01d45a9d7e3"},
+    {file = "kafka_python-2.0.2-py2.py3-none-any.whl", hash = "sha256:2d92418c7cb1c298fa6c7f0fb3519b520d0d7526ac6cb7ae2a4fc65a51a94b6e"},
 ]
 neo4j = [
     {file = "neo4j-1.7.6.tar.gz", hash = "sha256:82169d548f984f745a519bc8a70cce05662fb7e10ed0179984ca2d45736bc01e"},
@@ -138,6 +184,10 @@ neobolt = [
 ]
 neotime = [
     {file = "neotime-1.7.4.tar.gz", hash = "sha256:4e0477ba0f24e004de2fa79a3236de2bd941f20de0b5db8d976c52a86d7363eb"},
+]
+networkx = [
+    {file = "networkx-2.6.3-py3-none-any.whl", hash = "sha256:80b6b89c77d1dfb64a4c7854981b60aeea6360ac02c6d4e4913319e0a313abef"},
+    {file = "networkx-2.6.3.tar.gz", hash = "sha256:c0946ed31d71f1b732b5aaa6da5a0388a345019af232ce2f49c766e2d6795c51"},
 ]
 numpy = [
     {file = "numpy-1.19.1-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:b1cca51512299841bf69add3b75361779962f9cee7d9ee3bb446d5982e925b69"},
@@ -168,7 +218,13 @@ numpy = [
     {file = "numpy-1.19.1.zip", hash = "sha256:b8456987b637232602ceb4d663cb34106f7eb780e247d51a260b84760fd8f491"},
 ]
 pymgclient = [
-    {file = "pymgclient-0.1.0.tar.gz", hash = "sha256:b881252d76c82329421a19bc3140016fb4bf4ce13740b68eae98e53c4598535e"},
+    {file = "pymgclient-1.1.0-cp37-cp37m-macosx_10_15_x86_64.whl", hash = "sha256:004ebf11862a74adc201fb6a213217158f1a6e91c3ebe6ebb85fb69603b74724"},
+    {file = "pymgclient-1.1.0-cp37-cp37m-win_amd64.whl", hash = "sha256:09abcd475117238221669f4128cf87fed4c2b699b8576b49933a4c31cdbf5156"},
+    {file = "pymgclient-1.1.0-cp38-cp38-macosx_10_15_x86_64.whl", hash = "sha256:84dd9574ca02498b0cb934401ec0101ac4a382b19b2e1092f27f00fc9282401f"},
+    {file = "pymgclient-1.1.0-cp38-cp38-win_amd64.whl", hash = "sha256:bfe354b59c11e5121dbe59242e10a49808df19f43946f13a7f26ad0c57c95157"},
+    {file = "pymgclient-1.1.0-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:10744705074a72f63bc91e6cbd572ec9ace8a50fc8fdffb41cb7882db07acba0"},
+    {file = "pymgclient-1.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:79e08a6c0ae0aaa197f803445de188afc1dbfff7257198ffe2817735759e62d4"},
+    {file = "pymgclient-1.1.0.tar.gz", hash = "sha256:e389b537abb9678469861ac9b569cd76becdfdc612ad36350e641c05dde31c04"},
 ]
 pytz = [
     {file = "pytz-2020.1-py2.py3-none-any.whl", hash = "sha256:a494d53b6d39c3c6e44c3bec237336e14305e4f29bbf800b599253057fbb79ed"},
