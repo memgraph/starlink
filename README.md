@@ -1,6 +1,6 @@
 Starlink Demo
 ===
-This demo application simulates and visualizes the Starlink internet constellation. It also demonstrates how **Memgraph DB** can be used to find the shortest routing path in such networks.<br />
+This demo application simulates and visualizes the Starlink internet constellation. It also demonstrates how **MemgraphDB** can be used to find the shortest routing path in such networks.<br />
 To find out more about the subject, read the accompanying [blog post](https://github.com/memgraph/starlink/blob/develop_web/blog-post/blog-post.md).
 
 <br />
@@ -25,7 +25,7 @@ First, position yourself in the root folder of the project. Build the Docker ima
 docker-compose build
 docker-compose up
 ```
-If everything was successful you can open it in your browser. The app will be listening on: http://localhost:5000/. 
+If everything was successful you can open it in your browser. The app will be listening on: http://localhost:5001/. 
 
 ## Project structure
 
@@ -37,10 +37,9 @@ The app is divided into three separate modules:
 ## Technologies used
 
 * Python 3.7
-* Memgraph 1.0
+* MemgraphDB 2.2.1
+* Apache Kafka
 * Poetry
 * Skyfield
 * Flask
 * Leaflet
-
-## Licence
